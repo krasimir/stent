@@ -4,44 +4,79 @@ Container for mealy state machines
 
 ## API
 
+## Example: Working with a state machine
+
 ```js
-import { state, createMachine } from 'mealy';
+import { actions, Machine } from 'mealy';
 
-const todos = createMachine(state('standby', []));
+const todos = Machine.create('app', { name: 'stand by', todos: [] });
 
-todos
-  .given('standby')
-    .when('add-new-todo')
-      .then(function ({ data }, todo) {
-        data.push(todo);
-        return state(null, data);
-      })
-    .when('delete-todo')
-      .then(function ({ data }, index) {
-        return state(null, data.splice(index, 1));
-      })
-    .when('fetch-todos')
-      .then(function * () {
-        yield state('fetching');
+todos.transitions({
+  'stand by': {
+    'add new todo': function ({ todos }, todo) {
+      todos.push(todo);
+      return { todos };
+    },
+    'delete todo': function ({ data }, index) {
+      return { data: state.data.splice(index, 1) };
+    },
+    'fetch todos': function * () {
+      yield { name: 'fetching' };
 
-        try {
-          const todos = yield call(getTodos, '/api/todos');
-        } catch (error) {
-          return state('fetching-failed', error);
-        }
+      try {
+        const todos = await getTodos('/api/todos');
+      } catch (error) {
+        return { name: 'fetching failed', todos: [], error };
+      }
 
-        return state('standby', todos);
-      })
-  .given('fetching-failed')
-    .when('fetch-todos')
-      .then(function * ({ dispatch }) {
-        yield state('standby', []);
-        yield dispatch('fetch-todos');
-      });
+      return { name: 'stand by', todos };
+    }
+  },
+  'fetching failed': {
+    'fetch todos': function * () {
+      yield { name: 'stand by' };
+      fetchTodos();
+    }
+  }
+});
 
+const { fetchTodos } = actions();
 
-todos.dispatch('fetch-todos');
+fetchTodos();
+```
 
+## Example: React integration
+
+```js
+import React from 'react';
+import { connect } from 'mealy/react';
+import { actions } from 'mealy';
+
+const { fetchTodos, deleteTodo } = actions();
+
+class TodoList extends React.Component {
+  render() {
+    const { state, todos, error } = this.props;
+
+    if (state === 'fetching') return <p>Loading</p>;
+    if (state === 'fetching-failed') return (
+      <div>
+        Error fetching todos: { error }<br />
+        <button onClick={ fetchTodos }>try again</button>
+      </div>
+    );
+
+    return (
+      <ul>
+      { todos.map(({ text}) => <li onClick={ deleteTodo }>{ text }</li>) }
+      </ul>
+    );
+  }
+}
+
+export default connect(TodoList)
+  .with('app')
+  .map(({ name, todos }) => { state: name, todos });
 ```
 
 ## Misc
