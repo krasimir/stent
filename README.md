@@ -7,11 +7,15 @@ Container for mealy state machines
 ## Example: Working with a state machine
 
 ```js
-import { actions, Machine } from 'mealy';
+import { Machine } from 'mealy';
 
-const todos = Machine.create('app', { name: 'stand by', todos: [] });
-
-todos.transitions({
+const todosMachine = Machine.create(
+  'app',
+  {
+    name: 'stand by',
+    todos: []
+  },
+  {
   'stand by': {
     'add new todo': function ({ todos }, todo) {
       todos.push(todo);
@@ -34,15 +38,13 @@ todos.transitions({
   },
   'fetching failed': {
     'fetch todos': function * () {
-      yield { name: 'stand by' };
-      fetchTodos();
+      yield { name: 'stand by', error: null };
+      this.fetchTodos();
     }
   }
 });
 
-const { fetchTodos } = actions();
-
-fetchTodos();
+todosMachine.fetchTodos();
 ```
 
 ## Example: React integration
@@ -50,16 +52,13 @@ fetchTodos();
 ```js
 import React from 'react';
 import { connect } from 'mealy/react';
-import { actions } from 'mealy';
-
-const { fetchTodos, deleteTodo } = actions();
 
 class TodoList extends React.Component {
   render() {
-    const { state, todos, error } = this.props;
+    const { todos, error, isFetching, fetchTodos, deleteTodo } = this.props;
 
-    if (state === 'fetching') return <p>Loading</p>;
-    if (state === 'fetching-failed') return (
+    if (isFetching) return <p>Loading</p>;
+    if (error) return (
       <div>
         Error fetching todos: { error }<br />
         <button onClick={ fetchTodos }>try again</button>
@@ -76,7 +75,7 @@ class TodoList extends React.Component {
 
 export default connect(TodoList)
   .with('app')
-  .map(({ name, todos }) => { state: name, todos });
+  .map(({ name, ...stateData }, machine) => { ...stateData, ...machine });
 ```
 
 ## Misc
