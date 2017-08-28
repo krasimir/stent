@@ -9,42 +9,39 @@ Container for mealy state machines
 ```js
 import { Machine } from 'mealy';
 
-const todosMachine = Machine.create(
-  'app',
-  {
-    name: 'stand by',
-    todos: []
-  },
-  {
-  'stand by': {
-    'add new todo': function ({ todos }, todo) {
-      todos.push(todo);
-      return { todos };
-    },
-    'delete todo': function ({ data }, index) {
-      return { data: state.data.splice(index, 1) };
-    },
-    'fetch todos': function * () {
-      yield { name: 'fetching' };
+const machine = Machine.create('app', {
+  state: { name: 'stand by', todos: [] },
+  transitions: {
+    'stand by': {
+      'add new todo': function ({ todos }, todo) {
+        todos.push(todo);
+        return { todos };
+      },
+      'delete todo': function ({ todos }, index) {
+        return { todos: todos.splice(index, 1) };
+      },
+      'fetch todos': function * () {
+        yield 'fetching';
 
-      try {
-        const todos = await getTodos('/api/todos');
-      } catch (error) {
-        return { name: 'fetching failed', todos: [], error };
+        try {
+          const todos = await getTodos('/api/todos');
+        } catch (error) {
+          return { name: 'fetching failed', error };
+        }
+
+        return { name: 'stand by', todos };
       }
-
-      return { name: 'stand by', todos };
-    }
-  },
-  'fetching failed': {
-    'fetch todos': function * () {
-      yield { name: 'stand by', error: null };
-      this.fetchTodos();
+    },
+    'fetching failed': {
+      'fetch todos': function * () {
+        yield { name: 'stand by', error: null };
+        this.fetchTodos();
+      }
     }
   }
 });
 
-todosMachine.fetchTodos();
+machine.fetchTodos();
 ```
 
 ## Example: React integration
