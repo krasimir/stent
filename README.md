@@ -10,9 +10,9 @@ Container for mealy state machines
 import { Machine } from 'mealy';
 
 const machine = Machine.create('app', {
-  state: { name: 'stand by', todos: [] },
+  state: { name: 'standby', todos: [] },
   transitions: {
-    'stand by': {
+    'standby': {
       'add new todo': function ({ todos }, todo) {
         todos.push(todo);
         return { todos };
@@ -29,12 +29,12 @@ const machine = Machine.create('app', {
           return { name: 'fetching failed', error };
         }
 
-        return { name: 'stand by', todos };
+        return { name: 'standby', todos };
       }
     },
     'fetching failed': {
       'fetch todos': function * () {
-        yield { name: 'stand by', error: null };
+        yield { name: 'standby', error: null };
         this.fetchTodos();
       }
     }
