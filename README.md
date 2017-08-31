@@ -41,6 +41,8 @@ Machine.create('app', {
   'idle': {
     'fetch data': function * () {
       yield 'fetching';
+      // or you can yield a state object
+      // `yield { name: 'fetching' }`
     }
   }
 });
@@ -63,6 +65,8 @@ Machine.create('app', {
   }
 });
 ```
+
+*This example is a bit silly. We'll probably go with a separate state when data fetching is a progress.*
 
 ### Small ToDo app
 
