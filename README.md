@@ -54,7 +54,7 @@ class TodoList extends React.Component {
   render() {
     const { todos, error, isFetching, fetchTodos, deleteTodo } = this.props;
 
-    if (isFetching) return <p>Loading</p>;
+    if (isFetching()) return <p>Loading</p>;
     if (error) return (
       <div>
         Error fetching todos: { error }<br />
@@ -72,7 +72,13 @@ class TodoList extends React.Component {
 
 export default connect(TodoList)
   .with('app')
-  .map(({ name, ...stateData }, machine) => { ...stateData, ...machine });
+  .map(({ state, isFetching, fetchTodos, deleteTodo } => {
+    todos: state.todos,
+    error: state.error,
+    isFetching,
+    fetchTodos,
+    deleteTodo
+  }));
 ```
 
 ## Misc
