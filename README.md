@@ -66,7 +66,7 @@ Machine.create('app', {
 });
 ```
 
-*This example is a bit silly. We'll probably go with a separate state when data fetching is a progress.*
+*This example is a bit silly. We'll probably go with a separate state when data fetching is in progress.*
 
 ### Small ToDo app
 
@@ -74,9 +74,9 @@ Machine.create('app', {
 import { Machine } from 'mealy';
 
 const machine = Machine.create('app', {
-  state: { name: 'standby', todos: [] },
+  state: { name: 'idle', todos: [] },
   transitions: {
-    'standby': {
+    'idle': {
       'add new todo': function ({ todos }, todo) {
         todos.push(todo);
         return { todos };
@@ -93,12 +93,12 @@ const machine = Machine.create('app', {
           return { name: 'fetching failed', error };
         }
 
-        return { name: 'standby', todos };
+        return { name: 'idle', todos };
       }
     },
     'fetching failed': {
       'fetch todos': function * () {
-        yield { name: 'standby', error: null };
+        yield { name: 'idle', error: null };
         this.fetchTodos();
       }
     }
