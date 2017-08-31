@@ -1,25 +1,25 @@
 {
-  "name": "mealy",
+  "name": "stent",
   "version": "0.0.1",
-  "description": "Mealy state machine made for UI development",
+  "description": "Stent is a state machines container made for UI development",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/krasimir/mealy.git"
+    "url": "git+https://github.com/krasimir/stent.git"
   },
   "keywords": [
     "state",
-    "mealy",
+    "stent",
     "state",
     "machine"
   ],
   "author": "Krasimir Tsonev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/krasimir/mealy/issues"
+    "url": "https://github.com/krasimir/stent/issues"
   },
-  "homepage": "https://github.com/krasimir/mealy#readme"
+  "homepage": "https://github.com/krasimir/stent#readme"
 }
