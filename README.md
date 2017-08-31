@@ -4,7 +4,67 @@ Container for mealy state machines
 
 ## API
 
-## Example: Working with a state machine
+## Examples
+
+### Transitioning to another state
+
+From `idle` to `fetching` by using `fetch data` action.
+
+```js
+// Just pass the new state as a handler for an action
+Machine.create('app', {
+  'idle': {
+    'fetch data': 'fetching'
+  }
+});
+
+// Return a string in the handler
+Machine.create('app', {
+  'idle': {
+    'fetch data': function () {
+      return 'fetching';
+    }
+  }
+});
+
+// Return a state object
+Machine.create('app', {
+  'idle': {
+    'fetch data': function () {
+      return { name: 'fetching' };
+    }
+  }
+});
+
+// Yield a string in the handler's generator
+Machine.create('app', {
+  'idle': {
+    'fetch data': function * () {
+      yield 'fetching';
+    }
+  }
+});
+```
+
+### Having dependent actions
+
+For the cases where you want to do something as a result of two (or more) actions. From `idle` state to `done` when `fetching in progress` and `success` (or `fail`) actions are dispatched.
+
+```js
+Machine.create('app', {
+  'idle': {
+    'fetching in progress': function * () {
+      const [ data, error ] = yield wait(['success', 'fail']);
+      // or just `const data = yield wait('success')`
+      // if we are interested only in one action
+
+      return data ? { name: 'done', data } : { name: 'done', error };
+    }
+  }
+});
+```
+
+### Small ToDo app
 
 ```js
 import { Machine } from 'mealy';
@@ -24,7 +84,7 @@ const machine = Machine.create('app', {
         yield 'fetching';
 
         try {
-          const todos = await getTodos('/api/todos');
+          const todos = yield call(getTodos, '/api/todos');
         } catch (error) {
           return { name: 'fetching failed', error };
         }
@@ -44,7 +104,7 @@ const machine = Machine.create('app', {
 machine.fetchTodos();
 ```
 
-## Example: React integration
+### Integration with React
 
 ```js
 import React from 'react';
