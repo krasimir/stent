@@ -1,6 +1,6 @@
 {
   "name": "stent",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Stent is a state machines container made for UI development",
   "main": "index.js",
   "scripts": {
