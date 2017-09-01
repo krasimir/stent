@@ -160,8 +160,59 @@ const appMachine = Machine.get('app');
 
 The created machine has dynamically created methods associated with the provided configuration:
 
-* For every state there is a `is<state name>` method so we can check if the machine is in this state. For example, to check if the machine is in a `fetching remote data` we may call `machine.isFetchingRemoteData()` method.
+* For every state there is a `is<state name>` method so we can check if the machine is in that state. For example, to check if the machine is in a `fetching remote data` state we may call `machine.isFetchingRemoteData()` method. The laternative is `machine.state.name === 'fetching remote data'`.
 * For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todos` is available as `machine.addNewTodo(<todo data here>)`.
+
+### `<action handler>`
+
+The action handler may be just a string. In the following example `fetching` is the same as `{ name: 'fetching' }` state object.
+
+```js
+Machine.create('app', {
+  'idle': {
+    'fetch data': 'fetching'
+  }
+});
+```
+
+The second variant is to use a function that returns a string. Which again results in `{ name: 'fetching' }`.
+
+```js
+Machine.create('app', {
+  'idle': {
+    'fetch data': function () {
+      return 'fetching';
+    }
+  }
+});
+```
+
+And of course we may return the actual state object. That's actually a common case because very often we want to keep some data alongside: 
+
+```js
+Machine.create('app', {
+  'idle': {
+    'fetch data': function () {
+      return { name: 'fetching', answer: 42 };
+    }
+  }
+});
+```
+
+We may use a generator if we have more complex operations or/and async tasks.
+
+```js
+Machine.create('app', {
+  'idle': {
+    'fetch data': function * () {
+      yield 'fetching'; // either string 
+      yield { name: 'fetching' } // or the action state object
+    }
+  }
+});
+```
+
+*More for generators and what could be yielded in the [helpers](#helpers) section below.*
 
 ### `connect`
 
