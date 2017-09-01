@@ -199,7 +199,24 @@ Machine.create('app', {
 });
 ```
 
-We may use a generator if we have more complex operations or/and async tasks.
+The context of the action handler function (or generator) is the machine itself. This means that `this` inside the function points to the created machine and we may call its methods. For example:
+
+```js
+Machine.create('app', {
+  'idle': {
+    'fetch data': function () {
+      if (this.isIdle()) {
+        this.request('/api/todos');
+      }
+    },
+    'request': function (endpoint) {
+      console.log(endpoint); // endpoint = /api/todos
+    }
+  }
+});
+```
+
+We may also use a generator if we have more complex operations or/and async tasks.
 
 ```js
 Machine.create('app', {
@@ -212,7 +229,7 @@ Machine.create('app', {
 });
 ```
 
-*More for generators and what could be yielded in the **Helpers used inside generators** section below.*
+*More for generators and what could be yielded in the [Helpers used inside generators](#helpers-used-inside-generators) section below.*
 
 ### `connect`
 
