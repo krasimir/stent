@@ -212,7 +212,7 @@ Machine.create('app', {
 });
 ```
 
-*More for generators and what could be yielded in the [helpers](#helpers) section below.*
+*More for generators and what could be yielded in the **Helpers used inside generators** section below.*
 
 ### `connect`
 
@@ -256,7 +256,46 @@ export default connect(TodoList)
 
 The result of the `map` function goes as props to our component. Similarly to [Redux's connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function.
 
-### Helpers
+### Helpers used inside generators
+
+#### `yield call(<function>, ...args)`
+
+It's blocking the generator function and calls `<function>` with the given `...args`. `<function>` could be:
+
+* A synchronous function that returns result
+* A function that returns a promise
+* A generator function
+
+```js
+import { call } from 'stent/helpers';
+
+Machine.create('app', {
+  'idle': {
+    'fetch data': function * () {
+      const data = yield call(requestToBackend, '/api/todos/', 'POST');
+    }
+  }
+});
+```
+
+*`requestToBackend` is getting called with `/api/todos/` and `POST` as arguments.*
+
+#### `yield wait(<action name/s>)`
+
+It's blocking the generator and waits for action/s. The function accepts a single argument string or array of strings.
+
+```js
+import { wait } from 'stent/helpers';
+
+Machine.create('app', {
+  'idle': {
+    'fetch data': function * () {
+      yield wait('init');
+      yield wait(['user profile fetched', 'data processed']);
+    }
+  }
+});
+```
 
 ## Examples
 
