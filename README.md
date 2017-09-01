@@ -68,7 +68,22 @@ There are a couple of points that we have to make - the *state object* in the co
 The handler function accepts the previous state and should return the new state in a immutable fashion. Same as the [Redux's reducer](http://redux.js.org/docs/basics/Reducers.html), whatever we return becomes the new state. Notice that if we are changing only the data we may skip the `name` property (it is missing in the `return` statement). Adding a new todo is a synchronous operation for us so we don't need an additional state. The actual todo item is passed to the `addTodo` method of the machine and comes as a second argument of the handler.
 
 Stent also accepts a generator function as a handler. That's inspired by the [redux-saga](https://redux-saga.js.org/) project. The generators have couple of interesting characteristics and this library uses two of them - the ability to generate multiple results and the ability to *pause* the execution.
-What if we need to 
+What if we need to fetch data from the server and want to handle that process with multiple states - `idle`, `fetching`, `done` and `error`. Here's how to do it with a generator as a handler:
+
+```js
+const machine = Machine.create('todo-app', {
+  state: { name: 'idle', todos: [] },
+  transitions: {
+    'idle': {
+      'fetch todos': function () {
+        yield { name: 'fetching' };
+
+        
+      }
+    }
+  }
+});
+```
 
 ## Examples
 
