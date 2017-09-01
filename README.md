@@ -52,7 +52,7 @@ const machine = Machine.create('todo-app', {
   state: { name: 'idle', todos: [] },
   transitions: {
     'idle': {
-      'add todo': function (state, todo) {
+      'add todo': function * (state, todo) {
         return {
           todos: [...state.todos, todo]
         };
@@ -78,7 +78,7 @@ const machine = Machine.create('todo-app', {
       'fetch todos': function () {
         yield { name: 'fetching' };
 
-        
+
       }
     }
   }
