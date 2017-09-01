@@ -112,11 +112,43 @@ Generator as an action handler is suitable for the cases where we do more then o
 
 ## API
 
-### State object
+### `<state object>`
 
-### Machine
+The state object is just a normal object literal. The only one required property is `name` and it is used to indicate the state of the machine:
 
-#### `create`
+```js
+{
+  name: 'idle',
+  user: {
+    firstName: '...',
+    lastName: '...'
+  },
+  someOtherProperty: '...'
+}
+```
+
+### `Machine`
+
+The `Machine` singleton is used for creating and fetching machines.
+
+```js
+import { Machine } from 'stent';
+
+Machine.create(
+  'app', // name of the machine
+  {
+    state: <state object>,
+    transitions: {
+      '<state name>': {
+        '<action name>': <action handler>,
+        '<action name>': <action handler>,
+        ...
+      },
+      ...
+    }
+  }
+)
+```
 
 ### Connect
 
