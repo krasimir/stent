@@ -134,28 +134,78 @@ The `Machine` singleton is used for creating and fetching machines.
 ```js
 import { Machine } from 'stent';
 
-Machine.create(
+const appMachine = Machine.create(
   'app', // name of the machine
   {
     state: <state object>,
     transitions: {
-      '<state name>': {
-        '<action name>': <action handler>,
-        '<action name>': <action handler>,
+      <state name>: {
+        <action name>: <action handler>,
+        <action name>: <action handler>,
+        ...
+      },
+      <state name>: {
+        <action name>: <action handler>,
+        <action name>: <action handler>,
         ...
       },
       ...
     }
   }
-)
+);
+
+// later in the code
+const appMachine = Machine.get('app');
 ```
 
-### Connect
+The created machine has dynamically created methods associated with the provided configuration:
 
-#### `connect` (with multiple machines)
+* For every state there is a `is<state name>` method so we can check if the machine is in this state. For example, to check if the machine is in a `fetching remote data` we may call `machine.isFetchingRemoteData()` method.
+* For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todos` is available as `machine.addNewTodo(<todo data here>)`.
+
+### `connect`
+
+`connect` is the short way to do `Machine.get` for retrieving one or many created machines.
+
+```js
+import { connect } from 'stent/helpers';
+
+Machine.create('MachineA', ...);
+Machine.create('MachineB', ...);
+
+connect()
+  .with('MachineA', 'MachineB')
+  .map((MachineA, MachineB) => {
+    ...
+  });
+```
+
+There's also a helper for integrating with React. It creates a [HOC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
+
+```js
+import React from 'react';
+import { connect } from 'stent/react';
+
+class TodoList extends React.Component {
+  render() {
+    const { todos, error, isFetching, fetchTodos, deleteTodo } = this.props;
+    ...
+  }
+}
+
+// `todos` and `authorization` are machines defined
+// using `Machine.create` function
+export default connect(TodoList)
+  .with('MachineA', 'MachineB')
+  .map((MachineA, MachineB) => {
+    isIdle: MachineA.isIdle,
+    todos: MachineB.state.todos
+  });
+```
+
+The result of the `map` function goes as props to our component. Similarly to [Redux's connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function.
 
 ### Helpers
-
 
 ## Examples
 
