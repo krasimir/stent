@@ -1,0 +1,12 @@
+{
+  "presets": [
+    "react",
+    [ "es2015", { "loose": true } ],
+    "stage-3"
+  ],
+  "plugins": [
+    "syntax-async-functions",
+    "transform-html-import-to-string"
+  ],
+  "ignore": [ "node_modules/**/*" ]
+}
