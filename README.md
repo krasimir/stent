@@ -81,9 +81,9 @@ The handler function accepts the previous state and should return a new state in
 
 The actual todo item is passed to the `addTodo` method of the machine and comes as a second argument of the handler.
 
-Stent also accepts a generator function as a handler. That's inspired by the [redux-saga](https://redux-saga.js.org/) project. The generators have couple of interesting characteristics and this library uses two of them - the ability to generate multiple results and the ability to *pause* the execution.
+Stent also accepts a generator function as a handler. That's inspired by the [redux-saga](https://redux-saga.js.org/) project. The generators have couple of interesting characteristics and this library uses two of them - the ability to generate multiple results from a single function and the ability to *pause* the execution.
 
-What if we need to fetch data from the server and want to handle that process with multiple states - `idle`, `fetching`, `done` and `error`. Here's how to do it with a generator as a handler:
+What if we need to fetch data from the server and want to handle that process with multiple states - `idle`, `fetching`, `done` or `error`. Here's how to do it with a generator as a handler:
 
 ```js
 const machine = Machine.create('todo-app', {
@@ -130,9 +130,9 @@ The state object is just a normal object literal. The only one required property
 }
 ```
 
-### `Machine`
+### `Machine.create` and `Machine.get`
 
-The `Machine` singleton is used for creating and fetching machines.
+The `Machine` object is used for creating and fetching machines.
 
 ```js
 import { Machine } from 'stent';
