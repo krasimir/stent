@@ -178,7 +178,17 @@ Machine.create('app', {
 });
 ```
 
-The second variant is to use a function that returns a string. Which again results in `{ name: 'fetching' }`.
+Could be also a state object:
+
+```js
+Machine.create('app', {
+  'idle': {
+    'fetch data': { name: 'fetching', data: [], pending: false }
+  }
+});
+```
+
+The third variant is to use a function that returns a string. Which again results in `{ name: 'fetching' }`.
 
 ```js
 Machine.create('app', {
