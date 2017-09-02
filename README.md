@@ -188,7 +188,7 @@ Machine.create('app', {
 });
 ```
 
-The third variant is to use a function that returns a string. Which again results in `{ name: 'fetching' }`.
+Another variant is to use a function that returns a string. Which again results in `{ name: 'fetching' }`.
 
 ```js
 Machine.create('app', {
@@ -235,8 +235,8 @@ We may also use a generator if we have more complex operations or/and async task
 Machine.create('app', {
   'idle': {
     'fetch data': function * () {
-      yield 'fetching'; // either string 
-      yield { name: 'fetching' } // or the action state object
+      yield 'fetching'; // transition to a `fetching` state
+      yield { name: 'fetching' } // the same but using a state object
     }
   }
 });
