@@ -346,6 +346,35 @@ Machine.create('app', {
 
 If you want to extend the library with some additional functionalities you may add a middleware. It's an object with a set of functions that hook to the lifecycle methods of Stent.
 
+```js
+import { Machine } from 'stent';
+
+Machine.addMiddleware({
+  onActionDispatched(next, actionName, ...args) {
+    console.log(`Action dispatched: ${ actionName }`);
+    next(...args);
+    console.log(`After ${ actionName } action our state is ${ this.state.name }`);
+  },
+  onStateChanged(next, newState) {
+    console.log(`The new state will be: ${ newState.name }`);
+    next(newState);
+    console.log(`The state now is: ${ newState.name }`);
+  },
+  onConnect(next, machineNames) {
+    console.log(`Someone wants to connect to ${ machineNames } `); // array of strings
+    next(machines);
+    console.log(`Someone gets connected to ${ machineNames} `)
+  },
+  onGet(next, machineName) {
+    console.log(`Someone wants the ${ machineName } machine`);
+    next(machineName);
+    console.log(`Someone just gets access to ${ machineName } machine`);
+  }
+});
+```
+
+The hooks above are getting called just before running the internal Stent's logic. At this moment nothing in the machine is changing/executing. Calling `next` will pass the control flow to Stent.
+
 ## Examples
 
 ### Transitioning to another state
