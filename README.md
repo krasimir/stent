@@ -4,14 +4,16 @@ Container for finite state machines or in other words - a tool for state managem
 
 ---
 * [Installation](#installation)
-* []()
-* []()
-* []()
-* []()
-* []()
-* []()
-* []()
-* []()
+* [A few words about state machines](#a-few-words-about-state-machines)
+* [Getting started](##getting-started)
+* [API](#api)
+  * [`<state object>`](#state-object)
+  * [`Machine.create` and `Machine.get`](#machinecreate-and-machineget)
+  * [`<action-handler>`](#action-handler)
+  * [`connect`](#connect)
+  * [Helpers used inside generators](#helpers-used-inside-generators)
+* [Examples](#examples)
+* [Misc](#misc)
 ---
 
 ## Installation
