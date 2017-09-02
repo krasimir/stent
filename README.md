@@ -2,6 +2,18 @@
 
 Container for finite state machines or in other words - a tool for state management based on state machines.
 
+---
+* [Installation](#installation)
+* []()
+* []()
+* []()
+* []()
+* []()
+* []()
+* []()
+* []()
+---
+
 ## Installation
 
 The library is available as a [npm module](https://www.npmjs.com/package/stent) so `npm install stent` will do the job. There's also a standalone version [here](./lib/stent.js) (only core functionalities) which you can directly add to your page.
