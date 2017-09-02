@@ -246,7 +246,7 @@ Machine.create('app', {
 
 ### `connect`
 
-`connect` is the short way to do `Machine.get` for retrieving one or many created machines.
+`connect` is the short way to do `Machine.get` and retrieving one or more created machines.
 
 ```js
 import { connect } from 'stent/helpers';
@@ -261,7 +261,7 @@ connect()
   });
 ```
 
-There's also a helper for integrating with React. It creates a [HOC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
+There's also a helper for integration with React. It creates a [HOC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
 
 ```js
 import React from 'react';
@@ -294,7 +294,7 @@ It's blocking the generator function and calls `<function>` with the given `...a
 
 * A synchronous function that returns result
 * A function that returns a promise
-* A generator function
+* Another generator function
 
 ```js
 import { call } from 'stent/helpers';
