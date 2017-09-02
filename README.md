@@ -12,6 +12,7 @@ Container for finite state machines or in other words - a tool for state managem
   * [`<action-handler>`](#action-handler)
   * [`connect`](#connect)
   * [Helpers used inside generators](#helpers-used-inside-generators)
+  * [Middlewares](#middlewares)
 * [Examples](#examples)
 * [Misc](#misc)
 ---
@@ -340,6 +341,10 @@ Machine.create('app', {
   }
 });
 ```
+
+### Middlewares
+
+If you want to extend the library with some additional functionalities you may add a middleware. It's an object with a set of functions that hook to the lifecycle methods of Stent.
 
 ## Examples
 
