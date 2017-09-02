@@ -1,3 +1,3 @@
-<testsuite name="Mocha Tests" tests="1" failures="0" errors="0" skipped="0" timestamp="Sat, 02 Sep 2017 05:26:47 GMT" time="0.331">
-<testcase classname="Given the Stent library when running something" name="should do something" time="0.02"/>
+<testsuite name="Mocha Tests" tests="1" failures="0" errors="0" skipped="0" timestamp="Sat, 02 Sep 2017 07:01:26 GMT" time="0.303">
+<testcase classname="Given the Stent library when running something" name="should do something" time="0.018"/>
 </testsuite>

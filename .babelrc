@@ -5,8 +5,7 @@
     "stage-3"
   ],
   "plugins": [
-    "syntax-async-functions",
-    "transform-html-import-to-string"
+    "babel-plugin-add-module-exports"
   ],
   "ignore": [ "node_modules/**/*" ]
 }
