@@ -19,7 +19,7 @@ Container for finite state machines or in other words - a tool for state managem
 
 ## Installation
 
-The library is available as a [npm module](https://www.npmjs.com/package/stent) so `npm install stent` will do the job. There's also a standalone version [here](./lib/stent.js) (only core functionalities) which you can directly add to your page.
+The library is available as a [npm module](https://www.npmjs.com/package/stent) so `npm install stent` will do the job. There's also a standalone version [here](./standalone/stent.js) (only core functionalities) which you can directly add to your page.
 
 ## A few words about state machines
 
