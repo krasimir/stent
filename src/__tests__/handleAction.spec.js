@@ -1,5 +1,6 @@
 import handleAction from '../handleAction';
 import { ERROR_MISSING_ACTION_IN_STATE } from '../constants';
+import { call } from '../helpers';
 
 describe('Given the handleAction function', function () {
 
@@ -31,11 +32,11 @@ describe('Given the handleAction function', function () {
     });
   });
 
-  // describe('when the state is invalid', function () {
-  //   it('should throw an error', function () {
-  //     ...
-  //   });
-  // });
+  describe.skip('when we transition to a state which has no actions inside or it is not defined', function () {
+    it('should throw an error', function () {
+      // ...
+    });
+  });
 
   describe('when the handler is a string', function () {
     it('should change the state of the machine to that string', function () {
@@ -137,9 +138,9 @@ describe('Given the handleAction function', function () {
       handleAction(machine, 'run');
       expect(machine.state.name).to.equal('running');
     });
-    it('should change the state if we yield a string', function () {
+    it('should change the state if we yield a primitive', function () {
       const handler = function * () {
-        yield 'running';
+        yield 100;
       }
       const machine = {
         state: { name: 'idle', data: 42 },
@@ -149,7 +150,7 @@ describe('Given the handleAction function', function () {
       };
 
       handleAction(machine, 'run');
-      expect(machine.state.name).to.equal('running');
+      expect(machine.state.name).to.equal('100');
     });
     it('should change the state if we yield an object', function () {
       const handler = function * () {
@@ -165,6 +166,98 @@ describe('Given the handleAction function', function () {
 
       handleAction(machine, 'run');
       expect(machine.state).to.deep.equal({ name: 'jumping', data: 1 });
+    });
+    
+    describe('and we use the call helper', function () {
+      it('should execute the function and return the result', function () {
+        const api = function(name) {
+          return `hello ${ name }`;
+        }
+        const handler = function * () {
+          const newState = yield call(api, 'stent');
+
+          return newState;
+        }
+        const machine = {
+          state: { name: 'idle', data: 42 },
+          transitions: {
+            idle: { run: handler }
+          }
+        };
+  
+        handleAction(machine, 'run');
+        expect(machine.state).to.deep.equal({ name: 'hello stent' });
+      });
+      describe('and when the function returns a promise', function () {
+        it('should return the value of the resolved promise', function () {
+          const api = function(name) {
+            return Promise.resolve(`hello ${ name }`);
+          }
+          const handler = function * () {
+            const newState = yield call(api, 'stent');
+
+            return newState;
+          }
+          const machine = {
+            state: { name: 'idle', data: 42 },
+            transitions: {
+              idle: { run: handler }
+            }
+          };
+    
+          handleAction(machine, 'run');
+          return Promise.resolve().then(() => {
+            expect(machine.state).to.deep.equal({ name: 'hello stent' });
+          });
+        });
+        it('should throw an error if the promise is rejected', function () {
+          const api = function(name) {
+            return Promise.reject(`error ${ name }`);
+          }
+          const handler = function * () {
+            try {
+              const newState = yield call(api, 'stent');
+            } catch(error) {
+              return error.message;
+            }
+
+            return newState;
+          }
+          const machine = {
+            state: { name: 'idle', data: 42 },
+            transitions: {
+              idle: { run: handler }
+            }
+          };
+    
+          handleAction(machine, 'run');
+          return Promise.resolve().then(() => {
+            expect(machine.state).to.deep.equal({ name: 'error stent' });
+          });
+        });
+      });
+      describe('when the function returns another generator', function () {
+        it('should iterate through that inner generator', function () {
+          const api = function * (name) {
+            yield 42;
+            return yield call(() => Promise.resolve(`${ name }: merry christmas`));
+          }
+          const handler = function * () {
+            return yield call(api, 'stent');
+          }
+          const machine = {
+            state: { name: 'idle', data: 42 },
+            transitions: {
+              idle: { run: handler }
+            }
+          };
+    
+          handleAction(machine, 'run');
+          return Promise.resolve().then(() => {
+            expect(machine.state).to.deep.equal({ name: 'stent: merry christmas' });
+          });
+        });
+      });
     });
   });
 

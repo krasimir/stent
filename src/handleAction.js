@@ -1,20 +1,48 @@
 import { ERROR_MISSING_ACTION_IN_STATE } from './constants';
 import validateState from './helpers/validateState';
 
-function handleGenerator(machine, generator) {
-  const result = generator.next();
+function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
+  const iterate = function (result) {
+    if (!result.done) {
 
-  if (!result.done) {
-    updateState(machine, result.value);
-    return handleGenerator(machine, generator);
-  }
-  return result.value;
+      // yield call
+      if (typeof result.value === 'object' && result.value.__type === 'call') {
+        const funcResult = result.value.func(...result.value.args);
+        
+        // promise
+        if (typeof funcResult.then !== 'undefined') {
+          funcResult.then(
+            r => iterate(generator.next(r)),
+            error => iterate(generator.throw(new Error(error)))
+          );
+        // generator
+        } else if (typeof funcResult.next === 'function') {
+          handleGenerator(machine, funcResult, generatorResult => {
+            iterate(generator.next(generatorResult));
+          });
+        } else {
+          iterate(generator.next(funcResult));
+        }
+  
+      // the return statement of the normal function
+      } else {
+        updateState(machine, result.value);
+        iterate(generator.next());
+      }
+    
+    // the end of the generator (return statement)
+    } else {
+      done(result.value);
+    }
+  };
+
+  iterate(generator.next(resultOfPreviousOperation));
 }
 
 function updateState(machine, response) {
   if (typeof response === 'undefined') return;
-  if (typeof response === 'string') {
-    machine.state = { name: response };
+  if (typeof response === 'string' || typeof response === 'number') {
+    machine.state = { name: response.toString() };
   } else {
     machine.state = validateState(response);
   }
@@ -46,11 +74,12 @@ export default function handleAction(machine, action, payload) {
     var response = transitions[state.name][action].apply(machine, [ machine.state, payload ]);
 
     if (response && typeof response.next === 'function') {
-      response = handleGenerator(machine, response);
+      handleGenerator(machine, response, response => {
+        updateState(machine, response);
+      });
+    } else {
+      updateState(machine, response);
     }
-    
-    updateState(machine, response);
-
   }
 
   return true;
