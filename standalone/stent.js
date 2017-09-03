@@ -19,6 +19,9 @@ var ERROR_WRONG_STATE_FORMAT = exports.ERROR_WRONG_STATE_FORMAT = function ERROR
 
   return 'The state should be an object and it should always have at least "name" property. You passed ' + serialized;
 };
+var ERROR_UNCOVERED_STATE = exports.ERROR_UNCOVERED_STATE = function ERROR_UNCOVERED_STATE(state) {
+  return 'You just transitioned the machine to a state (' + state + ') which is not defined or it has no actions. This means that the machine is stuck.';
+};
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -91,6 +94,8 @@ function createMachine(name, config) {
 
 exports.__esModule = true;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 exports.default = handleAction;
@@ -102,6 +107,14 @@ var _validateState = require('./helpers/validateState');
 var _validateState2 = _interopRequireDefault(_validateState);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function isEmptyObject(obj) {
+  var name;
+  for (name in obj) {
+    if (obj.hasOwnProperty(name)) return false;
+  }
+  return true;
+}
 
 function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   var iterate = function iterate(result) {
@@ -145,12 +158,20 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
 }
 
 function updateState(machine, response) {
+  var newState;
+
   if (typeof response === 'undefined') return;
   if (typeof response === 'string' || typeof response === 'number') {
-    machine.state = { name: response.toString() };
+    newState = { name: response.toString() };
   } else {
-    machine.state = (0, _validateState2.default)(response);
+    newState = (0, _validateState2.default)(response);
   }
+
+  if (typeof machine.transitions[newState.name] === 'undefined' || isEmptyObject(machine.transitions[newState.name])) {
+    throw new Error((0, _constants.ERROR_UNCOVERED_STATE)(newState.name));
+  }
+
+  machine.state = newState;
 }
 
 function handleAction(machine, action, payload) {
@@ -170,11 +191,11 @@ function handleAction(machine, action, payload) {
 
   // string as a handler
   if (typeof handler === 'string') {
-    state.name = transitions[state.name][action];
+    updateState(machine, _extends({}, state, { name: transitions[state.name][action] }));
 
     // object as a handler
   } else if ((typeof handler === 'undefined' ? 'undefined' : _typeof(handler)) === 'object') {
-    machine.state = (0, _validateState2.default)(handler);
+    updateState(machine, (0, _validateState2.default)(handler));
 
     // function as a handler
   } else if (typeof handler === 'function') {

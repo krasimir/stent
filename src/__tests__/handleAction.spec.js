@@ -1,5 +1,5 @@
 import handleAction from '../handleAction';
-import { ERROR_MISSING_ACTION_IN_STATE } from '../constants';
+import { ERROR_MISSING_ACTION_IN_STATE, ERROR_UNCOVERED_STATE } from '../constants';
 import { call } from '../helpers';
 
 describe('Given the handleAction function', function () {
@@ -32,18 +32,41 @@ describe('Given the handleAction function', function () {
     });
   });
 
-  describe.skip('when we transition to a state which has no actions inside or it is not defined', function () {
-    it('should throw an error', function () {
-      // ...
+  describe('when we transition to a state which has no actions inside or it is not defined', function () {
+    it('should throw an error if there is no such a state defined', function () {
+      const machine = {
+        state: { name: 'idle' },
+        transitions: {
+          idle: {
+            'run': 'running'
+          }
+        }
+      };
+
+      expect(handleAction.bind(null, machine, 'run')).to.throw(ERROR_UNCOVERED_STATE('running'));
+    });
+    it('should throw an error if there the state has no actions inside', function () {
+      const machine = {
+        state: { name: 'idle' },
+        transitions: {
+          idle: {
+            'run': 'running'
+          },
+          running: {}
+        }
+      };
+
+      expect(handleAction.bind(null, machine, 'run')).to.throw(ERROR_UNCOVERED_STATE('running'));
     });
   });
 
   describe('when the handler is a string', function () {
     it('should change the state of the machine to that string', function () {
       const machine = {
-        state: { name: 'foo' },
+        state: { name: 'idle' },
         transitions: {
-          foo: { run: 'running' }
+          idle: { run: 'running' },
+          running: { stop: 'idle' }
         }
       };
 
@@ -56,9 +79,10 @@ describe('Given the handleAction function', function () {
     it('should change the state of the machine to that object', function () {
       const newState = { name: 'running', answer: 42 };
       const machine = {
-        state: { name: 'foo' },
+        state: { name: 'idle' },
         transitions: {
-          foo: { run: newState }
+          idle: { run: newState },
+          running: { stop: 'idle' }
         }
       };
 
@@ -74,7 +98,8 @@ describe('Given the handleAction function', function () {
       const machine = {
         state: { name: 'foo' },
         transitions: {
-          foo: { run: handler }
+          foo: { run: handler },
+          running: { stop: 'foo' }
         }
       };
 
@@ -86,7 +111,8 @@ describe('Given the handleAction function', function () {
       const machine = {
         state: { name: 'idle' },
         transitions: {
-          idle: { run: handler }
+          idle: { run: handler },
+          bar: { a: 'b' }
         }
       };
 
@@ -94,16 +120,17 @@ describe('Given the handleAction function', function () {
       expect(machine.state).to.deep.equal({ name: 'bar', data: 42 });
     });
     it('should update the state even if a string is returned', function () {
-      const handler = (state, payload) => 'new-state';
+      const handler = (state, payload) => 'bar';
       const machine = {
         state: { name: 'idle', data: 42 },
         transitions: {
-          idle: { run: handler }
+          idle: { run: handler },
+          bar: { a: 'b' }
         }
       };
 
       handleAction(machine, 'run');
-      expect(machine.state).to.deep.equal({ name: 'new-state' });
+      expect(machine.state).to.deep.equal({ name: 'bar' });
     });
     it('should run the handler with the machine as a context', function () {
       const handler = function () {
@@ -113,7 +140,8 @@ describe('Given the handleAction function', function () {
       const machine = {
         state: { name: 'idle', data: 42 },
         transitions: {
-          idle: { run: handler }
+          idle: { run: handler },
+          foo: { a: 'b' }
         }
       };
 
@@ -131,7 +159,10 @@ describe('Given the handleAction function', function () {
       const machine = {
         state: { name: 'idle', data: 42 },
         transitions: {
-          idle: { run: handler }
+          idle: { run: handler },
+          foo: { a: 'b' },
+          bar: { a: 'b' },
+          running: { a: 'b' }
         }
       };
 
@@ -145,7 +176,8 @@ describe('Given the handleAction function', function () {
       const machine = {
         state: { name: 'idle', data: 42 },
         transitions: {
-          idle: { run: handler }
+          idle: { run: handler },
+          '100': { a: 'b' }
         }
       };
 
@@ -160,7 +192,9 @@ describe('Given the handleAction function', function () {
       const machine = {
         state: { name: 'idle', data: 42 },
         transitions: {
-          idle: { run: handler }
+          idle: { run: handler },
+          running: { a: 'b' },
+          jumping: { a: 'b' }
         }
       };
 
@@ -181,7 +215,8 @@ describe('Given the handleAction function', function () {
         const machine = {
           state: { name: 'idle', data: 42 },
           transitions: {
-            idle: { run: handler }
+            idle: { run: handler },
+            'hello stent': 'a'
           }
         };
   
@@ -201,7 +236,8 @@ describe('Given the handleAction function', function () {
           const machine = {
             state: { name: 'idle', data: 42 },
             transitions: {
-              idle: { run: handler }
+              idle: { run: handler },
+              'hello stent': 'a'
             }
           };
     
@@ -226,7 +262,8 @@ describe('Given the handleAction function', function () {
           const machine = {
             state: { name: 'idle', data: 42 },
             transitions: {
-              idle: { run: handler }
+              idle: { run: handler },
+              'error stent': 'a'
             }
           };
     
@@ -248,7 +285,9 @@ describe('Given the handleAction function', function () {
           const machine = {
             state: { name: 'idle', data: 42 },
             transitions: {
-              idle: { run: handler }
+              idle: { run: handler },
+              '42': 'a',
+              'stent: merry christmas': 'b'
             }
           };
     

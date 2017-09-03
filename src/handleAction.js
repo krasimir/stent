@@ -1,5 +1,13 @@
-import { ERROR_MISSING_ACTION_IN_STATE } from './constants';
+import { ERROR_MISSING_ACTION_IN_STATE, ERROR_UNCOVERED_STATE } from './constants';
 import validateState from './helpers/validateState';
+
+function isEmptyObject(obj) {
+  var name;
+  for (name in obj) {
+    if (obj.hasOwnProperty(name)) return false;
+  }
+  return true;
+}
 
 function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   const iterate = function (result) {
@@ -39,13 +47,24 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   iterate(generator.next(resultOfPreviousOperation));
 }
 
-function updateState(machine, response) {
+function updateState(machine, response) {  
+  var newState;
+  
   if (typeof response === 'undefined') return;
   if (typeof response === 'string' || typeof response === 'number') {
-    machine.state = { name: response.toString() };
+    newState = { name: response.toString() };
   } else {
-    machine.state = validateState(response);
+    newState = validateState(response);
   }
+
+  if (
+    typeof machine.transitions[newState.name] === 'undefined' ||
+    isEmptyObject(machine.transitions[newState.name])
+  ) {
+    throw new Error(ERROR_UNCOVERED_STATE(newState.name));
+  }
+
+  machine.state = newState;
 }
 
 export default function handleAction(machine, action, payload) {
@@ -63,11 +82,11 @@ export default function handleAction(machine, action, payload) {
 
   // string as a handler
   if (typeof handler === 'string') {
-    state.name = transitions[state.name][action];
+    updateState(machine, { ...state, name: transitions[state.name][action] });
     
   // object as a handler
   } else if (typeof handler === 'object') {
-    machine.state = validateState(handler);
+    updateState(machine, validateState(handler));
 
   // function as a handler
   } else if (typeof handler === 'function') {

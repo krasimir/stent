@@ -1,27 +1,28 @@
-<testsuite name="Mocha Tests" tests="25" failures="0" errors="0" skipped="1" timestamp="Sun, 03 Sep 2017 19:49:06 GMT" time="0.288">
-<testcase classname="Given the createMachine factory when registering methods" name="should create methods dynamically (based on states and actions)" time="0.002"/>
-<testcase classname="Given the createMachine factory when registering methods" name="should dispatch an action with the given payload" time="0.001"/>
+<testsuite name="Mocha Tests" tests="26" failures="0" errors="0" skipped="0" timestamp="Sun, 03 Sep 2017 20:13:31 GMT" time="0.344">
+<testcase classname="Given the createMachine factory when registering methods" name="should create methods dynamically (based on states and actions)" time="0.003"/>
+<testcase classname="Given the createMachine factory when registering methods" name="should dispatch an action with the given payload" time="0.002"/>
 <testcase classname="Given the createMachine factory when registering methods" name="should check if the machine is in a particular state" time="0"/>
 <testcase classname="Given the createMachine factory when validating config" name="should throw errors if state or transitions are missing" time="0.001"/>
-<testcase classname="Given the handleAction function when dispatching an action which is missing in the current state" name="should throw an error" time="0"/>
+<testcase classname="Given the handleAction function when dispatching an action which is missing in the current state" name="should throw an error" time="0.001"/>
 <testcase classname="Given the handleAction function when there is nothing for the current state" name="should return false" time="0"/>
-<testcase classname="Given the handleAction function when we transition to a state which has no actions inside or it is not defined" name="should throw an error" time="0"><skipped/></testcase>
+<testcase classname="Given the handleAction function when we transition to a state which has no actions inside or it is not defined" name="should throw an error if there is no such a state defined" time="0"/>
+<testcase classname="Given the handleAction function when we transition to a state which has no actions inside or it is not defined" name="should throw an error if there the state has no actions inside" time="0.001"/>
 <testcase classname="Given the handleAction function when the handler is a string" name="should change the state of the machine to that string" time="0"/>
 <testcase classname="Given the handleAction function when the handler is an object" name="should change the state of the machine to that object" time="0"/>
 <testcase classname="Given the handleAction function when the handler is a function" name="should call the handler with the current state and the given payload" time="0"/>
 <testcase classname="Given the handleAction function when the handler is a function" name="should update the state" time="0.001"/>
 <testcase classname="Given the handleAction function when the handler is a function" name="should update the state even if a string is returned" time="0"/>
-<testcase classname="Given the handleAction function when the handler is a function" name="should run the handler with the machine as a context" time="0.001"/>
+<testcase classname="Given the handleAction function when the handler is a function" name="should run the handler with the machine as a context" time="0"/>
 <testcase classname="Given the handleAction function when the handler is a generator" name="should change the state if we return a string" time="0.001"/>
-<testcase classname="Given the handleAction function when the handler is a generator" name="should change the state if we yield a primitive" time="0.001"/>
+<testcase classname="Given the handleAction function when the handler is a generator" name="should change the state if we yield a primitive" time="0"/>
 <testcase classname="Given the handleAction function when the handler is a generator" name="should change the state if we yield an object" time="0"/>
-<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper" name="should execute the function and return the result" time="0.001"/>
+<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper" name="should execute the function and return the result" time="0"/>
 <testcase classname="Given the handleAction function when the handler is a generator and we use the call helper and when the function returns a promise" name="should return the value of the resolved promise" time="0.003"/>
 <testcase classname="Given the handleAction function when the handler is a generator and we use the call helper and when the function returns a promise" name="should throw an error if the promise is rejected" time="0.002"/>
 <testcase classname="Given the handleAction function when the handler is a generator and we use the call helper when the function returns another generator" name="should iterate through that inner generator" time="0.001"/>
 <testcase classname="Given the Stent library when creating a new machine" name="should have the machine with its name set up" time="0"/>
 <testcase classname="Given the Stent library when `get`ing a machine" name="should return the machine if it exists" time="0"/>
 <testcase classname="Given the Stent library when `get`ing a machine" name="should throw an error if the machine does not exist" time="0"/>
-<testcase classname="Given the toCamelCase helper when using toCamelCase" name="should transform a given string to a camel case" time="0"/>
-<testcase classname="Given the validateState helper when using validateState" name="throw an error if the state has no &quot;name&quot; property inside" time="0.001"/>
+<testcase classname="Given the toCamelCase helper when using toCamelCase" name="should transform a given string to a camel case" time="0.001"/>
+<testcase classname="Given the validateState helper when using validateState" name="throw an error if the state has no &quot;name&quot; property inside" time="0"/>
 </testsuite>
