@@ -145,7 +145,7 @@ The state object is just a normal object literal. The only one required property
 }
 ```
 
-### `Machine.create` and `Machine.get`
+### `Machine.<create|get|flush>`
 
 The `Machine` object is used for creating and fetching machines.
 
@@ -181,6 +181,8 @@ The created machine has dynamically created methods associated with the provided
 * For every state there is a `is<state name>` method so we can check if the machine is in that state. For example, to check if the machine is in a `fetching remote data` state we may call `machine.isFetchingRemoteData()` method. The laternative is `machine.state.name === 'fetching remote data'`.
 * For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todos` is available as `machine.addNewTodo(<todo data here>)`.
 
+`Machine.flush()` can be used to delete the currently created machines.
+
 ### `<action handler>`
 
 The action handler may be just a string. In the following example `fetching` is the same as `{ name: 'fetching' }` state object.
@@ -208,19 +210,21 @@ Another variant is to use a function that returns a string. Which again results 
 ```js
 Machine.create('app', {
   'idle': {
-    'fetch data': function () {
+    'fetch data': function (state, payload) {
       return 'fetching';
     }
   }
 });
 ```
 
+Notice that the function receives the current state and some payload passed when the action is called.
+
 And of course we may return the actual state object. That's actually a common case because very often we want to keep some data alongside: 
 
 ```js
 Machine.create('app', {
   'idle': {
-    'fetch data': function () {
+    'fetch data': function (state, payload) {
       return { name: 'fetching', answer: 42 };
     }
   }
@@ -232,7 +236,7 @@ The context of the action handler function (or generator) is the machine itself.
 ```js
 Machine.create('app', {
   'idle': {
-    'fetch data': function () {
+    'fetch data': function (state, payload) {
       if (this.isIdle()) {
         this.request('/api/todos');
       }
@@ -249,7 +253,7 @@ We may also use a generator if we have more complex operations or/and async task
 ```js
 Machine.create('app', {
   'idle': {
-    'fetch data': function * () {
+    'fetch data': function * (state, payload) {
       yield 'fetching'; // transition to a `fetching` state
       yield { name: 'fetching' } // the same but using a state object
     }
