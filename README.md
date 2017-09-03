@@ -248,6 +248,8 @@ Machine.create('app', {
 });
 ```
 
+In some cases you don't want to change the state but only handle the action. So feel free to skip the `return` statement. If the handler returns `undefined` the machine keeps its state.
+
 We may also use a generator if we have more complex operations or/and async tasks.
 
 ```js
@@ -454,10 +456,10 @@ const machine = Machine.create('app', {
     'idle': {
       'add new todo': function ({ todos }, todo) {
         todos.push(todo);
-        return { todos };
+        return { name: 'idle', todos };
       },
       'delete todo': function ({ todos }, index) {
-        return { todos: todos.splice(index, 1) };
+        return { name: 'idle', todos: todos.splice(index, 1) };
       },
       'fetch todos': function * () {
         yield 'fetching';

@@ -3,3 +3,8 @@ export const ERROR_MISSING_MACHINE = name => `There's no machine with name ${ na
 export const ERROR_MISSING_STATE = 'Configuration error: missing initial "state"';
 export const ERROR_MISSING_TRANSITIONS = 'Configuration error: missing "transitions"';
 export const ERROR_MISSING_ACTION_IN_STATE = (action, state) => `"${ action }" action is not available in "${ state }" state`;
+export const ERROR_WRONG_STATE_FORMAT = state => {
+  const serialized = typeof state === 'object' ? JSON.stringify(state, null, 2) : state;
+
+  return `The state should be an object and it should always have at least "name" property. You passed ${ serialized }`;
+}

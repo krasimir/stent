@@ -1,6 +1,6 @@
 import toCamelCase from '../toCamelCase';
 
-describe('Given the helpers', function () {
+describe('Given the toCamelCase helper', function () {
   describe('when using toCamelCase', function () {
     it('should transform a given string to a camel case', function () {
       [
