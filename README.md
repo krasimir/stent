@@ -341,8 +341,12 @@ import { wait } from 'stent/helpers';
 Machine.create('app', {
   'idle': {
     'fetch data': function * () {
-      yield wait('init');
-      yield wait(['user profile fetched', 'data processed']);
+      const initActionPayload = yield wait('init');
+      const [ userProfilePayload, dataPayload ] = yield wait([
+        'user profile fetched',
+        'data processed'
+      ]);
+      ...
     }
   }
 });

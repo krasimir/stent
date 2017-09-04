@@ -22,7 +22,7 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
         // promise
         if (typeof funcResult.then !== 'undefined') {
           funcResult.then(
-            r => iterate(generator.next(r)),
+            result => iterate(generator.next(result)),
             error => iterate(generator.throw(new Error(error)))
           );
         // generator
@@ -61,6 +61,9 @@ function waitFor(machine, actions, done) {
 function flushListeners(machine, action, payload) {
   if (!machine[WAIT_LISTENERS_STORAGE] || machine[WAIT_LISTENERS_STORAGE].length === 0) return;
 
+  // We register the `done` functions that should be called
+  // because this should happen at the very end of the
+  // listeners processing.
   const callbacks = [];
 
   machine[WAIT_LISTENERS_STORAGE] = 
@@ -80,6 +83,9 @@ function flushListeners(machine, action, payload) {
       return true;
     });
   callbacks.forEach(c => c());
+
+  // Clean up. There is no need to keep that temporary array
+  // if all the listeners are flushed.
   if (machine[WAIT_LISTENERS_STORAGE].length === 0) delete machine[WAIT_LISTENERS_STORAGE];
 }
 
