@@ -1,6 +1,7 @@
 import handleAction from '../handleAction';
+import { WAIT_LISTENERS_STORAGE } from '../handleAction';
 import { ERROR_MISSING_ACTION_IN_STATE, ERROR_UNCOVERED_STATE } from '../constants';
-import { call } from '../helpers';
+import { call, wait } from '../helpers';
 
 describe('Given the handleAction function', function () {
 
@@ -296,6 +297,39 @@ describe('Given the handleAction function', function () {
             expect(machine.state).to.deep.equal({ name: 'stent: merry christmas' });
           });
         });
+      });
+    });
+
+    describe('and we use the wait helper', function () {
+      it('should wait till the other action is dispatched', function (done) {
+        const handler = function * () {
+          const [ a, b ] = yield wait(['push the machine', 'pull the machine']);
+          const answer = yield wait('stop the machine');
+
+          return `the answer is ${ answer }: ${ a } + ${ b }`;
+        }
+        const machine = {
+          state: { name: 'idle' },
+          transitions: {
+            idle: {
+              run: handler,
+              'stop the machine': () => {},
+              'push the machine': () => {},
+              'pull the machine': () => {},
+            },
+            'the answer is 42: 20 + 22': { a: 'b' }
+          }
+        };
+  
+        handleAction(machine, 'run');
+        handleAction(machine, 'pull the machine', 22);
+        setTimeout(() => handleAction(machine, 'push the machine', 20), 5);
+        setTimeout(() => handleAction(machine, 'stop the machine', 42), 10);
+        setTimeout(() => {
+          expect(machine[WAIT_LISTENERS_STORAGE]).to.be.undefined;
+          expect(machine.state).to.deep.equal({ name: 'the answer is 42: 20 + 22' });
+          done();
+        }, 100);
       });
     });
   });

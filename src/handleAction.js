@@ -1,6 +1,8 @@
 import { ERROR_MISSING_ACTION_IN_STATE, ERROR_UNCOVERED_STATE } from './constants';
 import validateState from './helpers/validateState';
 
+export const WAIT_LISTENERS_STORAGE = '___@wait';
+
 function isEmptyObject(obj) {
   var name;
   for (name in obj) {
@@ -31,7 +33,11 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
         } else {
           iterate(generator.next(funcResult));
         }
-  
+
+      // yield wait
+      } else if (typeof result.value === 'object' && result.value.__type === 'wait') {
+        waitFor(machine, result.value.actions, result => iterate(generator.next(result)));
+
       // the return statement of the normal function
       } else {
         updateState(machine, result.value);
@@ -45,6 +51,36 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   };
 
   iterate(generator.next(resultOfPreviousOperation));
+}
+
+function waitFor(machine, actions, done) {
+  if (!machine[WAIT_LISTENERS_STORAGE]) machine[WAIT_LISTENERS_STORAGE] = [];
+  machine[WAIT_LISTENERS_STORAGE].push({ actions, done, result: [...actions] });
+}
+
+function flushListeners(machine, action, payload) {
+  if (!machine[WAIT_LISTENERS_STORAGE] || machine[WAIT_LISTENERS_STORAGE].length === 0) return;
+
+  const callbacks = [];
+
+  machine[WAIT_LISTENERS_STORAGE] = 
+    machine[WAIT_LISTENERS_STORAGE].filter(({ actions, done, result }) => {
+      const actionIndex = actions.indexOf(action);
+
+      if (actionIndex === -1) return true;
+
+      result[result.indexOf(action)] = payload;
+      actions.splice(actionIndex, 1);
+      if (actions.length === 0) {
+        result.length === 1 ?
+          callbacks.push(done.bind(null, result[0])) :
+          callbacks.push(done.bind(null, result));
+        return false;
+      }
+      return true;
+    });
+  callbacks.forEach(c => c());
+  if (machine[WAIT_LISTENERS_STORAGE].length === 0) delete machine[WAIT_LISTENERS_STORAGE];
 }
 
 function updateState(machine, response) {  
@@ -79,6 +115,8 @@ export default function handleAction(machine, action, payload) {
   if (typeof transitions[state.name][action] === 'undefined') {
     throw new Error(ERROR_MISSING_ACTION_IN_STATE(action, state.name));
   }
+
+  flushListeners(machine, action, payload);
 
   // string as a handler
   if (typeof handler === 'string') {
