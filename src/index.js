@@ -4,9 +4,10 @@ import { ERROR_MISSING_MACHINE } from './constants';
 class MachineFactory {
   constructor() {
     this.machines = {};
+    this.middlewares = [];
   }
   create(name, config) {
-    return this.machines[name] = createMachine(name, config);
+    return this.machines[name] = createMachine(name, config, this.middlewares);
   }
   get(name) {
     if (this.machines[name]) return this.machines[name];
@@ -14,6 +15,10 @@ class MachineFactory {
   }
   flush() {
     this.machines = [];
+    this.middlewares = [];
+  }
+  addMiddleware(middleware) {
+    this.middlewares.push(middleware);
   }
 }
 

@@ -278,7 +278,17 @@ Machine.create('MachineB', ...);
 connect()
   .with('MachineA', 'MachineB')
   .map((MachineA, MachineB) => {
-    ...
+    // called multiple times
+  });
+```
+
+The mapping function by default is called once and then every time when the state of the connected machines changes. So, if you need only that first call use `mapOnce` instead.
+
+```js
+connect()
+  .with('MachineA', 'MachineB')
+  .mapOnce((MachineA, MachineB) => {
+    // this gets called only once
   });
 ```
 
@@ -362,23 +372,13 @@ import { Machine } from 'stent';
 Machine.addMiddleware({
   onActionDispatched(next, actionName, ...args) {
     console.log(`Action dispatched: ${ actionName }`);
-    next(...args);
+    next();
     console.log(`After ${ actionName } action our state is ${ this.state.name }`);
   },
-  onStateChanged(next, newState) {
-    console.log(`The new state will be: ${ newState.name }`);
-    next(newState);
-    console.log(`The state now is: ${ newState.name }`);
-  },
-  onConnect(next, machineNames) {
-    console.log(`Someone wants to connect to ${ machineNames } `); // array of strings
-    next(machines);
-    console.log(`Someone gets connected to ${ machineNames} `)
-  },
-  onGet(next, machineName) {
-    console.log(`Someone wants the ${ machineName } machine`);
-    next(machineName);
-    console.log(`Someone just gets access to ${ machineName } machine`);
+  onStateChanged(next) {
+    console.log(`The new state will be: ${ this.state.name }`);
+    next();
+    console.log(`The state now is: ${ this.state.name }`);
   }
 });
 ```

@@ -9,3 +9,7 @@ export const ERROR_WRONG_STATE_FORMAT = state => {
   return `The state should be an object and it should always have at least "name" property. You passed ${ serialized }`;
 }
 export const ERROR_UNCOVERED_STATE = state => `You just transitioned the machine to a state (${ state }) which is not defined or it has no actions. This means that the machine is stuck.`;
+
+// other
+export const WAIT_LISTENERS_STORAGE = '___@wait';
+export const MIDDLEWARE_STORAGE = '___@middlewares';

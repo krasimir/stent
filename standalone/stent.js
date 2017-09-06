@@ -22,6 +22,10 @@ var ERROR_WRONG_STATE_FORMAT = exports.ERROR_WRONG_STATE_FORMAT = function ERROR
 var ERROR_UNCOVERED_STATE = exports.ERROR_UNCOVERED_STATE = function ERROR_UNCOVERED_STATE(state) {
   return 'You just transitioned the machine to a state (' + state + ') which is not defined or it has no actions. This means that the machine is stuck.';
 };
+
+// other
+var WAIT_LISTENERS_STORAGE = exports.WAIT_LISTENERS_STORAGE = '___@wait';
+var MIDDLEWARE_STORAGE = exports.MIDDLEWARE_STORAGE = '___@middlewares';
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -73,13 +77,18 @@ function validateConfig(_ref) {
   return true;
 }
 
-function createMachine(name, config) {
-  var machine = { name: name };
+function createMachine(name, config, middlewares) {
+  var _machine;
+
+  var machine = (_machine = {
+    name: name
+  }, _machine[_constants.MIDDLEWARE_STORAGE] = middlewares, _machine);
   var initialState = config.state,
       transitions = config.transitions;
 
 
   machine.state = initialState;
+  machine.transitions = transitions;
 
   if (validateConfig(config)) {
     registerMethods(machine, transitions, function (action, payload) {
@@ -108,6 +117,9 @@ var _validateState2 = _interopRequireDefault(_validateState);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';
+var MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChange';
+
 function isEmptyObject(obj) {
   var name;
   for (name in obj) {
@@ -128,8 +140,8 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
 
         // promise
         if (typeof funcResult.then !== 'undefined') {
-          funcResult.then(function (r) {
-            return iterate(generator.next(r));
+          funcResult.then(function (result) {
+            return iterate(generator.next(result));
           }, function (error) {
             return iterate(generator.throw(new Error(error)));
           });
@@ -141,6 +153,12 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
         } else {
           iterate(generator.next(funcResult));
         }
+
+        // yield wait
+      } else if (_typeof(result.value) === 'object' && result.value.__type === 'wait') {
+        waitFor(machine, result.value.actions, function (result) {
+          return iterate(generator.next(result));
+        });
 
         // the return statement of the normal function
       } else {
@@ -157,6 +175,45 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   iterate(generator.next(resultOfPreviousOperation));
 }
 
+function waitFor(machine, actions, done) {
+  if (!machine[_constants.WAIT_LISTENERS_STORAGE]) machine[_constants.WAIT_LISTENERS_STORAGE] = [];
+  machine[_constants.WAIT_LISTENERS_STORAGE].push({ actions: actions, done: done, result: [].concat(actions) });
+}
+
+function flushListeners(machine, action, payload) {
+  if (!machine[_constants.WAIT_LISTENERS_STORAGE] || machine[_constants.WAIT_LISTENERS_STORAGE].length === 0) return;
+
+  // We register the `done` functions that should be called
+  // because this should happen at the very end of the
+  // listeners processing.
+  var callbacks = [];
+
+  machine[_constants.WAIT_LISTENERS_STORAGE] = machine[_constants.WAIT_LISTENERS_STORAGE].filter(function (_ref) {
+    var actions = _ref.actions,
+        done = _ref.done,
+        result = _ref.result;
+
+    var actionIndex = actions.indexOf(action);
+
+    if (actionIndex === -1) return true;
+
+    result[result.indexOf(action)] = payload;
+    actions.splice(actionIndex, 1);
+    if (actions.length === 0) {
+      result.length === 1 ? callbacks.push(done.bind(null, result[0])) : callbacks.push(done.bind(null, result));
+      return false;
+    }
+    return true;
+  });
+  callbacks.forEach(function (c) {
+    return c();
+  });
+
+  // Clean up. There is no need to keep that temporary array
+  // if all the listeners are flushed.
+  if (machine[_constants.WAIT_LISTENERS_STORAGE].length === 0) delete machine[_constants.WAIT_LISTENERS_STORAGE];
+}
+
 function updateState(machine, response) {
   var newState;
 
@@ -171,7 +228,34 @@ function updateState(machine, response) {
     throw new Error((0, _constants.ERROR_UNCOVERED_STATE)(newState.name));
   }
 
-  machine.state = newState;
+  handleMiddleware(function () {
+    machine.state = newState;
+  }, MIDDLEWARE_PROCESS_STATE_CHANGE, machine);
+}
+
+function handleMiddleware(done, hook, machine) {
+  for (var _len = arguments.length, args = Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+    args[_key - 3] = arguments[_key];
+  }
+
+  if (!machine[_constants.MIDDLEWARE_STORAGE]) return done();
+
+  var middlewares = machine[_constants.MIDDLEWARE_STORAGE];
+  var loop = function loop(index, process) {
+    return index < middlewares.length - 1 ? process(index + 1) : done();
+  };
+
+  (function process(index) {
+    var middleware = middlewares[index];
+
+    if (middleware && typeof middleware[hook] !== 'undefined') {
+      middleware[hook].apply(machine, [function () {
+        return loop(index, process);
+      }].concat(args));
+    } else {
+      loop(index, process);
+    }
+  })(0);
 }
 
 function handleAction(machine, action, payload) {
@@ -189,26 +273,30 @@ function handleAction(machine, action, payload) {
     throw new Error((0, _constants.ERROR_MISSING_ACTION_IN_STATE)(action, state.name));
   }
 
-  // string as a handler
-  if (typeof handler === 'string') {
-    updateState(machine, _extends({}, state, { name: transitions[state.name][action] }));
+  handleMiddleware(function () {
+    flushListeners(machine, action, payload);
 
-    // object as a handler
-  } else if ((typeof handler === 'undefined' ? 'undefined' : _typeof(handler)) === 'object') {
-    updateState(machine, (0, _validateState2.default)(handler));
+    // string as a handler
+    if (typeof handler === 'string') {
+      updateState(machine, _extends({}, state, { name: transitions[state.name][action] }));
 
-    // function as a handler
-  } else if (typeof handler === 'function') {
-    var response = transitions[state.name][action].apply(machine, [machine.state, payload]);
+      // object as a handler
+    } else if ((typeof handler === 'undefined' ? 'undefined' : _typeof(handler)) === 'object') {
+      updateState(machine, (0, _validateState2.default)(handler));
 
-    if (response && typeof response.next === 'function') {
-      handleGenerator(machine, response, function (response) {
+      // function as a handler
+    } else if (typeof handler === 'function') {
+      var response = transitions[state.name][action].apply(machine, [machine.state, payload]);
+
+      if (response && typeof response.next === 'function') {
+        handleGenerator(machine, response, function (response) {
+          updateState(machine, response);
+        });
+      } else {
         updateState(machine, response);
-      });
-    } else {
-      updateState(machine, response);
+      }
     }
-  }
+  }, MIDDLEWARE_PROCESS_ACTION, machine, action, payload);
 
   return true;
 };
@@ -262,10 +350,11 @@ var MachineFactory = function () {
     _classCallCheck(this, MachineFactory);
 
     this.machines = {};
+    this.middlewares = [];
   }
 
   MachineFactory.prototype.create = function create(name, config) {
-    return this.machines[name] = (0, _createMachine2.default)(name, config);
+    return this.machines[name] = (0, _createMachine2.default)(name, config, this.middlewares);
   };
 
   MachineFactory.prototype.get = function get(name) {
@@ -275,6 +364,11 @@ var MachineFactory = function () {
 
   MachineFactory.prototype.flush = function flush() {
     this.machines = [];
+    this.middlewares = [];
+  };
+
+  MachineFactory.prototype.addMiddleware = function addMiddleware(middleware) {
+    this.middlewares.push(middleware);
   };
 
   return MachineFactory;

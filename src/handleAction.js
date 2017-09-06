@@ -1,7 +1,14 @@
-import { ERROR_MISSING_ACTION_IN_STATE, ERROR_UNCOVERED_STATE } from './constants';
+import {
+  ERROR_MISSING_ACTION_IN_STATE,
+  ERROR_UNCOVERED_STATE,
+  WAIT_LISTENERS_STORAGE,
+  MIDDLEWARE_STORAGE,
+  TRANSITIONS_STORAGE
+} from './constants';
 import validateState from './helpers/validateState';
 
-export const WAIT_LISTENERS_STORAGE = '___@wait';
+const MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';
+const MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChange';
 
 function isEmptyObject(obj) {
   var name;
@@ -106,7 +113,26 @@ function updateState(machine, response) {
     throw new Error(ERROR_UNCOVERED_STATE(newState.name));
   }
 
-  machine.state = newState;
+  handleMiddleware(() => {
+    machine.state = newState;
+  }, MIDDLEWARE_PROCESS_STATE_CHANGE, machine);
+}
+
+function handleMiddleware(done, hook, machine, ...args) {
+  if (!machine[MIDDLEWARE_STORAGE]) return done();
+
+  const middlewares = machine[MIDDLEWARE_STORAGE];
+  const loop = (index, process) => index < middlewares.length - 1 ? process(index + 1) : done();
+
+  (function process(index) {
+    const middleware = middlewares[index];
+
+    if (middleware && typeof middleware[hook] !== 'undefined') {
+      middleware[hook].apply(machine, [ () => loop(index, process), ...args ]);
+    } else {
+      loop(index, process);
+    }
+  })(0);
 }
 
 export default function handleAction(machine, action, payload) {
@@ -122,28 +148,30 @@ export default function handleAction(machine, action, payload) {
     throw new Error(ERROR_MISSING_ACTION_IN_STATE(action, state.name));
   }
 
-  flushListeners(machine, action, payload);
-
-  // string as a handler
-  if (typeof handler === 'string') {
-    updateState(machine, { ...state, name: transitions[state.name][action] });
-    
-  // object as a handler
-  } else if (typeof handler === 'object') {
-    updateState(machine, validateState(handler));
-
-  // function as a handler
-  } else if (typeof handler === 'function') {
-    var response = transitions[state.name][action].apply(machine, [ machine.state, payload ]);
-
-    if (response && typeof response.next === 'function') {
-      handleGenerator(machine, response, response => {
+  handleMiddleware(() => {
+    flushListeners(machine, action, payload);
+  
+    // string as a handler
+    if (typeof handler === 'string') {
+      updateState(machine, { ...state, name: transitions[state.name][action] });
+      
+    // object as a handler
+    } else if (typeof handler === 'object') {
+      updateState(machine, validateState(handler));
+  
+    // function as a handler
+    } else if (typeof handler === 'function') {
+      var response = transitions[state.name][action].apply(machine, [ machine.state, payload ]);
+  
+      if (response && typeof response.next === 'function') {
+        handleGenerator(machine, response, response => {
+          updateState(machine, response);
+        });
+      } else {
         updateState(machine, response);
-      });
-    } else {
-      updateState(machine, response);
+      }
     }
-  }
+  }, MIDDLEWARE_PROCESS_ACTION, machine, action, payload);
 
   return true;
 };
