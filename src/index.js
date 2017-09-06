@@ -1,10 +1,12 @@
 import createMachine from './createMachine';
 import { ERROR_MISSING_MACHINE } from './constants';
+import connect from './helpers/connect';
 
 class MachineFactory {
   constructor() {
     this.machines = {};
     this.middlewares = [];
+    this.connect = connect;
   }
   create(name, config) {
     return this.machines[name] = createMachine(name, config, this.middlewares);

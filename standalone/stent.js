@@ -98,7 +98,7 @@ function createMachine(name, config, middlewares) {
 
   return machine;
 }
-},{"./constants":1,"./handleAction":3,"./helpers/toCamelCase":4}],3:[function(require,module,exports){
+},{"./constants":1,"./handleAction":3,"./helpers/toCamelCase":5}],3:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -301,7 +301,63 @@ function handleAction(machine, action, payload) {
   return true;
 };
 module.exports = exports['default'];
-},{"./constants":1,"./helpers/validateState":5}],4:[function(require,module,exports){
+},{"./constants":1,"./helpers/validateState":6}],4:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports.default = connect;
+
+var _ = require('../');
+
+var idIndex = 0;
+var getId = function getId() {
+  return 'm' + ++idIndex;
+};
+
+function connect() {
+  var mappings = {};
+
+  _.Machine.addMiddleware({
+    onStateChange: function onStateChange(next) {
+      next();
+      for (var id in mappings) {
+        var _mappings$id;
+
+        (_mappings$id = mappings[id]).done.apply(_mappings$id, mappings[id].machines);
+      }
+    }
+  });
+  var withFunc = function withFunc() {
+    for (var _len = arguments.length, names = Array(_len), _key = 0; _key < _len; _key++) {
+      names[_key] = arguments[_key];
+    }
+
+    var machines = names.map(function (name) {
+      return _.Machine.get(name);
+    });
+    var mapFunc = function mapFunc(done, once) {
+      var id = getId();
+
+      !once && (mappings[id] = { done: done, machines: machines });
+      done.apply(undefined, machines);
+
+      return function () {
+        if (mappings && mappings[id]) delete mappings[id];
+      };
+    };
+
+    return {
+      'map': mapFunc,
+      'mapOnce': function mapOnce(done) {
+        return mapFunc(done, true);
+      }
+    };
+  };
+
+  return { 'with': withFunc };
+}
+module.exports = exports['default'];
+},{"../":7}],5:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -313,7 +369,7 @@ exports.default = function (text) {
 };
 
 module.exports = exports['default'];
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -329,7 +385,7 @@ function validateState(state) {
   throw new Error((0, _constants.ERROR_WRONG_STATE_FORMAT)(state));
 }
 module.exports = exports['default'];
-},{"../constants":1}],6:[function(require,module,exports){
+},{"../constants":1}],7:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -341,6 +397,10 @@ var _createMachine2 = _interopRequireDefault(_createMachine);
 
 var _constants = require('./constants');
 
+var _connect = require('./helpers/connect');
+
+var _connect2 = _interopRequireDefault(_connect);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -351,6 +411,7 @@ var MachineFactory = function () {
 
     this.machines = {};
     this.middlewares = [];
+    this.connect = _connect2.default;
   }
 
   MachineFactory.prototype.create = function create(name, config) {
@@ -377,5 +438,5 @@ var MachineFactory = function () {
 var factory = new MachineFactory();
 
 exports.Machine = factory;
-},{"./constants":1,"./createMachine":2}]},{},[6])(6)
+},{"./constants":1,"./createMachine":2,"./helpers/connect":4}]},{},[7])(7)
 });

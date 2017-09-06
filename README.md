@@ -1,10 +1,10 @@
 # Stent
 
-Container for finite state machines or in other words - a tool for state management based on state machines.
+Stent is combining the ideas of redux with the concept of state machines.
 
 ---
-* [Installation](#installation)
 * [A few words about state machines](#a-few-words-about-state-machines)
+* [Installation](#installation)
 * [Getting started](##getting-started)
 * [API](#api)
   * [`<state object>`](#state-object)
@@ -17,15 +17,15 @@ Container for finite state machines or in other words - a tool for state managem
 * [Misc](#misc)
 ---
 
-## Installation
-
-The library is available as a [npm module](https://www.npmjs.com/package/stent) so `npm install stent` will do the job. There's also a standalone version [here](./standalone/stent.js) (only core functionalities) which you can directly add to your page.
-
 ## A few words about state machines
 
-State machine is a mathematical model of computation. It's an abstract concept where the machine has different states. It accepts input and based on which (plus its current state) transitions into another state. Isn't it sounds familiar? Yes, it is sounds like a front-end application. That's why that model/concept applies nicely to UI development.
+State machine is a mathematical model of computation. It's an abstract concept where the machine may have different states but at a given time fulfills only one of them. It accepts input and based on that (plus its current state) transitions to another state. Isn't it sounds familiar? Yes, it sounds like a front-end application. That's why this model/concept applies nicely to UI development.
 
-*Disclaimer: there are different types of state machines. The one that fits in my use case is [Mealy finite state machine](https://en.wikipedia.org/wiki/Mealy_machine).*
+*Disclaimer: there are different types of state machines. I think the one that makes sense for front-end development is [Mealy state machine](https://en.wikipedia.org/wiki/Mealy_machine).*
+
+## Installation
+
+The library is available as a [npm module](https://www.npmjs.com/package/stent) so `npm install stent` or `yarn add stent` will do the job. There's also a standalone version [here](./standalone/stent.js) (only core functionalities) which you can directly add to your page.
 
 ## Getting started
 
@@ -145,7 +145,7 @@ The state object is just a normal object literal. The only one required property
 }
 ```
 
-### `Machine.<create|get|flush>`
+### `Machine.<create|get|flush|connect>`
 
 The `Machine` object is used for creating and fetching machines.
 
@@ -182,6 +182,8 @@ The created machine has dynamically created methods associated with the provided
 * For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todos` is available as `machine.addNewTodo(<todo data here>)`.
 
 `Machine.flush()` can be used to delete the currently created machines.
+
+`Machine.connect()` is the same as the [connect](#connect-and-disconnect) helper.
 
 ### `<action handler>`
 

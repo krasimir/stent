@@ -1,7 +1,7 @@
 {
   "name": "stent",
-  "version": "0.0.8",
-  "description": "Stent is a state machines container made for UI development",
+  "version": "0.1.0",
+  "description": "Stent is combining the ideas of redux with the concept of state machines",
   "main": "lib/index.js",
   "scripts": {
     "build": "npm run coverage && npm run test && babel src --out-dir lib && browserify ./lib/index.js -o ./standalone/stent.js --standalone stent && uglifyjs ./standalone/stent.js -o ./standalone/stent.min.js",
@@ -19,7 +19,13 @@
     "finite",
     "state",
     "machine",
-    "stent"
+    "stent",
+    "state machine",
+    "mealy",
+    "redux",
+    "react",
+    "connect",
+    "transitions"
   ],
   "author": "Krasimir Tsonev",
   "license": "MIT",
