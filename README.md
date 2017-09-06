@@ -10,7 +10,7 @@ Container for finite state machines or in other words - a tool for state managem
   * [`<state object>`](#state-object)
   * [`Machine.create` and `Machine.get`](#machinecreate-and-machineget)
   * [`<action-handler>`](#action-handler)
-  * [`connect`](#connect)
+  * [`connect` and `disconnect`](#connect-and-disconnect)
   * [Helpers used inside generators](#helpers-used-inside-generators)
   * [Middlewares](#middlewares)
 * [Examples](#examples)
@@ -265,7 +265,7 @@ Machine.create('app', {
 
 *More for generators and what could be yielded in the [Helpers used inside generators](#helpers-used-inside-generators) section below.*
 
-### `connect`
+### `connect` and `disconnect`
 
 `connect` is the short way to do `Machine.get` and retrieving one or more created machines.
 
@@ -292,6 +292,19 @@ connect()
   });
 ```
 
+You may also need to `disconnect` which makes sense if you use the `map` function. If you are connecting with `mapOnce` your mapping function is getting called only once anyway.
+
+```js
+const disconnect = connect()
+  .with('MachineA', 'MachineB')
+  .mapOnce((MachineA, MachineB) => {
+    // this gets called only once
+  });
+
+// at some point later
+disconnect();
+```
+
 There's also a helper for integration with React. It creates a [HOC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
 
 ```js
@@ -315,7 +328,7 @@ export default connect(TodoList)
   });
 ```
 
-The result of the `map` function goes as props to our component. Similarly to [Redux's connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function.
+The result of the `map` function goes as props to our component. Similarly to [Redux's connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function. And of course the mapping function is disconnected when the component is unmounted.
 
 ### Helpers used inside generators
 
@@ -383,7 +396,7 @@ Machine.addMiddleware({
 });
 ```
 
-The hooks above are getting called just before running the internal Stent's logic. At this moment nothing in the machine is changing/executing. Calling `next` will pass the control flow to Stent.
+The hooks above are getting called just before running the internal Stent's logic. At this moment nothing in the machine is changing/executing. Calling `next` will pass the control flow to Stent. Also have in mind that these methods are fired with the machine as a context. Which means that you have an access to the current state and methods.
 
 ## Examples
 
