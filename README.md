@@ -47,14 +47,16 @@ const machine = Machine.create('name-of-the-machine', {
 });
 ```
 
-The machine above has two possible states `idle` and `running`. When we are at the `idle` state (the default one) there is only one acceptable action/input `run`. It *transition*s the machine to a `running` state. The `running` state does not accept `run` but only `stop` action. If fired we are going back to the `idle` state.
+`{ name: 'idle'}` is the initial state of the machine and inside `transitions` we define another one `running`. `run` and `stop` are actions(inputs) that transition the machine to a new state. Notice that `stop` is not available when we are at `idle` state and `run` when we are at `running` state.
 
-Stent library is enforcing declarative approach of programming. Which means that by defining the possible states and actions in one place we clearly script what happens in our app without actually doing it. After that the machine knows what to expect and automatically creates a couple of things for us so we can trigger the logic. Based on the `transitions` property we have:
+Stent library is enforcing declarative approach of programming. Which means that by defining the possible states and actions for them we clearly define what's happening in our application. The user and data flows become a lot more predictable simply because we restrict ourselves of dispatching actions are the wrong time/state. For example, does not make sense that we say `stop` when we are not  `running`.
+
+After the definition of the machine it knows what to expect and automatically creates a couple of things for us so we can trigger the logic. Based on the `transitions` property Stent generates:
 
 * Helper methods for checking if the machine is in a particular state. `idle` state produces `isIdle()` method, for `running` we have `isRunning()`.
 * Helper methods for dispatching actions - `run()` and `stop()`.
 
-*We may use spaces or dashes in the state or action names but the rule of thumb is that Stent transforms the string to a camel case. For example if we have `fetching data` state the machine will have `isFetchingData()` method, `get fresh todos` action will result into `getFetchTodos()` method.*
+*We may use spaces or dashes in the state or action names but the rule of thumb is that Stent transforms the string to a camel case. For example if we have `fetching data` state the machine will have `isFetchingData()` method, `get fresh todos` action will result in `getFetchTodos()` method.*
 
 So, here's an example of how to use the machine above:
 
@@ -68,9 +70,7 @@ if (machine.isRunning()) {
 console.log(machine.isIdle()); // true
 ```
 
-*Of course, this doesn't make a lot of sense but we see the available methods.*
-
-The created machine may accept more then a string as a handler of the action. We may pass a function which accepts two arguments. The first one is the current state and the second one is some meta data traveling with the action (if any). For example:
+The created machine accepts more then a string as a handler of the action. We may pass a function which accepts two arguments. The first one is the current state and the second one is some meta data traveling with the action (if any). For example:
 
 ```js
 const machine = Machine.create('todo-app', {
@@ -94,11 +94,9 @@ The *state* in the context of Stent is a vanilla JavaScript object literal. The 
 
 The handler function accepts the previous state and should return a new state in a immutable fashion. Same as the [Redux's reducer](http://redux.js.org/docs/basics/Reducers.html), whatever we return becomes the new state.
 
-The actual todo item is passed to the `addTodo` method of the machine and comes as a second argument of the handler.
+The actual todo item is passed to the `addTodo` method and it comes as a second argument of the handler.
 
-Stent also accepts a generator function as a handler. That's inspired by the [redux-saga](https://redux-saga.js.org/) project. The generators have couple of interesting characteristics and this library uses two of them - the ability to generate multiple results from a single function and the ability to *pause* the execution.
-
-What if we need to fetch data from the server and want to handle that process with multiple states - `idle`, `fetching`, `done` or `error`. Here's how to do it with a generator as a handler:
+Stent also accepts a generator function as a handler. That's inspired by the [redux-saga](https://redux-saga.js.org/) project. The generators have couple of interesting characteristics and this library uses two of them - the ability to generate multiple results (from a single function) and the ability to *pause* the execution. What if we need to fetch data from the server and want to handle that process with multiple states - `idle`, `fetching`, `done` or `error`. Here's how to do it with a generator as a handler:
 
 ```js
 const machine = Machine.create('todo-app', {
@@ -121,10 +119,10 @@ const machine = Machine.create('todo-app', {
 });
 ```
 
-Assuming that `getTodos` is a function that accepts an endpoint and returns a promise. Inside the generator we are allowed to `yield` two type of things:
+Assuming that `getTodos` is a function that accepts an endpoint as a string and returns a promise. Inside the generator we are allowed to `yield` two type of things:
 
 * A state object (which transitions the machine to that new state)
-* A call of Stent's helper functions like `call`. (more about those helpers below)
+* A call of Stent's helper functions like `call`. (more about those [helpers](](#helpers-used-inside-generators)) below)
 
 Generator as an action handler is suitable for the cases where we do more then one thing and/or have async operations.
 
@@ -145,9 +143,11 @@ The state object is just a normal object literal. The only one required property
 }
 ```
 
+If you try transitioning to a state which is not defined into the `transitions` section or it has no actions in it State will throw an exception. It's because once you get into that new state you are basically stuck.
+
 ### `Machine.<create|get|flush|connect>`
 
-The `Machine` object is used for creating and fetching machines.
+The `Machine` object is used for creating/managing and fetching machines.
 
 ```js
 import { Machine } from 'stent';
@@ -155,7 +155,7 @@ import { Machine } from 'stent';
 const appMachine = Machine.create(
   'app', // name of the machine
   {
-    state: <state object>,
+    state: <state object>, // initial state
     transitions: {
       <state name>: {
         <action name>: <action handler>,
@@ -178,10 +178,10 @@ const appMachine = Machine.get('app');
 
 The created machine has dynamically created methods associated with the provided configuration:
 
-* For every state there is a `is<state name>` method so we can check if the machine is in that state. For example, to check if the machine is in a `fetching remote data` state we may call `machine.isFetchingRemoteData()` method. The laternative is `machine.state.name === 'fetching remote data'`.
+* For every state there is a `is<state name>` method so we can check if the machine is in that state. For example, to check if the machine is in a `fetching remote data` state we may call `machine.isFetchingRemoteData()` method. The alternative is `machine.state.name === 'fetching remote data'`.
 * For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todos` is available as `machine.addNewTodo(<todo data here>)`.
 
-`Machine.flush()` can be used to delete the currently created machines.
+`Machine.flush()` can be used to delete the currently created machines and [middlewares](#middlewares).
 
 `Machine.connect()` is the same as the [connect](#connect-and-disconnect) helper.
 
@@ -219,7 +219,7 @@ Machine.create('app', {
 });
 ```
 
-Notice that the function receives the current state and some payload passed when the action is called.
+Notice that the function receives the current state and some payload passed when the action is fired.
 
 And of course we may return the actual state object. That's actually a common case because very often we want to keep some data alongside: 
 
@@ -243,7 +243,7 @@ Machine.create('app', {
         this.request('/api/todos');
       }
     },
-    'request': function (endpoint) {
+    'request': function (state, endpoint) {
       console.log(endpoint); // endpoint = /api/todos
     }
   }
@@ -269,7 +269,7 @@ Machine.create('app', {
 
 ### `connect` and `disconnect`
 
-`connect` is the short way to do `Machine.get` and retrieving one or more created machines.
+`connect` is the short way to do `Machine.get` and retrieving one or more created machines. It also provides a mechanism for subscribing for state changes.
 
 ```js
 import { connect } from 'stent/helpers';
@@ -284,7 +284,7 @@ connect()
   });
 ```
 
-The mapping function by default is called once and then every time when the state of the connected machines changes. So, if you need only that first call use `mapOnce` instead.
+The mapping function by default is called once initially and then every time when the state of the connected machines changes. So, if you need only that first call use `mapOnce` instead.
 
 ```js
 connect()
@@ -299,15 +299,15 @@ You may also need to `disconnect` which makes sense if you use the `map` functio
 ```js
 const disconnect = connect()
   .with('MachineA', 'MachineB')
-  .mapOnce((MachineA, MachineB) => {
-    // this gets called only once
+  .map((MachineA, MachineB) => {
+    // called multiple times
   });
 
 // at some point later
 disconnect();
 ```
 
-There's also a helper for integrating with React. It creates a [HOC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
+There's also a helper for integrating with React. It creates a [HoC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
 
 ```js
 import React from 'react';
@@ -315,7 +315,7 @@ import { connect } from 'stent/react';
 
 class TodoList extends React.Component {
   render() {
-    const { todos, error, isFetching, fetchTodos, deleteTodo } = this.props;
+    const { isIdle, todos } = this.props;
     ...
   }
 }
@@ -330,7 +330,7 @@ export default connect(TodoList)
   });
 ```
 
-The result of the `map` function goes as props to our component. Similarly to [Redux's connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function. And of course the mapping function is disconnected when the component is unmounted.
+The result of the `map` function goes as props to our component. Similarly to [Redux's connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function. And of course the mapping function is `disconnect`ed when the component is unmounted.
 
 ### Helpers used inside generators
 
@@ -402,68 +402,6 @@ The hooks above are getting called just before running the internal Stent's logi
 
 ## Examples
 
-### Transitioning to another state
-
-From `idle` to `fetching` by using `fetch data` action.
-
-```js
-// Just pass the new state as a handler for an action
-Machine.create('app', {
-  'idle': {
-    'fetch data': 'fetching'
-  }
-});
-
-// Return a string in the handler
-Machine.create('app', {
-  'idle': {
-    'fetch data': function () {
-      return 'fetching';
-    }
-  }
-});
-
-// Return a state object
-Machine.create('app', {
-  'idle': {
-    'fetch data': function () {
-      return { name: 'fetching' };
-    }
-  }
-});
-
-// Yield a string in the handler's generator
-Machine.create('app', {
-  'idle': {
-    'fetch data': function * () {
-      yield 'fetching';
-      // or you can yield a state object
-      // `yield { name: 'fetching' }`
-    }
-  }
-});
-```
-
-### Having dependent actions
-
-For the cases where you want to do something as a result of two (or more) actions. From `idle` state to `done` when `fetching in progress` and `success` (or `fail`) actions are dispatched.
-
-```js
-Machine.create('app', {
-  'idle': {
-    'fetching in progress': function * () {
-      const [ data, error ] = yield wait(['success', 'fail']);
-      // or just `const data = yield wait('success')`
-      // if we are interested only in one action
-
-      return data ? { name: 'done', data } : { name: 'done', error };
-    }
-  }
-});
-```
-
-*This example is a bit silly. We'll probably go with a separate state when data fetching is in progress.*
-
 ### Small ToDo app
 
 ```js
@@ -474,8 +412,7 @@ const machine = Machine.create('app', {
   transitions: {
     'idle': {
       'add new todo': function ({ todos }, todo) {
-        todos.push(todo);
-        return { name: 'idle', todos };
+        return { name: 'idle', todos: [...todos, todo] };
       },
       'delete todo': function ({ todos }, index) {
         return { name: 'idle', todos: todos.splice(index, 1) };
@@ -512,7 +449,7 @@ import { connect } from 'stent/react';
 
 class TodoList extends React.Component {
   render() {
-    const { todos, error, isFetching, fetchTodos, deleteTodo } = this.props;
+    const { todos, error, isFetching, fetchTodos, deleteTodo, isAuthorized } = this.props;
 
     if (isFetching()) return <p>Loading</p>;
     if (error) return (
