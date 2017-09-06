@@ -305,7 +305,7 @@ const disconnect = connect()
 disconnect();
 ```
 
-There's also a helper for integration with React. It creates a [HOC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
+There's also a helper for integrating with React. It creates a [HOC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
 
 ```js
 import React from 'react';

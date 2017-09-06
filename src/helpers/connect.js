@@ -21,6 +21,10 @@ export default function connect() {
 
       !once && (mappings[id] = { done, machines });
       done(...machines);
+
+      return () => {
+        if (mappings && mappings[id]) delete mappings[id];
+      }
     }
 
     return {

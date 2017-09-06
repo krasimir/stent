@@ -77,4 +77,27 @@ describe('Given the connect helper', function () {
       expect(mapping.firstCall).to.be.calledWith(sinon.match('idle'));
     });
   });
+  describe('when we use the `disconnect` function', function () {
+    it('should detach the mapping', function () {
+      const mapping = sinon.spy();
+      const machine = Machine.create('A', {
+        state: { name: 'idle' },
+        transitions: {
+          idle: { run: 'running' },
+          running: { stop: 'idle' }
+        }
+      });
+      const disconnect = connect().with('A').map(A => {
+        mapping(A.state.name);
+      });
+
+      machine.run();
+      disconnect();
+      machine.stop();
+
+      expect(mapping).to.be.calledTwice;
+      expect(mapping.firstCall).to.be.calledWith(sinon.match('idle'));
+      expect(mapping.secondCall).to.be.calledWith(sinon.match('running'));
+    });
+  });
 });
