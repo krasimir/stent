@@ -1,6 +1,6 @@
 # Stent
 
-Stent is combining the ideas of redux with the concept of state machines.
+Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept of state machines.
 
 ---
 * [A few words about state machines](#a-few-words-about-state-machines)
@@ -25,7 +25,7 @@ State machine is a mathematical model of computation. It's an abstract concept w
 
 ## Installation
 
-The library is available as a [npm module](https://www.npmjs.com/package/stent) so `npm install stent` or `yarn add stent` will do the job. There's also a standalone version [here](./standalone/stent.js) (only core functionalities) which you can directly add to your page.
+The library is available as a [npm module](https://www.npmjs.com/package/stent) so `npm install stent` or `yarn add stent` will do the job. There's also a standalone version [here](./standalone) (only core functionalities) which you can directly add to your page.
 
 ## Getting started
 
