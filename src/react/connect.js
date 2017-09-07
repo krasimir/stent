@@ -1,16 +1,10 @@
 import React from 'react';
 import connect from '../helpers/connect';
 
-class HOC extends React.Component {
-  render() {
-    return this.props.children;
-  }
-}
-
 export default function(Component) {
   const withFunc = (...names) => {
     const mapFunc = (done, once) => {
-      return class Enhance extends React.Component {
+      return class StentConnect extends React.Component {
         componentWillMount() {
           this._disconnect = connect()
             .with(...names)[once ? 'mapOnce' : 'map']

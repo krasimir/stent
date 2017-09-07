@@ -1,8 +1,8 @@
 {
   "name": "stent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Stent is combining the ideas of redux with the concept of state machines",
-  "main": "lib/index.js",
+  "main": "lib",
   "scripts": {
     "build": "npm run coverage && npm run test && babel src --out-dir lib && browserify ./lib/index.js -o ./standalone/stent.js --standalone stent && uglifyjs ./standalone/stent.js -o ./standalone/stent.min.js",
     "test": "./node_modules/.bin/mocha --require babel-register --require babel-polyfill --require test/setup.js --require jsdom-global/register --reporter spec --slow 100 './src/**/**.spec.{js,jsx}'",
