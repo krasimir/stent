@@ -14,7 +14,7 @@ class App extends Component {
     if (error) {
       return (
         <section>
-          <h2>Oops, something happened</h2>
+          <h2>Oops, something happened ...</h2>
           <p>{ error }</p>
           <button onClick={ fetchTodos }>Try again</button>
         </section>

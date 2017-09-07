@@ -3,6 +3,7 @@ const TODOS = 'TODOS';
 export default {
   load() {
     const todos = localStorage.getItem(TODOS) || '[]';
+
     return new Promise((resolve, reject) => {
       try {
         resolve(JSON.parse(todos));
