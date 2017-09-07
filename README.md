@@ -272,7 +272,7 @@ Machine.create('app', {
 `connect` is the short way to do `Machine.get` and retrieving one or more created machines. It also provides a mechanism for subscribing for state changes.
 
 ```js
-import { connect } from 'stent/helpers';
+import { connect } from 'stent/lib/helpers';
 
 Machine.create('MachineA', ...);
 Machine.create('MachineB', ...);
@@ -311,7 +311,7 @@ There's also a helper for integrating with React. It creates a [HoC](https://git
 
 ```js
 import React from 'react';
-import { connect } from 'stent/react';
+import { connect } from 'stent/lib/react';
 
 class TodoList extends React.Component {
   render() {
@@ -343,7 +343,7 @@ It's blocking the generator function and calls `<function>` with the given `...a
 * Another generator function
 
 ```js
-import { call } from 'stent/helpers';
+import { call } from 'stent/lib/helpers';
 
 Machine.create('app', {
   'idle': {
@@ -361,7 +361,7 @@ Machine.create('app', {
 It's blocking the generator and waits for action/s. The function accepts a single argument string or array of strings.
 
 ```js
-import { wait } from 'stent/helpers';
+import { wait } from 'stent/lib/helpers';
 
 Machine.create('app', {
   'idle': {
@@ -445,7 +445,7 @@ machine.fetchTodos();
 
 ```js
 import React from 'react';
-import { connect } from 'stent/react';
+import { connect } from 'stent/lib/react';
 
 class TodoList extends React.Component {
   render() {

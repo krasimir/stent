@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'stent/lib/react/connect';
+import { connect } from 'stent/lib/react';
 
 class App extends Component {
   render() {
