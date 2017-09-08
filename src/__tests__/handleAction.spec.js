@@ -19,8 +19,8 @@ describe('Given the handleAction function', function () {
         }
       };
 
-      expect(handleAction.bind(null, machine, 'stop'))
-        .to.throw(ERROR_MISSING_ACTION_IN_STATE('stop', 'idle'));
+      expect(handleAction.bind(null, machine, 'stop', 'a', 'b'))
+        .to.throw(ERROR_MISSING_ACTION_IN_STATE('stop', 'idle', 'a,b'));
     });
   });
 

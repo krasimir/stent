@@ -27,7 +27,11 @@ export function registerMethods(machine, transitions, dispatch) {
   }
 }
 
-export function validateConfig({ state, transitions }) {
+export function validateConfig(config) {
+  if (typeof config !== 'object') throw new Error(ERROR_MISSING_STATE);
+  
+  const { state, transitions } = config;
+
   if (typeof state !== 'object') throw new Error(ERROR_MISSING_STATE);
   if (typeof transitions !== 'object') throw new Error(ERROR_MISSING_TRANSITIONS);
   return true;
@@ -44,12 +48,13 @@ export default function createMachine(name, config, middlewares) {
     name,
     [MIDDLEWARE_STORAGE]: middlewares
   };
-  const { state: initialState, transitions } = config;
-
-  machine.state = initialState;
-  machine.transitions = transitions;
 
   if (validateConfig(config)) {
+    const { state: initialState, transitions } = config;
+    
+    machine.state = initialState;
+    machine.transitions = transitions;
+
     registerMethods(
       machine,
       transitions,

@@ -145,7 +145,7 @@ export default function handleAction(machine, action, ...payload) {
   const handler = transitions[state.name][action];
 
   if (typeof transitions[state.name][action] === 'undefined') {
-    throw new Error(ERROR_MISSING_ACTION_IN_STATE(action, state.name));
+    throw new Error(ERROR_MISSING_ACTION_IN_STATE(action, state.name, payload.join(',')));
   }
 
   handleMiddleware(() => {

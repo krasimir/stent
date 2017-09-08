@@ -6,14 +6,28 @@ class Todo extends React.Component {
   constructor(props) {
     super(props);
 
-    this.machine = Machine.create()
+    this.machine = Machine.create({
+      state: { name: 'idle' },
+      transitions: {
+        idle: { edit: 'editing' },
+        editing: {
+          save: (state, newLabel) => {
+            props.editToDo(props.index, newLabel);
+            return 'idle';
+          }
+        }
+      }
+    });
   }
   render() {
     const { deleteTodo, changeStatus, index, done, label } = this.props;
 
     return (
       <li className={ done && 'done' }>
-        <span>{ label }</span>
+        { this.machine.isIdle() ?
+          <span onClick={ this.machine.edit() }>{ label }</span> :
+          <input defaultValue={ label } />
+        }        
         <a onClick={ () => deleteTodo(index) }>X</a>
         <label>
           <input

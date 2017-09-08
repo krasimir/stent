@@ -1,6 +1,6 @@
 {
   "name": "stent",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Stent is combining the ideas of redux with the concept of state machines",
   "main": "lib",
   "scripts": {

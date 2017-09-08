@@ -12,7 +12,11 @@ var ERROR_MISSING_MACHINE = exports.ERROR_MISSING_MACHINE = function ERROR_MISSI
 var ERROR_MISSING_STATE = exports.ERROR_MISSING_STATE = 'Configuration error: missing initial "state"';
 var ERROR_MISSING_TRANSITIONS = exports.ERROR_MISSING_TRANSITIONS = 'Configuration error: missing "transitions"';
 var ERROR_MISSING_ACTION_IN_STATE = exports.ERROR_MISSING_ACTION_IN_STATE = function ERROR_MISSING_ACTION_IN_STATE(action, state) {
-  return '"' + action + '" action is not available in "' + state + '" state';
+  var payload = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+
+  var payloadInfo = payload !== '' ? ' Payload of the action: ' + payload : '';
+
+  return '"' + action + '" action is not available in "' + state + '" state.' + payloadInfo;
 };
 var ERROR_WRONG_STATE_FORMAT = exports.ERROR_WRONG_STATE_FORMAT = function ERROR_WRONG_STATE_FORMAT(state) {
   var serialized = (typeof state === 'undefined' ? 'undefined' : _typeof(state)) === 'object' ? JSON.stringify(state, null, 2) : state;
@@ -77,9 +81,12 @@ function registerMethods(machine, transitions, dispatch) {
   }
 }
 
-function validateConfig(_ref) {
-  var state = _ref.state,
-      transitions = _ref.transitions;
+function validateConfig(config) {
+  if ((typeof config === 'undefined' ? 'undefined' : _typeof(config)) !== 'object') throw new Error(_constants.ERROR_MISSING_STATE);
+
+  var state = config.state,
+      transitions = config.transitions;
+
 
   if ((typeof state === 'undefined' ? 'undefined' : _typeof(state)) !== 'object') throw new Error(_constants.ERROR_MISSING_STATE);
   if ((typeof transitions === 'undefined' ? 'undefined' : _typeof(transitions)) !== 'object') throw new Error(_constants.ERROR_MISSING_TRANSITIONS);
@@ -98,15 +105,16 @@ function createMachine(name, config, middlewares) {
   var machine = (_machine = {
     name: name
   }, _machine[_constants.MIDDLEWARE_STORAGE] = middlewares, _machine);
-  var _config = config,
-      initialState = _config.state,
-      transitions = _config.transitions;
-
-
-  machine.state = initialState;
-  machine.transitions = transitions;
 
   if (validateConfig(config)) {
+    var _config = config,
+        initialState = _config.state,
+        transitions = _config.transitions;
+
+
+    machine.state = initialState;
+    machine.transitions = transitions;
+
     registerMethods(machine, transitions, function (action) {
       for (var _len2 = arguments.length, payload = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
         payload[_key2 - 1] = arguments[_key2];
@@ -298,7 +306,7 @@ function handleAction(machine, action) {
   var handler = transitions[state.name][action];
 
   if (typeof transitions[state.name][action] === 'undefined') {
-    throw new Error((0, _constants.ERROR_MISSING_ACTION_IN_STATE)(action, state.name));
+    throw new Error((0, _constants.ERROR_MISSING_ACTION_IN_STATE)(action, state.name, payload.join(',')));
   }
 
   handleMiddleware.apply(undefined, [function () {

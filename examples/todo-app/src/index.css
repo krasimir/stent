@@ -64,6 +64,7 @@ section {
 .todos ul li span {
   display: inline-block;
   width: 50%;
+  cursor: pointer;
 }
 .todos ul li a, .todos ul li label {
   display: inline-block;

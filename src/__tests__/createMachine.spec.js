@@ -70,4 +70,10 @@ describe('Given the createMachine factory', function () {
     });
   });
 
+  describe('when we create a machine without a state', function () {
+    it('it should throw an error', function () {
+      expect(createMachine.bind(null)).to.throw(ERROR_MISSING_STATE);
+    });
+  });
+
 });
