@@ -65,7 +65,7 @@ function waitFor(machine, actions, done) {
   machine[WAIT_LISTENERS_STORAGE].push({ actions, done, result: [...actions] });
 }
 
-function flushListeners(machine, action, payload) {
+function flushListeners(machine, action, ...payload) {
   if (!machine[WAIT_LISTENERS_STORAGE] || machine[WAIT_LISTENERS_STORAGE].length === 0) return;
 
   // We register the `done` functions that should be called
@@ -135,7 +135,7 @@ function handleMiddleware(done, hook, machine, ...args) {
   })(0);
 }
 
-export default function handleAction(machine, action, payload) {
+export default function handleAction(machine, action, ...payload) {
   const { state, transitions } = machine;
 
   if (!transitions[state.name]) {
@@ -149,7 +149,7 @@ export default function handleAction(machine, action, payload) {
   }
 
   handleMiddleware(() => {
-    flushListeners(machine, action, payload);
+    flushListeners(machine, action, ...payload);
   
     // string as a handler
     if (typeof handler === 'string') {
@@ -161,7 +161,7 @@ export default function handleAction(machine, action, payload) {
   
     // function as a handler
     } else if (typeof handler === 'function') {
-      var response = transitions[state.name][action].apply(machine, [ machine.state, payload ]);
+      var response = transitions[state.name][action].apply(machine, [ machine.state, ...payload ]);
   
       if (response && typeof response.next === 'function') {
         handleGenerator(machine, response, response => {
@@ -171,7 +171,7 @@ export default function handleAction(machine, action, payload) {
         updateState(machine, response);
       }
     }
-  }, MIDDLEWARE_PROCESS_ACTION, machine, action, payload);
+  }, MIDDLEWARE_PROCESS_ACTION, machine, action, ...payload);
 
   return true;
 };

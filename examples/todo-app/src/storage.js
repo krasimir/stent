@@ -13,6 +13,13 @@ export default {
     });
   },
   save(todos) {
-    return Promise.resolve(JSON.stringify(todos));
+    return new Promise((resolve, reject) => {
+      try {
+        localStorage.setItem(TODOS, JSON.stringify(todos));
+        resolve();
+      } catch(error) {
+        reject(error);
+      }
+    });
   }
 }

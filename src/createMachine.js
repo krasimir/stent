@@ -44,7 +44,7 @@ export default function createMachine(name, config, middlewares) {
     registerMethods(
       machine,
       transitions,
-      (action, payload) => handleAction(machine, action, payload)
+      (action, ...payload) => handleAction(machine, action, ...payload)
     );
   }
   

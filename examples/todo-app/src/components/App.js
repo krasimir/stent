@@ -1,8 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { connect } from 'stent/lib/react';
+import AddNewTodo from './AddNewTodo';
+import ToDos from './ToDos';
 
-class App extends Component {
+class App extends React.Component {
   componentDidMount() {
+    console.log('mounted');
     this.props.fetchTodos();
   }
   render() {
@@ -21,13 +24,18 @@ class App extends Component {
       )
     }
     return (
-      <p>Hello world</p>
+      <div>
+        <AddNewTodo />
+        <section>
+          <ToDos />
+        </section>
+      </div>
     );
   }
 }
 
 export default connect(App)
-  .with('todos')
+  .with('ToDos')
   .map(({ fetchTodos, isFetching, state }) => ({
     fetchTodos,
     isFetching,

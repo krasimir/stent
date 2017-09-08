@@ -91,8 +91,12 @@ function createMachine(name, config, middlewares) {
   machine.transitions = transitions;
 
   if (validateConfig(config)) {
-    registerMethods(machine, transitions, function (action, payload) {
-      return (0, _handleAction2.default)(machine, action, payload);
+    registerMethods(machine, transitions, function (action) {
+      for (var _len = arguments.length, payload = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        payload[_key - 1] = arguments[_key];
+      }
+
+      return _handleAction2.default.apply(undefined, [machine, action].concat(payload));
     });
   }
 
@@ -180,7 +184,11 @@ function waitFor(machine, actions, done) {
   machine[_constants.WAIT_LISTENERS_STORAGE].push({ actions: actions, done: done, result: [].concat(actions) });
 }
 
-function flushListeners(machine, action, payload) {
+function flushListeners(machine, action) {
+  for (var _len = arguments.length, payload = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    payload[_key - 2] = arguments[_key];
+  }
+
   if (!machine[_constants.WAIT_LISTENERS_STORAGE] || machine[_constants.WAIT_LISTENERS_STORAGE].length === 0) return;
 
   // We register the `done` functions that should be called
@@ -234,8 +242,8 @@ function updateState(machine, response) {
 }
 
 function handleMiddleware(done, hook, machine) {
-  for (var _len = arguments.length, args = Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
-    args[_key - 3] = arguments[_key];
+  for (var _len2 = arguments.length, args = Array(_len2 > 3 ? _len2 - 3 : 0), _key2 = 3; _key2 < _len2; _key2++) {
+    args[_key2 - 3] = arguments[_key2];
   }
 
   if (!machine[_constants.MIDDLEWARE_STORAGE]) return done();
@@ -258,7 +266,11 @@ function handleMiddleware(done, hook, machine) {
   })(0);
 }
 
-function handleAction(machine, action, payload) {
+function handleAction(machine, action) {
+  for (var _len3 = arguments.length, payload = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+    payload[_key3 - 2] = arguments[_key3];
+  }
+
   var state = machine.state,
       transitions = machine.transitions;
 
@@ -273,8 +285,8 @@ function handleAction(machine, action, payload) {
     throw new Error((0, _constants.ERROR_MISSING_ACTION_IN_STATE)(action, state.name));
   }
 
-  handleMiddleware(function () {
-    flushListeners(machine, action, payload);
+  handleMiddleware.apply(undefined, [function () {
+    flushListeners.apply(undefined, [machine, action].concat(payload));
 
     // string as a handler
     if (typeof handler === 'string') {
@@ -286,7 +298,7 @@ function handleAction(machine, action, payload) {
 
       // function as a handler
     } else if (typeof handler === 'function') {
-      var response = transitions[state.name][action].apply(machine, [machine.state, payload]);
+      var response = transitions[state.name][action].apply(machine, [machine.state].concat(payload));
 
       if (response && typeof response.next === 'function') {
         handleGenerator(machine, response, function (response) {
@@ -296,7 +308,7 @@ function handleAction(machine, action, payload) {
         updateState(machine, response);
       }
     }
-  }, MIDDLEWARE_PROCESS_ACTION, machine, action, payload);
+  }, MIDDLEWARE_PROCESS_ACTION, machine, action].concat(payload));
 
   return true;
 };
