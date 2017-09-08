@@ -9,7 +9,9 @@ class MachineFactory {
     this.connect = connect;
   }
   create(name, config) {
-    return this.machines[name] = createMachine(name, config, this.middlewares);
+    const machine = createMachine(name, config, this.middlewares);
+
+    return this.machines[machine.name] = machine;
   }
   get(name) {
     if (this.machines[name]) return this.machines[name];

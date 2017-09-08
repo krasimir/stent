@@ -6,7 +6,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.13",
-    "stent": "0.1.5"
+    "stent": "0.1.9"
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",

@@ -451,7 +451,9 @@ var MachineFactory = function () {
   }
 
   MachineFactory.prototype.create = function create(name, config) {
-    return this.machines[name] = (0, _createMachine2.default)(name, config, this.middlewares);
+    var machine = (0, _createMachine2.default)(name, config, this.middlewares);
+
+    return this.machines[machine.name] = machine;
   };
 
   MachineFactory.prototype.get = function get(name) {
