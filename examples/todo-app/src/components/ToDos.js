@@ -1,31 +1,15 @@
 import React from 'react';
 import { connect } from 'stent/lib/react';
+import Todo from './ToDo';
 
-const ToDos = ({ todos, deleteTodo, changeStatus }) => (
-  <ul>
-    {
-      todos.map(({ label, done }, index) => {
-        console.log(index, done);
-        return (
-          <li key={ index }>
-            <span className>{ label }</span>
-            <a href='#' onClick={ () => deleteTodo(index) }>X</a>
-            <input
-              type='checkbox'
-              checked={ done }
-              onClick={ () => changeStatus(index, !done) }
-              />
-          </li>
-        );
-      })
-    }
-  </ul>
-);
+const ToDos = ({ todos }) => {
+  const todosItems = todos.map(
+    (todo, index) => (<Todo key={ index } { ...todo } index={ index } />)
+  );
+
+  return <ul>{ todosItems }</ul>;
+};
 
 export default connect(ToDos)
   .with('ToDos')
-  .map(({ state, deleteTodo, changeStatus }) => ({
-    todos: state.todos,
-    deleteTodo,
-    changeStatus
-  }));
+  .map(({ state, deleteTodo, changeStatus }) => ({ todos: state.todos }));

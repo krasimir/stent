@@ -49,6 +49,11 @@ var _handleAction2 = _interopRequireDefault(_handleAction);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var IDX = 0;
+var getMachineID = function getMachineID() {
+  return '_' + ++IDX;
+};
+
 function registerMethods(machine, transitions, dispatch) {
   for (var state in transitions) {
 
@@ -84,11 +89,18 @@ function validateConfig(_ref) {
 function createMachine(name, config, middlewares) {
   var _machine;
 
+  if ((typeof name === 'undefined' ? 'undefined' : _typeof(name)) === 'object') {
+    middlewares = config;
+    config = name;
+    name = getMachineID();
+  }
+
   var machine = (_machine = {
     name: name
   }, _machine[_constants.MIDDLEWARE_STORAGE] = middlewares, _machine);
-  var initialState = config.state,
-      transitions = config.transitions;
+  var _config = config,
+      initialState = _config.state,
+      transitions = _config.transitions;
 
 
   machine.state = initialState;

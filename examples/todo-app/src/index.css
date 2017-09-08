@@ -22,3 +22,58 @@ button {
   border-radius: 0.4em;
   cursor: pointer;
 }
+* {
+  box-sizing: border-box;
+}
+
+section {
+  padding: 0 1em 0 1em;
+}
+
+.container {
+  margin-top: 1em;
+}
+
+.addNewToDo input {
+  font-size: 1em;
+  font-family: sans-serif;
+  width: 100%;
+  padding: 1em;
+  border: solid 2px #999;
+}
+.addNewToDo input:focus {
+  border-color: #2787B0;
+}
+
+.todos ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.todos ul li {
+  margin: 0;
+  padding: 1em;
+  width: 100%;
+  border-bottom: solid 2px #999;
+  background: #E8A8A8;
+  transition: background-color ease 600ms;
+}
+.todos ul li.done {
+  background: #7FC7A1;
+}
+.todos ul li span {
+  display: inline-block;
+  width: 50%;
+}
+.todos ul li a, .todos ul li label {
+  display: inline-block;
+  cursor: pointer;
+  padding: 0.4em;
+  border-radius: 0.4em;
+  background: #FFF;
+  margin-right: 1em;
+}
+.todos ul li label input {
+  display: inline-block;
+  margin-right: 1em;
+}

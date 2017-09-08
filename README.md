@@ -176,6 +176,8 @@ const appMachine = Machine.create(
 const appMachine = Machine.get('app');
 ```
 
+*If you don't plan to reference the machine by name with `Machine.get` or with the `connect` helper then you may skip the first argument. In the example above if we skip `'app'` Stent will still create the machine.*
+
 The created machine has dynamically created methods associated with the provided configuration:
 
 * For every state there is a `is<state name>` method so we can check if the machine is in that state. For example, to check if the machine is in a `fetching remote data` state we may call `machine.isFetchingRemoteData()` method. The alternative is `machine.state.name === 'fetching remote data'`.

@@ -28,12 +28,13 @@ class AddNewTodo extends React.Component {
   }
   render() {
     return (
-      <section>
+      <section className='addNewToDo'>
         <input
           ref={ input => this.textInput = input }
           onKeyUp={ this._onKeyUp }
           onChange={ this._onChange }
           value={ this.state.value }
+          placeholder='I have to fix ...'
           />
       </section>
     );

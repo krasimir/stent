@@ -57,5 +57,17 @@ describe('Given the createMachine factory', function () {
     });
   });
 
+  describe('when we create a machine without a name', function () {
+    it('it should automatically generate a name and allow the creation', function () {
+      const machine = createMachine({
+        state: { name: 'idle' },
+        transitions: { 'idle': { run: 'running' }, 'running': { stop: 'idle' } }
+      });
+
+      expect(machine.isIdle()).to.equal(true);
+      machine.run();
+      expect(machine.isRunning()).to.equal(true);
+    });
+  });
 
 });

@@ -5,7 +5,6 @@ import ToDos from './ToDos';
 
 class App extends React.Component {
   componentDidMount() {
-    console.log('mounted');
     this.props.fetchTodos();
   }
   render() {
@@ -24,9 +23,9 @@ class App extends React.Component {
       )
     }
     return (
-      <div>
+      <div className='container'>
         <AddNewTodo />
-        <section>
+        <section className='todos'>
           <ToDos />
         </section>
       </div>

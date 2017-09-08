@@ -6,6 +6,9 @@ import {
 } from './constants';
 import handleAction from './handleAction';
 
+var IDX = 0;
+const getMachineID = () => `_${ ++IDX }`;
+
 export function registerMethods(machine, transitions, dispatch) {
   for(var state in transitions) {
 
@@ -31,6 +34,12 @@ export function validateConfig({ state, transitions }) {
 }
 
 export default function createMachine(name, config, middlewares) {
+  if (typeof name === 'object') {
+    middlewares = config;
+    config = name;
+    name = getMachineID();
+  }
+
   const machine = {
     name,
     [MIDDLEWARE_STORAGE]: middlewares

@@ -1,4 +1,3 @@
-import { Machine } from 'stent';
 import { call } from 'stent/lib/helpers';
 import storage from '../storage';
 
@@ -11,7 +10,7 @@ function * saveTodos (todos) {
   } 
 }
 
-Machine.create('ToDos', {
+export default {
   state: { name: 'idle', todos: [] },
   transitions: {
     idle: {
@@ -31,12 +30,9 @@ Machine.create('ToDos', {
         todos.splice(index, 1);
         return yield call(saveTodos, [ ...todos ]);
       },
-      'change status': function * ({ todos }, ...args) {
-        console.log(args);
-        // console.log(index, done);
-        // todos[index].done = done;
-        // console.log(JSON.stringify(todos, null, 2));
-        // return yield call(saveTodos, [ ...todos ]);
+      'change status': function * ({ todos }, index, done) {
+        todos[index].done = done;
+        return yield call(saveTodos, [ ...todos ]);
       }
     },
     fetching: {
@@ -50,4 +46,4 @@ Machine.create('ToDos', {
       }
     }
   }
-});
+};
