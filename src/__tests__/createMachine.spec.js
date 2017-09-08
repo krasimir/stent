@@ -22,7 +22,8 @@ describe('Given the createMachine factory', function () {
     it('should dispatch an action with the given payload', function () {
       const dispatch = sinon.spy();
       const machine = {};
-      const payload = { answer: 42 };
+      const payload1 = { answer: 42 };
+      const payload2 = 'foo'
   
       registerMethods(
         machine,
@@ -30,9 +31,9 @@ describe('Given the createMachine factory', function () {
         dispatch
       );
       
-      machine.run(payload);
+      machine.run(payload1, payload2);
 
-      expect(dispatch).to.be.calledOnce.and.to.be.calledWith('run', payload);
+      expect(dispatch).to.be.calledOnce.and.to.be.calledWith('run', payload1, payload2);
     });
     it('should check if the machine is in a particular state', function () {
       const machine = { state: { name: 'running' }};

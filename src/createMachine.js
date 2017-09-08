@@ -17,7 +17,7 @@ export function registerMethods(machine, transitions, dispatch) {
 
     for(var action in transitions[state]) {
       (function(action) {
-        machine[toCamelCase(action)] = payload => dispatch(action, payload);
+        machine[toCamelCase(action)] = (...payload) => dispatch(action, ...payload);
       })(action);
     }
 

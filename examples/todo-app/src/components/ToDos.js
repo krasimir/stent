@@ -5,7 +5,7 @@ const ToDos = ({ todos, deleteTodo, changeStatus }) => (
   <ul>
     {
       todos.map(({ label, done }, index) => {
-        console.log(index, label, done);
+        console.log(index, done);
         return (
           <li key={ index }>
             <span className>{ label }</span>
