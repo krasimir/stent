@@ -45,4 +45,15 @@ describe('Given the Stent library', function () {
       ]);
     });
   });
+  describe('when creating a machine without a name', function () {
+    it('should be possible to fetch it by using the machine itself or the its generated name', function () {
+      const machine = Machine.create({
+        state: { name: 'idle' },
+        transitions: { idle: { run: 'running' } }
+      });
+
+      expect(Machine.get(machine).state.name).to.equal('idle');
+      expect(Machine.get(machine.name).state.name).to.equal('idle');
+    });
+  });
 });

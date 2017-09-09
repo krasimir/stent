@@ -145,7 +145,7 @@ The state object is just a normal object literal. The only one required property
 
 If you try transitioning to a state which is not defined into the `transitions` section or it has no actions in it State will throw an exception. It's because once you get into that new state you are basically stuck.
 
-### `Machine.<create|get|flush|connect>`
+### `Machine.<create|get|flush>`
 
 The `Machine` object is used for creating/managing and fetching machines.
 
@@ -184,8 +184,6 @@ The created machine has dynamically created methods associated with the provided
 * For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todos` is available as `machine.addNewTodo(<todo data here>)`.
 
 `Machine.flush()` can be used to delete the currently created machines and [middlewares](#middlewares).
-
-`Machine.connect()` is the same as the [connect](#connect-and-disconnect) helper.
 
 ### `<action handler>`
 
@@ -282,7 +280,9 @@ Machine.create('MachineB', ...);
 connect()
   .with('MachineA', 'MachineB')
   .map((MachineA, MachineB) => {
-    // called multiple times
+    // called once by default and then
+    // multiple times when the state of
+    // MachineA or MachineB changes
   });
 ```
 
@@ -293,6 +293,17 @@ connect()
   .with('MachineA', 'MachineB')
   .mapOnce((MachineA, MachineB) => {
     // this gets called only once
+  });
+```
+
+If you want to use `map` but skip the initial call of your mapping function then use `mapSilent`:
+
+```js
+connect()
+  .with('MachineA', 'MachineB')
+  .mapSilent((MachineA, MachineB) => {
+    // called multiple times when the state of
+    // MachineA or MachineB changes
   });
 ```
 
@@ -309,7 +320,7 @@ const disconnect = connect()
 disconnect();
 ```
 
-There's also a helper for integrating with React. It creates a [HoC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components):
+There's also a helper for integrating with React. It creates a [HoC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components) that gets re-rendered every time when the machine updates its state:
 
 ```js
 import React from 'react';

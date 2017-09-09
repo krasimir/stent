@@ -1,6 +1,7 @@
 import createMachine from './createMachine';
 import { ERROR_MISSING_MACHINE } from './constants';
 import connect from './helpers/connect';
+import { flush as flushConnectSetup } from './helpers/connect';
 
 class MachineFactory {
   constructor() {
@@ -14,12 +15,14 @@ class MachineFactory {
     return this.machines[machine.name] = machine;
   }
   get(name) {
+    if (typeof name === 'object') name = name.name;
     if (this.machines[name]) return this.machines[name];
     throw new Error(ERROR_MISSING_MACHINE(name));
   }
   flush() {
     this.machines = [];
     this.middlewares = [];
+    flushConnectSetup();
   }
   addMiddleware(middleware) {
     this.middlewares.push(middleware);

@@ -341,18 +341,20 @@ module.exports = exports['default'];
 'use strict';
 
 exports.__esModule = true;
+exports.flush = flush;
 exports.default = connect;
 
 var _ = require('../');
 
 var idIndex = 0;
+var mappings = null;
+
 var getId = function getId() {
   return 'm' + ++idIndex;
 };
-
-function connect() {
-  var mappings = {};
-
+var setup = function setup() {
+  if (mappings !== null) return;
+  mappings = {};
   _.Machine.addMiddleware({
     onStateChange: function onStateChange(next) {
       next();
@@ -363,6 +365,14 @@ function connect() {
       }
     }
   });
+};
+
+function flush() {
+  mappings = null;
+}
+
+function connect() {
+  setup();
   var withFunc = function withFunc() {
     for (var _len = arguments.length, names = Array(_len), _key = 0; _key < _len; _key++) {
       names[_key] = arguments[_key];
@@ -371,11 +381,11 @@ function connect() {
     var machines = names.map(function (name) {
       return _.Machine.get(name);
     });
-    var mapFunc = function mapFunc(done, once) {
+    var mapFunc = function mapFunc(done, once, silent) {
       var id = getId();
 
       !once && (mappings[id] = { done: done, machines: machines });
-      done.apply(undefined, machines);
+      !silent && done.apply(undefined, machines);
 
       return function () {
         if (mappings && mappings[id]) delete mappings[id];
@@ -386,13 +396,15 @@ function connect() {
       'map': mapFunc,
       'mapOnce': function mapOnce(done) {
         return mapFunc(done, true);
+      },
+      'mapSilent': function mapSilent(done) {
+        return mapFunc(done, false, true);
       }
     };
   };
 
   return { 'with': withFunc };
 }
-module.exports = exports['default'];
 },{"../":7}],5:[function(require,module,exports){
 "use strict";
 
@@ -427,6 +439,8 @@ module.exports = exports['default'];
 exports.__esModule = true;
 exports.Machine = undefined;
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createMachine = require('./createMachine');
 
 var _createMachine2 = _interopRequireDefault(_createMachine);
@@ -457,6 +471,7 @@ var MachineFactory = function () {
   };
 
   MachineFactory.prototype.get = function get(name) {
+    if ((typeof name === 'undefined' ? 'undefined' : _typeof(name)) === 'object') name = name.name;
     if (this.machines[name]) return this.machines[name];
     throw new Error((0, _constants.ERROR_MISSING_MACHINE)(name));
   };
@@ -464,6 +479,7 @@ var MachineFactory = function () {
   MachineFactory.prototype.flush = function flush() {
     this.machines = [];
     this.middlewares = [];
+    (0, _connect.flush)();
   };
 
   MachineFactory.prototype.addMiddleware = function addMiddleware(middleware) {
