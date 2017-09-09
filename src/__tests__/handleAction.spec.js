@@ -325,12 +325,14 @@ describe('Given the handleAction function', function () {
               'stop the machine': () => {},
               'push the machine': () => {},
               'pull the machine': () => {},
+              'destroy the machine': () => {}
             },
             'the answer is 42: 20 + 22': { a: 'b' }
           }
         };
   
         handleAction(machine, 'run');
+        handleAction(machine, 'destroy the machine');
         handleAction(machine, 'pull the machine', 22);
         setTimeout(() => handleAction(machine, 'push the machine', 20), 5);
         setTimeout(() => handleAction(machine, 'stop the machine', 42), 10);

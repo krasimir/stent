@@ -34,7 +34,7 @@ class AddNewTodo extends React.Component {
           onKeyUp={ this._onKeyUp }
           onChange={ this._onChange }
           value={ this.state.value }
-          placeholder='I have to fix ...'
+          placeholder='Type here ...'
           />
       </section>
     );

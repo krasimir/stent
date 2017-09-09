@@ -44,18 +44,18 @@ export default function createMachine(name, config) {
 
   const machine = { name };
 
-  if (validateConfig(config)) {
-    const { state: initialState, transitions } = config;
-    
-    machine.state = initialState;
-    machine.transitions = transitions;
+  validateConfig(config);
 
-    registerMethods(
-      machine,
-      transitions,
-      (action, ...payload) => handleAction(machine, action, ...payload)
-    );
-  }
+  const { state: initialState, transitions } = config;
+  
+  machine.state = initialState;
+  machine.transitions = transitions;
+
+  registerMethods(
+    machine,
+    transitions,
+    (action, ...payload) => handleAction(machine, action, ...payload)
+  );
   
   return machine;
 }

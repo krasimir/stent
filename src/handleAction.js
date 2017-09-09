@@ -92,7 +92,7 @@ function flushListeners(machine, action, ...payload) {
   callbacks.forEach(c => c());
 
   // Clean up. There is no need to keep that temporary array
-  // if all the listeners are flushed.
+  // if all the listeners are flushed out.
   if (machine[WAIT_LISTENERS_STORAGE].length === 0) delete machine[WAIT_LISTENERS_STORAGE];
 }
 
