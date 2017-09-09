@@ -2,10 +2,10 @@ import {
   ERROR_MISSING_ACTION_IN_STATE,
   ERROR_UNCOVERED_STATE,
   WAIT_LISTENERS_STORAGE,
-  MIDDLEWARE_STORAGE,
   TRANSITIONS_STORAGE
 } from './constants';
 import validateState from './helpers/validateState';
+import { Machine } from './';
 
 const MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';
 const MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChange';
@@ -119,9 +119,10 @@ function updateState(machine, response) {
 }
 
 function handleMiddleware(done, hook, machine, ...args) {
-  if (!machine[MIDDLEWARE_STORAGE]) return done();
+  const middlewares = Machine.middlewares;
+  
+  if (middlewares.length === 0) return done();
 
-  const middlewares = machine[MIDDLEWARE_STORAGE];
   const loop = (index, process) => index < middlewares.length - 1 ? process(index + 1) : done();
 
   (function process(index) {

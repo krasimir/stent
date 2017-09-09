@@ -1,6 +1,5 @@
 import connect from '../connect';
 import { Machine } from '../../';
-import { MIDDLEWARE_STORAGE } from '../../constants';
 
 describe('Given the connect helper', function () {
   beforeEach(() => {
@@ -46,7 +45,7 @@ describe('Given the connect helper', function () {
       connect().with('A').map(mappingB);
       connect().with(machine).map(mappingB);
 
-      expect(machine[MIDDLEWARE_STORAGE].length).to.be.equal(1);
+      expect(Machine.middlewares.length).to.be.equal(1);
     });
     describe('and when we update the state of the mapped machine/s', function () {
       it('should fire the mapping function', function () {

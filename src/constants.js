@@ -16,4 +16,3 @@ export const ERROR_UNCOVERED_STATE = state => `You just transitioned the machine
 
 // other
 export const WAIT_LISTENERS_STORAGE = '___@wait';
-export const MIDDLEWARE_STORAGE = '___@middlewares';

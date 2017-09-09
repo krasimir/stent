@@ -29,7 +29,6 @@ var ERROR_UNCOVERED_STATE = exports.ERROR_UNCOVERED_STATE = function ERROR_UNCOV
 
 // other
 var WAIT_LISTENERS_STORAGE = exports.WAIT_LISTENERS_STORAGE = '___@wait';
-var MIDDLEWARE_STORAGE = exports.MIDDLEWARE_STORAGE = '___@middlewares';
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -93,18 +92,13 @@ function validateConfig(config) {
   return true;
 }
 
-function createMachine(name, config, middlewares) {
-  var _machine;
-
+function createMachine(name, config) {
   if ((typeof name === 'undefined' ? 'undefined' : _typeof(name)) === 'object') {
-    middlewares = config;
     config = name;
     name = getMachineID();
   }
 
-  var machine = (_machine = {
-    name: name
-  }, _machine[_constants.MIDDLEWARE_STORAGE] = middlewares, _machine);
+  var machine = { name: name };
 
   if (validateConfig(config)) {
     var _config = config,
@@ -142,6 +136,8 @@ var _constants = require('./constants');
 var _validateState = require('./helpers/validateState');
 
 var _validateState2 = _interopRequireDefault(_validateState);
+
+var _ = require('./');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -270,9 +266,10 @@ function handleMiddleware(done, hook, machine) {
     args[_key2 - 3] = arguments[_key2];
   }
 
-  if (!machine[_constants.MIDDLEWARE_STORAGE]) return done();
+  var middlewares = _.Machine.middlewares;
 
-  var middlewares = machine[_constants.MIDDLEWARE_STORAGE];
+  if (middlewares.length === 0) return done();
+
   var loop = function loop(index, process) {
     return index < middlewares.length - 1 ? process(index + 1) : done();
   };
@@ -337,7 +334,7 @@ function handleAction(machine, action) {
   return true;
 };
 module.exports = exports['default'];
-},{"./constants":1,"./helpers/validateState":6}],4:[function(require,module,exports){
+},{"./":7,"./constants":1,"./helpers/validateState":6}],4:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -483,7 +480,11 @@ var MachineFactory = function () {
   };
 
   MachineFactory.prototype.addMiddleware = function addMiddleware(middleware) {
-    this.middlewares.push(middleware);
+    if (Array.isArray(middleware)) {
+      this.middlewares = this.middlewares.concat(middleware);
+    } else {
+      this.middlewares.push(middleware);
+    }
   };
 
   return MachineFactory;

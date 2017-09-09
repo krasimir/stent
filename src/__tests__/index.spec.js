@@ -1,5 +1,5 @@
 import { Machine } from '../';
-import { ERROR_MISSING_MACHINE, MIDDLEWARE_STORAGE } from '../constants';
+import { ERROR_MISSING_MACHINE } from '../constants';
 
 const create = (name = 'app') => Machine.create(name, {
   state: { idle: { run: 'running' } },
@@ -25,24 +25,6 @@ describe('Given the Stent library', function () {
       create('bar');
 
       expect(Machine.get.bind(Machine, 'baz')).to.throw(ERROR_MISSING_MACHINE('baz'));
-    });
-  });
-  describe('when adding middlewares', function () {
-    it('should send the middlewares to every new machine', function () {
-      const middlewareA = {};
-      const middlewareB = {};
-
-      Machine.addMiddleware(middlewareA);
-      Machine.addMiddleware(middlewareB);
-
-      const machine = Machine.create('app', {
-        state: { idle: { run: 'running' } },
-        transitions: {}
-      });
-
-      expect(machine[MIDDLEWARE_STORAGE]).to.deep.equal([
-        middlewareA, middlewareB
-      ]);
     });
   });
   describe('when creating a machine without a name', function () {

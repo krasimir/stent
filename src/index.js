@@ -25,7 +25,11 @@ class MachineFactory {
     flushConnectSetup();
   }
   addMiddleware(middleware) {
-    this.middlewares.push(middleware);
+    if (Array.isArray(middleware)) {
+      this.middlewares = this.middlewares.concat(middleware);
+    } else {
+      this.middlewares.push(middleware);
+    }
   }
 }
 

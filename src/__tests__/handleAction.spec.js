@@ -2,12 +2,15 @@ import handleAction from '../handleAction';
 import {
   ERROR_MISSING_ACTION_IN_STATE,
   ERROR_UNCOVERED_STATE,
-  WAIT_LISTENERS_STORAGE,
-  MIDDLEWARE_STORAGE
+  WAIT_LISTENERS_STORAGE
 } from '../constants';
 import { call, wait } from '../helpers';
+import { Machine } from '../';
 
 describe('Given the handleAction function', function () {
+  beforeEach(() => {
+    Machine.flush();
+  });
 
   describe('when dispatching an action which is missing in the current state', function () {
     it('should throw an error', function () {
@@ -37,7 +40,7 @@ describe('Given the handleAction function', function () {
     });
   });
 
-  describe('when we transition to a state which has no actions inside or it is not defined', function () {
+  describe('when we transition to a state which has no actions or it is undefined', function () {
     it('should throw an error if there is no such a state defined', function () {
       const machine = {
         state: { name: 'idle' },
@@ -342,98 +345,112 @@ describe('Given the handleAction function', function () {
 
   describe('when we have middlewares registered', function () {
     it('should fire the middleware/s if an action is dispatched', function (done) {
+      Machine.addMiddleware([
+        {
+          onActionDispatched(next, actionName, ...args) {
+            expect(actionName).to.equal('run');
+            expect(args).to.deep.equal([ { answer: 42 } ]);
+            next();
+            expect(machine.state).to.deep.equal({ name: 'running' });
+          }
+        },
+        {
+          onActionDispatched(next, actionName, ...args) {
+            expect(actionName).to.equal('run');
+            expect(args).to.deep.equal([ { answer: 42 } ]);
+            next();
+            expect(machine.state).to.deep.equal({ name: 'running' });
+            done();
+          }
+        }
+      ]);
       const machine = {
         state: { name: 'idle' },
         transitions: {
           idle: { run: 'running' },
           running: { stop: 'idle' }
-        },
-        [MIDDLEWARE_STORAGE]: [
-          {
-            onActionDispatched(next, actionName, ...args) {
-              expect(actionName).to.equal('run');
-              expect(args).to.deep.equal([ { answer: 42 } ]);
-              next();
-              expect(machine.state).to.deep.equal({ name: 'running' });
-            }
-          },
-          {
-            onActionDispatched(next, actionName, ...args) {
-              expect(actionName).to.equal('run');
-              expect(args).to.deep.equal([ { answer: 42 } ]);
-              next();
-              expect(machine.state).to.deep.equal({ name: 'running' });
-              done();
-            }
-          }
-        ]
+        }
       };
 
       handleAction(machine, 'run', { answer: 42 });
     });
+    it('should pass the machine as context', function () {
+      const spy = sinon.spy();
+      const machineA = {
+        state: { name: 'idle' },
+        transitions: {
+          idle: { run: 'running' },
+          running: { stop: 'idle' }
+        }
+      };
+      const machineB = {
+        state: { name: 'nothing' },
+        transitions: {
+          nothing: { run: 'foobar' },
+          foobar: { stop: 'nothing' }
+        }
+      };
+      Machine.addMiddleware({
+        onActionDispatched(next, actionName, ...args) {
+          next();
+          spy(this.state.name);
+        }
+      });
+
+      handleAction(machineA, 'run');
+      handleAction(machineB, 'run');
+
+      expect(spy).to.be.calledTwice;
+      expect(spy.firstCall).to.be.calledWith('running');
+      expect(spy.secondCall).to.be.calledWith('foobar');
+    });
     it('should skip to the next middleware if there is no appropriate hook defined', function (done) {
+      Machine.addMiddleware([
+        {
+          onStateChange(next) { next(); }
+        },
+        {
+          onActionDispatched(next, actionName, ...args) {
+            next();
+            expect(this.state).to.deep.equal({ name: 'running' });
+            done();
+          }
+        }
+      ]);
       const machine = {
         state: { name: 'idle' },
         transitions: {
           idle: { run: 'running' },
           running: { stop: 'idle' }
-        },
-        [MIDDLEWARE_STORAGE]: [
-          {
-            onStateChange(next) { next(); }
-          },
-          {
-            onActionDispatched(next, actionName, ...args) {
-              next();
-              expect(this.state).to.deep.equal({ name: 'running' });
-              done();
-            }
-          }
-        ]
+        }
       };
 
       handleAction(machine, 'run', { answer: 42 });
     });
     it('should fire the middleware/s when the state is changed', function (done) {
-      const machine = {
-        state: { name: 'idle' },
-        transitions: {
-          idle: { run: 'running' },
-          running: { stop: 'idle' }
-        },
-        [MIDDLEWARE_STORAGE]: [
-          {
-            onStateChange(next) {
-              expect(this.state).to.deep.equal({ name: 'idle' });
-              next();
-              expect(this.state).to.deep.equal({ name: 'running' });
-            }
-          },
-          {
-            onStateChange(next) {
-              done();
-            }
+      Machine.addMiddleware([
+        {
+          onStateChange(next) {
+            expect(this.state).to.deep.equal({ name: 'idle' });
+            next();
+            expect(this.state).to.deep.equal({ name: 'running' });
           }
-        ]
-      };
-
-      handleAction(machine, 'run', { answer: 42 });
-    });
-  });
-
-  describe('when we have have an empty array as middlewares', function () {
-    it('should NOT try to run a middleware', function () {
+        },
+        {
+          onStateChange(next) {
+            done();
+          }
+        }
+      ]);
       const machine = {
         state: { name: 'idle' },
         transitions: {
           idle: { run: 'running' },
           running: { stop: 'idle' }
-        },
-        [MIDDLEWARE_STORAGE]: []
+        }
       };
 
       handleAction(machine, 'run', { answer: 42 });
-      expect(machine.state.name).to.equal('running');
     });
   });
 

@@ -20,7 +20,7 @@ class Todo extends React.Component {
       }
     });
 
-    c().with(this.machine.name).map(() => {
+    c().with(this.machine).mapSilent(() => {
       console.log('updated to ' + this.machine.state.name);
     });
   }
