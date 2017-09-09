@@ -6,7 +6,7 @@ function * saveTodos (todos) {
     yield call(storage.save, todos);
     return { name: 'idle', todos };
   } catch(error) {
-
+    
   } 
 }
 
@@ -28,6 +28,10 @@ export default {
       },
       'delete todo': function * ({ todos }, index) {
         todos.splice(index, 1);
+        return yield call(saveTodos, [ ...todos ]);
+      },
+      'edit todo': function * ({ todos }, index, label) {
+        todos[index].label = label;
         return yield call(saveTodos, [ ...todos ]);
       },
       'change status': function * ({ todos }, index, done) {

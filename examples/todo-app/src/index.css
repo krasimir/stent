@@ -57,22 +57,33 @@ section {
   border-bottom: solid 2px #999;
   background: #E8A8A8;
   transition: background-color ease 600ms;
+  position: relative;
+}
+.todos ul li .statusIcon {
+  position: absolute;
+  left: 1em;
+  top: 14px;
+}
+.todos ul li .deleteIcon {
+  position: absolute;
+  right: 1em;
+  top: 14px;
 }
 .todos ul li.done {
   background: #7FC7A1;
 }
 .todos ul li span {
-  display: inline-block;
-  width: 50%;
+  display: block;
   cursor: pointer;
+  padding: 0 4em 0 4em;
+  text-align: center;
+}
+.todos ul li span input {
+  width: 80%;
+  padding: 0.5em;
 }
 .todos ul li a, .todos ul li label {
-  display: inline-block;
   cursor: pointer;
-  padding: 0.4em;
-  border-radius: 0.4em;
-  background: #FFF;
-  margin-right: 1em;
 }
 .todos ul li label input {
   display: inline-block;
