@@ -16,9 +16,9 @@ class Todo extends React.Component {
     this._onEditFieldKeyUp = this._onEditFieldKeyUp.bind(this);
     this._onEditFieldBlur = this._onEditFieldBlur.bind(this);
 
-    this._machine = Machine.create({
-      state: { name: 'idle' },
-      transitions: {
+    this._machine = Machine.create(
+      { name: 'idle' },
+      {
         idle: { edit: 'editing' },
         editing: {
           save: (state, newLabel) => {
@@ -28,7 +28,7 @@ class Todo extends React.Component {
           cancel: 'idle'
         }
       }
-    });
+    );
 
     connectWithMachineOnly().with(this._machine).mapSilent();
   }
