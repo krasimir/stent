@@ -22,7 +22,7 @@ Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept o
 
 ## A few words about state machines
 
-State machine is a mathematical model of computation. It's an abstract concept where the machine may have different states but at a given time fulfills only one of them. It accepts input and based on that (plus its current state) transitions to another state. Isn't it sounds familiar? Yes, it sounds like a front-end application. That's why this model/concept applies nicely to UI development.
+State machine is a mathematical model of computation. It's an abstract concept where the machine may have different states but at a given time fulfills only one of them. It accepts input and based on that (plus its current state) transitions to another state. Isn't it familiar? Yes, it sounds like a front-end application. That's why this model/concept applies nicely to UI development.
 
 *Disclaimer: there are different types of state machines. I think the one that makes sense for front-end development is [Mealy state machine](https://en.wikipedia.org/wiki/Mealy_machine).*
 
@@ -50,16 +50,14 @@ const machine = Machine.create('name-of-the-machine', {
 });
 ```
 
-`{ name: 'idle'}` is the initial state of the machine and inside `transitions` we define another one `running`. `run` and `stop` are actions(inputs) that transition the machine to a new state. Notice that `stop` is not available when we are at `idle` state and `run` when we are at `running` state.
+`{ name: 'idle'}` is the initial state. `transitions` is the place where we define all the possible states of the machine (`idle` and `running`) with the their inputs (actions `run` and `stop`) that they accept. Notice that `stop` is not available when we are at `idle` state and `run` when we are at `running` state. That is an essential characteristic of the state machines - our app is doing only what we tell it to do. There is no sense to call `run` if we are already `running`. Stent is eliminating side effects that lead to bugs from the very beginning. The library enforces declarative approach of programming which means that by defining the possible states and actions we clearly say what's possible in our application. The user and data flows become a lot more predictable simply because we restrict ourselves of dispatching actions at the wrong time/state.
 
-Stent library is enforcing declarative approach of programming. Which means that by defining the possible states and actions for them we clearly define what's happening in our application. The user and data flows become a lot more predictable simply because we restrict ourselves of dispatching actions are the wrong time/state. For example, does not make sense that we say `stop` when we are not  `running`.
-
-After the definition of the machine it knows what to expect and automatically creates a couple of things for us so we can trigger the logic. Based on the `transitions` property Stent generates:
+And because after the definition the machine knows what to expect it automatically creates a couple of things for us so. Based on the `transitions` property Stent generates:
 
 * Helper methods for checking if the machine is in a particular state. `idle` state produces `isIdle()` method, for `running` we have `isRunning()`.
 * Helper methods for dispatching actions - `run()` and `stop()`.
 
-*We may use spaces or dashes in the state or action names but the rule of thumb is that Stent transforms the string to a camel case. For example if we have `fetching data` state the machine will have `isFetchingData()` method, `get fresh todos` action will result in `getFetchTodos()` method.*
+*We may use spaces and/or dashes in the state or action names but the rule is that Stent transforms the string to a camel case. For example if we have `fetching data` state the machine will have `isFetchingData()` method, `get fresh todos` action will result in `getFetchTodos()` method.*
 
 So, here's an example of how to use the machine above:
 
@@ -73,7 +71,7 @@ if (machine.isRunning()) {
 console.log(machine.isIdle()); // true
 ```
 
-The created machine accepts more then a string as a handler of the action. We may pass a function which accepts two arguments. The first one is the current state and the second one is some meta data traveling with the action (if any). For example:
+The created machine may accept more then a string as a handler of the action. We may pass a function which accepts two arguments. The first one is the current state and the second one is some meta data traveling with the action (if any). For example:
 
 ```js
 const machine = Machine.create('todo-app', {
