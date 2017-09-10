@@ -374,7 +374,7 @@ Machine.create('app', {
 
 #### `yield wait(<action name/s>)`
 
-It's blocking the generator and waits for action/s. The function accepts a single argument string or array of strings.
+It's blocking the generator and waits for action/s. The function accepts one or many arguments as strings, or array of strings.
 
 ```js
 import { wait } from 'stent/lib/helpers';
@@ -383,6 +383,7 @@ Machine.create('app', {
   'idle': {
     'fetch data': function * () {
       const initActionPayload = yield wait('init');
+      const [ data, isError ] = yield wait('get the data', 'check for errors');
       const [ userProfilePayload, dataPayload ] = yield wait([
         'user profile fetched',
         'data processed'

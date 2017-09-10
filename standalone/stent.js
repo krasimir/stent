@@ -26,6 +26,7 @@ var ERROR_WRONG_STATE_FORMAT = exports.ERROR_WRONG_STATE_FORMAT = function ERROR
 var ERROR_UNCOVERED_STATE = exports.ERROR_UNCOVERED_STATE = function ERROR_UNCOVERED_STATE(state) {
   return 'You just transitioned the machine to a state (' + state + ') which is not defined or it has no actions. This means that the machine is stuck.';
 };
+var ERROR_NOT_SUPPORTED_HANDLER_TYPE = exports.ERROR_NOT_SUPPORTED_HANDLER_TYPE = 'Wrong handler type passed. Please read the docs https://github.com/krasimir/stent';
 
 // other
 var WAIT_LISTENERS_STORAGE = exports.WAIT_LISTENERS_STORAGE = '___@wait';
@@ -204,6 +205,10 @@ function waitFor(machine, actions, done) {
   machine[_constants.WAIT_LISTENERS_STORAGE].push({ actions: actions, done: done, result: [].concat(actions) });
 }
 
+// The wait of how `wait` is implemented is that we store listeners
+// in machine[WAIT_LISTENERS_STORAGE]. Every time when we dispatch an action
+// we are trying to flush these listeners. Once there are no more in the current
+// item we are calling `next` function of the generator.
 function flushListeners(machine, action) {
   for (var _len = arguments.length, payload = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     payload[_key - 2] = arguments[_key];
@@ -225,6 +230,9 @@ function flushListeners(machine, action) {
 
     if (actionIndex === -1) return true;
 
+    // Result here is an array that acts as a marker
+    // to find out at which index we have to return the payload
+    // of the action. That's when we have an array of actions to wait.
     result[result.indexOf(action)] = payload;
     actions.splice(actionIndex, 1);
     if (actions.length === 0) {
@@ -328,6 +336,10 @@ function handleAction(machine, action) {
       } else {
         updateState(machine, response);
       }
+
+      // wrong type of handler
+    } else {
+      throw new Error(_constants.ERROR_NOT_SUPPORTED_HANDLER_TYPE);
     }
   }, MIDDLEWARE_PROCESS_ACTION, machine, action].concat(payload));
 

@@ -1,6 +1,7 @@
 import {
   ERROR_MISSING_ACTION_IN_STATE,
   ERROR_UNCOVERED_STATE,
+  ERROR_NOT_SUPPORTED_HANDLER_TYPE,
   WAIT_LISTENERS_STORAGE,
   TRANSITIONS_STORAGE
 } from './constants';
@@ -65,6 +66,10 @@ function waitFor(machine, actions, done) {
   machine[WAIT_LISTENERS_STORAGE].push({ actions, done, result: [...actions] });
 }
 
+// The wait of how `wait` is implemented is that we store listeners
+// in machine[WAIT_LISTENERS_STORAGE]. Every time when we dispatch an action
+// we are trying to flush these listeners. Once there are no more in the current
+// item we are calling `next` function of the generator.
 function flushListeners(machine, action, ...payload) {
   if (!machine[WAIT_LISTENERS_STORAGE] || machine[WAIT_LISTENERS_STORAGE].length === 0) return;
 
@@ -79,6 +84,9 @@ function flushListeners(machine, action, ...payload) {
 
       if (actionIndex === -1) return true;
 
+      // Result here is an array that acts as a marker
+      // to find out at which index we have to return the payload
+      // of the action. That's when we have an array of actions to wait.
       result[result.indexOf(action)] = payload;
       actions.splice(actionIndex, 1);
       if (actions.length === 0) {
@@ -171,7 +179,12 @@ export default function handleAction(machine, action, ...payload) {
       } else {
         updateState(machine, response);
       }
+
+    // wrong type of handler
+    } else {
+      throw new Error(ERROR_NOT_SUPPORTED_HANDLER_TYPE);
     }
+
   }, MIDDLEWARE_PROCESS_ACTION, machine, action, ...payload);
 
   return true;
