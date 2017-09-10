@@ -1,3 +1,7 @@
+## 0.7.1
+
+Fancy logo.
+
 ## 0.7.0
 
 NOT throwing an error if the dispatched action is missing in the current state.

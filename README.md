@@ -1,6 +1,6 @@
 ![Stent - brings the power of state machines to the web](./_logo/logo.jpg)
 
-Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept of state machines.
+Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept of [state machines](https://en.wikipedia.org/wiki/Automata_theory).
 
 ![Travis](https://travis-ci.org/krasimir/stent.svg?branch=master)
 [![npm downloads](https://img.shields.io/npm/dm/stent.svg?style=flat-square)](https://www.npmjs.com/package/stent)
