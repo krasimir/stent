@@ -11,7 +11,7 @@ const setup = () => {
     onStateChange(next) {
       next();
       for (var id in mappings) {
-        mappings[id].done(...mappings[id].machines);
+        mappings[id].done && mappings[id].done(...mappings[id].machines);
       }
     }
   });
@@ -29,9 +29,9 @@ export default function connect() {
       const id = getId();
 
       !once && (mappings[id] = { done, machines });
-      !silent && done(...machines);
+      !silent && done && done(...machines);
 
-      return () => {
+      return function disconnect() {
         if (mappings && mappings[id]) delete mappings[id];
       }
     }

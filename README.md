@@ -272,7 +272,7 @@ Machine.create('app', {
 
 ### `connect` and `disconnect`
 
-`connect` is the short way to do `Machine.get` and retrieving one or more created machines. It also provides a mechanism for subscribing for state changes.
+`connect` is the short way to do `Machine.get` and retrieving one or more created machines. It also provides a mechanism for subscribing for machine's state changes.
 
 ```js
 import { connect } from 'stent/lib/helpers';
@@ -347,6 +347,14 @@ export default connect(TodoList)
 ```
 
 The result of the `map` function goes as props to our component. Similarly to [Redux's connect](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function. And of course the mapping function is `disconnect`ed when the component is unmounted.
+
+In some cases we want just the connecting without mapping. We are free to skip the mapping function:
+
+```js
+const ConnectedComponent = connect(TodoList).with('MachineA', 'MachineB').map();
+```
+
+*`mapOnce` and `mapSilent` are also available for this React's helper.*
 
 ### Helpers used inside generators
 

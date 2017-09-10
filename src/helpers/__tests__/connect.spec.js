@@ -117,6 +117,23 @@ describe('Given the connect helper', function () {
         expect(mapping.secondCall).to.be.calledWith(sinon.match('jumping'));
       });
     });
+    describe('and we pass no mapping function', function () {
+      it('should still do the connecting', function () {
+        const machine = Machine.create('A', {
+          state: { name: 'idle' },
+          transitions: {
+            idle: { run: 'running' },
+            running: { stop: 'idle' }
+          }
+        });
+
+        connect().with('A').map();
+
+        machine.run();
+
+        expect(machine.state).to.deep.equal({ name: 'running' });
+      });
+    });
   });
   describe('when we use the `disconnect` function', function () {
     it('should detach the mapping', function () {

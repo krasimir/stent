@@ -3,12 +3,23 @@ import connect from '../helpers/connect';
 
 export default function(Component) {
   const withFunc = (...names) => {
-    const mapFunc = (done, once) => {
+    const mapFunc = (done, once, silent) => {
       return class StentConnect extends React.Component {
         componentWillMount() {
+          var mapping = 'map';
+
+          if (once) mapping = 'mapOnce';
+          if (silent) mapping = 'mapSilent';
+
           this._disconnect = connect()
-            .with(...names)[once ? 'mapOnce' : 'map']
-            ((...deps) => this.setState(done(...deps)));
+            .with(...names)[mapping]
+            ((...deps) => {
+              if (!done) {
+                this.forceUpdate();
+              } else {
+                this.setState(done(...deps));
+              }
+            })
         }
         componentWillUnmount() {
           this._disconnect();
@@ -21,7 +32,8 @@ export default function(Component) {
 
     return {
       'map': mapFunc,
-      'mapOnce': done => mapFunc(done, true)
+      'mapOnce': done => mapFunc(done, true),
+      'mapSilent': done => mapFunc(done, false, true),
     }
   }
 

@@ -370,7 +370,7 @@ var setup = function setup() {
       for (var id in mappings) {
         var _mappings$id;
 
-        (_mappings$id = mappings[id]).done.apply(_mappings$id, mappings[id].machines);
+        mappings[id].done && (_mappings$id = mappings[id]).done.apply(_mappings$id, mappings[id].machines);
       }
     }
   });
@@ -394,9 +394,9 @@ function connect() {
       var id = getId();
 
       !once && (mappings[id] = { done: done, machines: machines });
-      !silent && done.apply(undefined, machines);
+      !silent && done && done.apply(undefined, machines);
 
-      return function () {
+      return function disconnect() {
         if (mappings && mappings[id]) delete mappings[id];
       };
     };
