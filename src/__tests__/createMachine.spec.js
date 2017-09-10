@@ -82,6 +82,27 @@ describe('Given the createMachine factory', function () {
     });
   });
 
+  describe('when we create a machine using the shorter syntax', function () {
+    it('it should create a working machine', function () {
+      const machine = createMachine(
+        { name: 'idle' },
+        {
+          'idle': {
+            'run': 'running'
+          },
+          'running': {
+            'stop': 'idle'
+          }
+        }
+      );
+
+      machine.run();
+      expect(machine.state.name).to.equal('running');
+      machine.stop();
+      expect(machine.state.name).to.equal('idle');
+    });
+  });
+
   describe('when we dispatch an action', function () {
     it('it handle the action', function () {
       const machine = createMachine({

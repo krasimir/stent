@@ -38,8 +38,16 @@ export function validateConfig(config) {
 
 export default function createMachine(name, config) {
   if (typeof name === 'object') {
-    config = name;
-    name = getMachineID();
+    if (typeof config === 'undefined') {
+      config = name;
+      name = getMachineID();
+    } else {
+      config = {
+        state: name,
+        transitions: config
+      }
+      name = getMachineID();
+    }
   }
 
   const machine = { name };

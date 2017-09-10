@@ -3,10 +3,10 @@ import storage from '../storage';
 
 function * saveTodos (todos) {
   try {
-    yield call(storage.save, todos);
-    return { name: 'idle', todos };
+    yield call(storage.save, [ ...todos ]);
+    return { name: 'idle', todos: [ ...todos ] };
   } catch(error) {
-    
+    throw new Error(error);
   } 
 }
 
@@ -28,15 +28,15 @@ export default {
       },
       'delete todo': function * ({ todos }, index) {
         todos.splice(index, 1);
-        return yield call(saveTodos, [ ...todos ]);
+        return yield call(saveTodos, todos);
       },
       'edit todo': function * ({ todos }, index, label) {
         todos[index].label = label;
-        return yield call(saveTodos, [ ...todos ]);
+        return yield call(saveTodos, todos);
       },
       'change status': function * ({ todos }, index, done) {
         todos[index].done = done;
-        return yield call(saveTodos, [ ...todos ]);
+        return yield call(saveTodos, todos);
       }
     },
     fetching: {

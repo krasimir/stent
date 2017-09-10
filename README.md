@@ -179,7 +179,28 @@ const appMachine = Machine.create(
 const appMachine = Machine.get('app');
 ```
 
-*If you don't plan to reference the machine by name with `Machine.get` or with the `connect` helper then you may skip the first argument. In the example above if we skip `'app'` Stent will still create the machine.*
+If you don't plan to reference the machine by name with `Machine.get` or with the `connect` helper then you may skip the first argument. In the example above if we skip `'app'` Stent will still create the machine but with a dynamically generated name. You may even reduce the noise and pass the state as a first argument and the transitions as second:
+
+```js
+const appMachine = Machine.create(
+  // initial state
+  <state object>,
+  // transitions
+  {
+    <state name>: {
+      <action name>: <action handler>,
+      <action name>: <action handler>,
+      ...
+    },
+    <state name>: {
+      <action name>: <action handler>,
+      <action name>: <action handler>,
+      ...
+    },
+    ...
+  }
+);
+```
 
 The created machine has dynamically created methods associated with the provided configuration:
 

@@ -1,3 +1,7 @@
+## 0.6.0
+
+Short syntax for creating a machine.
+
 ## 0.5.0
 
 Support of no mapping function in the `connect` helper + support of `mapSilent` for the React's version of connect.

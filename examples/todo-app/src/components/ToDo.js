@@ -15,6 +15,7 @@ class Todo extends React.Component {
     this._editInputField = null;
     this._onEditFieldKeyUp = this._onEditFieldKeyUp.bind(this);
     this._onEditFieldBlur = this._onEditFieldBlur.bind(this);
+
     this._machine = Machine.create({
       state: { name: 'idle' },
       transitions: {
@@ -29,7 +30,7 @@ class Todo extends React.Component {
       }
     });
 
-    connectWithMachineOnly().with(this._machine).mapSilent(() => {});
+    connectWithMachineOnly().with(this._machine).mapSilent();
   }
   _onEditFieldKeyUp(event) {
     if (event.keyCode === ENTER) {
