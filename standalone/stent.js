@@ -100,23 +100,23 @@ function createMachine(name, config) {
 
   var machine = { name: name };
 
-  if (validateConfig(config)) {
-    var _config = config,
-        initialState = _config.state,
-        transitions = _config.transitions;
+  validateConfig(config);
+
+  var _config = config,
+      initialState = _config.state,
+      transitions = _config.transitions;
 
 
-    machine.state = initialState;
-    machine.transitions = transitions;
+  machine.state = initialState;
+  machine.transitions = transitions;
 
-    registerMethods(machine, transitions, function (action) {
-      for (var _len2 = arguments.length, payload = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-        payload[_key2 - 1] = arguments[_key2];
-      }
+  registerMethods(machine, transitions, function (action) {
+    for (var _len2 = arguments.length, payload = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+      payload[_key2 - 1] = arguments[_key2];
+    }
 
-      return _handleAction2.default.apply(undefined, [machine, action].concat(payload));
-    });
-  }
+    return _handleAction2.default.apply(undefined, [machine, action].concat(payload));
+  });
 
   return machine;
 }
@@ -238,7 +238,7 @@ function flushListeners(machine, action) {
   });
 
   // Clean up. There is no need to keep that temporary array
-  // if all the listeners are flushed.
+  // if all the listeners are flushed out.
   if (machine[_constants.WAIT_LISTENERS_STORAGE].length === 0) delete machine[_constants.WAIT_LISTENERS_STORAGE];
 }
 
