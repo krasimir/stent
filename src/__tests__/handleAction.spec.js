@@ -29,7 +29,7 @@ describe('Given the handleAction function', function () {
   });
 
   describe('when dispatching an action which is missing in the current state', function () {
-    it('should throw an error', function () {
+    it('should silently do nothing and NOT throw an error (handleAction returns false)', function () {
       const machine = {
         state: { name: 'idle' },
         transitions: {
@@ -38,8 +38,7 @@ describe('Given the handleAction function', function () {
         }
       };
 
-      expect(handleAction.bind(null, machine, 'stop', 'a', 'b'))
-        .to.throw(ERROR_MISSING_ACTION_IN_STATE('stop', 'idle', 'a,b'));
+      expect(handleAction(machine, 'stop', 'a', 'b')).to.equal(false);;
     });
   });
 
