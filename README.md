@@ -398,7 +398,7 @@ class TodoList extends React.Component {
   }
 }
 
-// `todos` and `authorization` are machines defined
+// `MachineA` and `MachineB` are machines defined
 // using `Machine.create` function
 export default connect(TodoList)
   .with('MachineA', 'MachineB')
@@ -410,7 +410,7 @@ export default connect(TodoList)
 
 The result of the mapping function goes as props to our component. Similarly to [Redux's connect `mapStateToProps`](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function. And of course the mapping function is `disconnect`ed when the component is unmounted.
 
-In some cases we want just the connecting without mapping. We are free to skip the mapping function:
+Sometimes we want just the state changes subscription. In such cases we may skip the mapping function:
 
 ```js
 const ConnectedComponent = connect(TodoList).with('MachineA', 'MachineB').map();
