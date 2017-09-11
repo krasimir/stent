@@ -420,7 +420,7 @@ const ConnectedComponent = connect(TodoList).with('MachineA', 'MachineB').map();
 
 ### Middlewares
 
-If you want to extend the library with some additional functionalities you may add a middleware. It's an object with a set of functions that hook to the lifecycle methods of Stent.
+If you want to extend the library with some additional functionalities you may add a middleware. In fact Stent uses middleware internally for implementing the `connect` helper. We have to call `addMiddleware with a single parameter which is an object with a set of functions that hook to the lifecycle methods of Stent.
 
 ```js
 import { Machine } from 'stent';
@@ -439,7 +439,7 @@ Machine.addMiddleware({
 });
 ```
 
-The hooks above are getting called just before running the internal Stent's logic. At this moment nothing in the machine is changing/executing. Calling `next` will pass the control flow to Stent. Also have in mind that these methods are fired with the machine as a context. Which means that you have an access to the current state and methods.
+The hooks above are getting called just before running the internal Stent's logic. At this moment nothing in the machine is changing/executing. Calling `next` will pass the control flow to Stent. Also have in mind that these methods are fired with the machine as a context. Which means that we have an access to the current state and methods.
 
 *If you have more then one middleware to add pass an array of objects instead of multiple calls of `addMiddleware`.*
 
