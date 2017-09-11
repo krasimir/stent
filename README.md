@@ -14,7 +14,6 @@ Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept o
   * [`Machine.create` and `Machine.get`](#machinecreate-and-machineget)
   * [`<action-handler>`](#action-handler)
   * [`connect` and `disconnect`](#connect-and-disconnect)
-  * [Helpers used inside generators](#helpers-used-inside-generators)
   * [Middlewares](#middlewares)
 * [Examples](#examples)
 * [Misc](#misc)
@@ -97,7 +96,7 @@ The handler function accepts the previous state and should return a new state in
 
 The actual todo item is passed to the `addTodo` method and it comes as a second argument of the handler.
 
-Stent also accepts a generator function as a handler. That's inspired by the [redux-saga](https://redux-saga.js.org/) project. The generators have couple of interesting characteristics and this library uses two of them - the ability to generate multiple results (from a single function) and the ability to *pause* the execution. What if we need to fetch data from the server and want to handle that process with multiple states - `idle`, `fetching`, `done` or `error`. Here's how to do it with a generator as a handler:
+Stent also accepts a generator function as a handler. That's inspired by the [redux-saga](https://redux-saga.js.org/) project. The generators have couple of interesting characteristics and this library uses two of them - the ability to generate multiple results (from a single function) and the ability to *pause* the execution. What if we need to fetch data from the server and want to handle that process with multiple states - `idle`, `fetching`, `done` and `error`. Here's how to do it with a generator as a handler:
 
 ```js
 const machine = Machine.create('todo-app', {
@@ -123,7 +122,7 @@ const machine = Machine.create('todo-app', {
 Assuming that `getTodos` is a function that accepts an endpoint as a string and returns a promise. Inside the generator we are allowed to `yield` two type of things:
 
 * A state object (which transitions the machine to that new state)
-* A call of Stent's helper functions like `call`. (more about those [helpers](](#helpers-used-inside-generators)) below)
+* A call to Stent's helper functions like `call`. (more about those [helpers](](#action-handler)) below)
 
 Generator as an action handler is suitable for the cases where we do more then one thing and/or have async operations.
 
@@ -144,7 +143,7 @@ The state object is just a normal object literal. The only one required property
 }
 ```
 
-If you try transitioning to a state which is not defined into the `transitions` section or it has no actions in it State will throw an exception. It's because once you get into that new state you are basically stuck.
+If you try transitioning to a state which is not defined into the `transitions` section or it has no actions in it Stent will throw an exception. It's because once you get into that new state you are basically stuck.
 
 ### `Machine.<create|get|flush>`
 
@@ -203,7 +202,7 @@ const appMachine = Machine.create(
 The created machine has dynamically created methods associated with the provided configuration:
 
 * For every state there is a `is<state name>` method so we can check if the machine is in that state. For example, to check if the machine is in a `fetching remote data` state we may call `machine.isFetchingRemoteData()` method. The alternative is `machine.state.name === 'fetching remote data'`.
-* For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todos` is available as `machine.addNewTodo(<todo data here>)`.
+* For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todo` is available as `machine.addNewTodo(<todo data here>)`.
 
 `Machine.flush()` can be used to delete the currently created machines and [middlewares](#middlewares).
 
@@ -287,7 +286,51 @@ Machine.create('app', {
 });
 ```
 
-*More for generators and what could be yielded in the [Helpers used inside generators](#helpers-used-inside-generators) section below.*
+What we can `yield` is state object (or a string that represents a state) or a call to some of the predefined Stent helpers `call` and `wait`.
+
+#### `yield call(<function>, ...args)`
+
+`call` is blocking the generator function and calls `<function>` with the given `...args`. `<function>` could be:
+
+* A synchronous function that returns result
+* A function that returns a promise
+* Another generator function
+
+```js
+import { call } from 'stent/lib/helpers';
+
+Machine.create('app', {
+  'idle': {
+    'fetch data': function * () {
+      const data = yield call(requestToBackend, '/api/todos/', 'POST');
+    }
+  }
+});
+```
+
+*`requestToBackend` is getting called with `/api/todos/` and `POST` as arguments.*
+
+#### `yield wait(<action name/s>)`
+
+It's blocking the generator and waits for action/s. The function accepts one or many arguments as strings, or array of strings.
+
+```js
+import { wait } from 'stent/lib/helpers';
+
+Machine.create('app', {
+  'idle': {
+    'fetch data': function * () {
+      const initActionPayload = yield wait('init');
+      const [ data, isError ] = yield wait('get the data', 'check for errors');
+      const [ userProfilePayload, dataPayload ] = yield wait([
+        'user profile fetched',
+        'data processed'
+      ]);
+      ...
+    }
+  }
+});
+```
 
 ### `connect` and `disconnect`
 
@@ -374,52 +417,6 @@ const ConnectedComponent = connect(TodoList).with('MachineA', 'MachineB').map();
 ```
 
 *`mapOnce` and `mapSilent` are also available for this React's helper.*
-
-### Helpers used inside generators
-
-#### `yield call(<function>, ...args)`
-
-It's blocking the generator function and calls `<function>` with the given `...args`. `<function>` could be:
-
-* A synchronous function that returns result
-* A function that returns a promise
-* Another generator function
-
-```js
-import { call } from 'stent/lib/helpers';
-
-Machine.create('app', {
-  'idle': {
-    'fetch data': function * () {
-      const data = yield call(requestToBackend, '/api/todos/', 'POST');
-    }
-  }
-});
-```
-
-*`requestToBackend` is getting called with `/api/todos/` and `POST` as arguments.*
-
-#### `yield wait(<action name/s>)`
-
-It's blocking the generator and waits for action/s. The function accepts one or many arguments as strings, or array of strings.
-
-```js
-import { wait } from 'stent/lib/helpers';
-
-Machine.create('app', {
-  'idle': {
-    'fetch data': function * () {
-      const initActionPayload = yield wait('init');
-      const [ data, isError ] = yield wait('get the data', 'check for errors');
-      const [ userProfilePayload, dataPayload ] = yield wait([
-        'user profile fetched',
-        'data processed'
-      ]);
-      ...
-    }
-  }
-});
-```
 
 ### Middlewares
 
