@@ -122,7 +122,7 @@ const machine = Machine.create('todo-app', {
 Assuming that `getTodos` is a function that accepts an endpoint as a string and returns a promise. Inside the generator we are allowed to `yield` two type of things:
 
 * A state object (which transitions the machine to that new state)
-* A call to Stent's helper functions like `call`. (more about those [helpers](](#action-handler)) below)
+* A call of Stent's helper functions like `call`. (more about those [helpers](#action-handler) below)
 
 Generator as an action handler is suitable for the cases where we do more then one thing and/or have async operations.
 
