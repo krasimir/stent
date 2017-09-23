@@ -134,6 +134,34 @@ describe('Given the connect helper', function () {
         expect(machine.state).to.deep.equal({ name: 'running' });
       });
     });
+    describe('and we have two mappers', function () {
+      it('should call them only if the machine that they are connected transitions', function () {
+        const machineA = Machine.create('A', {
+          state: { name: 'idle' },
+          transitions: {
+            idle: { run: 'running' },
+            running: { stop: 'idle' }
+          }
+        });
+        const machineB = Machine.create('B', {
+          state: { name: 'idle' },
+          transitions: {
+            idle: { run: 'running' },
+            running: { stop: 'idle' }
+          }
+        });
+        const spyA = sinon.spy();
+        const spyB = sinon.spy();
+
+        connect().with('A').mapSilent(spyA);
+        connect().with('B').mapSilent(spyB);
+
+        machineA.run();
+
+        expect(spyA).to.be.calledOnce;
+        expect(spyB).to.not.be.called;
+      });
+    });
   });
   describe('when we use the `disconnect` function', function () {
     it('should detach the mapping', function () {

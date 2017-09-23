@@ -5709,9 +5709,9 @@ sshpk@^1.7.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.3.1.tgz#faf51b9eb74aaef3b3acf4ad5f61abf24cb7b93e"
 
-stent@0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/stent/-/stent-0.6.0.tgz#4025428062d56d6b2e11a84bc5b1f454458195b7"
+stent@0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/stent/-/stent-0.7.2.tgz#9f8d519b63d45494a620d282da2203e9312f6abc"
 
 stream-browserify@^2.0.1:
   version "2.0.1"

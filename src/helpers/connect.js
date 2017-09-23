@@ -11,7 +11,11 @@ const setup = () => {
     onStateChange(next) {
       next();
       for (var id in mappings) {
-        mappings[id].done && mappings[id].done(...mappings[id].machines);
+        const { done, machines } = mappings[id];
+
+        if (machines.map(m => m.name).indexOf(this.name) >= 0) {
+          done && done(...machines);
+        }
       }
     }
   });

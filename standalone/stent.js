@@ -379,9 +379,16 @@ var setup = function setup() {
     onStateChange: function onStateChange(next) {
       next();
       for (var id in mappings) {
-        var _mappings$id;
+        var _mappings$id = mappings[id],
+            done = _mappings$id.done,
+            machines = _mappings$id.machines;
 
-        mappings[id].done && (_mappings$id = mappings[id]).done.apply(_mappings$id, mappings[id].machines);
+
+        if (machines.map(function (m) {
+          return m.name;
+        }).indexOf(this.name) >= 0) {
+          done && done.apply(undefined, machines);
+        }
       }
     }
   });

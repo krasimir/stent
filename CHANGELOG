@@ -1,3 +1,7 @@
+## 0.7.3
+
+Making sure that the mapping callback is fired only when the connected machine is updated.
+
 ## 0.7.2
 
 README changes.
