@@ -15,6 +15,7 @@ Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept o
   * [`<action-handler>`](#action-handler)
   * [`connect` and `disconnect`](#connect-and-disconnect)
   * [Middlewares](#middlewares)
+  * [React integration](#react-integration)
 * [Examples](#examples)
 * [Misc](#misc)
 ---
@@ -385,7 +386,34 @@ const disconnect = connect()
 disconnect();
 ```
 
-There's also a helper for integrating with React. It creates a [HoC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components) that gets re-rendered every time when the machine updates its state:
+### Middlewares
+
+If you want to extend the library with some additional functionalities you may add a middleware. In fact Stent uses middleware internally for implementing the `connect` helper. We have to call `addMiddleware with a single parameter which is an object with a set of functions that hook to the lifecycle methods of Stent.
+
+```js
+import { Machine } from 'stent';
+
+Machine.addMiddleware({
+  onActionDispatched(next, actionName, ...args) {
+    console.log(`Action dispatched: ${ actionName }`);
+    next();
+    console.log(`After ${ actionName } action our state is ${ this.state.name }`);
+  },
+  onStateChanged(next) {
+    console.log(`The new state will be: ${ this.state.name }`);
+    next();
+    console.log(`The state now is: ${ this.state.name }`);
+  }
+});
+```
+
+The hooks above are getting called just before running the internal Stent's logic. At this moment nothing in the machine is changing/executing. Calling `next` will pass the control flow to Stent. Also have in mind that these methods are fired with the machine as a context. Which means that we have an access to the current state and methods.
+
+*If you have more then one middleware to add pass an array of objects instead of multiple calls of `addMiddleware`.*
+
+### React integration
+
+Stent provides a `connect` helper that creates a [HoC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components). It gets re-rendered every time when the machine updates its state:
 
 ```js
 import React from 'react';
@@ -417,31 +445,6 @@ const ConnectedComponent = connect(TodoList).with('MachineA', 'MachineB').map();
 ```
 
 *`mapOnce` and `mapSilent` are also available for this React's helper.*
-
-### Middlewares
-
-If you want to extend the library with some additional functionalities you may add a middleware. In fact Stent uses middleware internally for implementing the `connect` helper. We have to call `addMiddleware with a single parameter which is an object with a set of functions that hook to the lifecycle methods of Stent.
-
-```js
-import { Machine } from 'stent';
-
-Machine.addMiddleware({
-  onActionDispatched(next, actionName, ...args) {
-    console.log(`Action dispatched: ${ actionName }`);
-    next();
-    console.log(`After ${ actionName } action our state is ${ this.state.name }`);
-  },
-  onStateChanged(next) {
-    console.log(`The new state will be: ${ this.state.name }`);
-    next();
-    console.log(`The state now is: ${ this.state.name }`);
-  }
-});
-```
-
-The hooks above are getting called just before running the internal Stent's logic. At this moment nothing in the machine is changing/executing. Calling `next` will pass the control flow to Stent. Also have in mind that these methods are fired with the machine as a context. Which means that we have an access to the current state and methods.
-
-*If you have more then one middleware to add pass an array of objects instead of multiple calls of `addMiddleware`.*
 
 ## Examples
 
