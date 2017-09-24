@@ -417,6 +417,8 @@ There are some build in middlewares which are part of the Stent package.
 
 It prints out some useful stuff in the dev tools console.
 
+![Logger](./_images/Logger.png)
+
 ```js
 import { Machine } from 'stent';
 import { Logger } from 'stent/lib/middlewares';
