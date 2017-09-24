@@ -411,6 +411,19 @@ The hooks above are getting called just before running the internal Stent's logi
 
 *If you have more then one middleware to add pass an array of objects instead of multiple calls of `addMiddleware`.*
 
+There are some build in middlewares which are part of the Stent package.
+
+**`Logger`**
+
+It prints out some useful stuff in the dev tools console.
+
+```js
+import { Machine } from 'stent';
+import { Logger } from 'stent/middlewares/Logger';
+
+Machine.addMiddleware(Logger);
+```
+
 ### React integration
 
 Stent provides a `connect` helper that creates a [HoC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components). It gets re-rendered every time when the machine updates its state:

@@ -458,7 +458,7 @@ describe('Given the handleAction function', function () {
     it('should skip to the next middleware if there is no appropriate hook defined', function (done) {
       Machine.addMiddleware([
         {
-          onStateChange(next) { next(); }
+          onStateChanged(next) { next(); }
         },
         {
           onActionDispatched(next, actionName, ...args) {
@@ -481,14 +481,14 @@ describe('Given the handleAction function', function () {
     it('should fire the middleware/s when the state is changed', function (done) {
       Machine.addMiddleware([
         {
-          onStateChange(next) {
+          onStateChanged(next) {
             expect(this.state).to.deep.equal({ name: 'idle' });
             next();
             expect(this.state).to.deep.equal({ name: 'running' });
           }
         },
         {
-          onStateChange(next) {
+          onStateChanged(next) {
             done();
           }
         }

@@ -9,7 +9,7 @@ import validateState from './helpers/validateState';
 import { Machine } from './';
 
 const MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';
-const MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChange';
+const MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChanged';
 
 function isEmptyObject(obj) {
   var name;
@@ -25,7 +25,8 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
 
       // yield call
       if (typeof result.value === 'object' && result.value.__type === 'call') {
-        const funcResult = result.value.func(...result.value.args);
+        const { func, args } = result.value;
+        const funcResult = func(...args);
         
         // promise
         if (typeof funcResult.then !== 'undefined') {
@@ -46,7 +47,7 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
       } else if (typeof result.value === 'object' && result.value.__type === 'wait') {
         waitFor(machine, result.value.actions, result => iterate(generator.next(result)));
 
-      // the return statement of the normal function
+      // a return statement of the normal function
       } else {
         updateState(machine, result.value);
         iterate(generator.next());

@@ -1,3 +1,8 @@
+## 1.0.0
+
+* Adding `Logger` middleware
+* When adding a middleware the hook `onStateChange` is now called `onStateChanged` 
+
 ## 0.7.3
 
 Making sure that the mapping callback is fired only when the connected machine is updated.

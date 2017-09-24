@@ -151,7 +151,7 @@ var _ = require('./');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';
-var MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChange';
+var MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChanged';
 
 function isEmptyObject(obj) {
   var name;
@@ -167,9 +167,11 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
 
       // yield call
       if (_typeof(result.value) === 'object' && result.value.__type === 'call') {
-        var _result$value;
+        var _result$value = result.value,
+            func = _result$value.func,
+            args = _result$value.args;
 
-        var funcResult = (_result$value = result.value).func.apply(_result$value, result.value.args);
+        var funcResult = func.apply(undefined, args);
 
         // promise
         if (typeof funcResult.then !== 'undefined') {
@@ -193,7 +195,7 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
           return iterate(generator.next(result));
         });
 
-        // the return statement of the normal function
+        // a return statement of the normal function
       } else {
         updateState(machine, result.value);
         iterate(generator.next());
@@ -376,7 +378,7 @@ var setup = function setup() {
   if (mappings !== null) return;
   mappings = {};
   _.Machine.addMiddleware({
-    onStateChange: function onStateChange(next) {
+    onStateChanged: function onStateChanged(next) {
       next();
       for (var id in mappings) {
         var _mappings$id = mappings[id],
