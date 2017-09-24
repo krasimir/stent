@@ -1,3 +1,7 @@
+## 1.1.0
+
+Adding `onGeneratorStep` to the middleware's hook.
+
 ## 1.0.0
 
 * Adding `Logger` middleware

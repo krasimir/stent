@@ -403,6 +403,12 @@ Machine.addMiddleware({
     console.log(`The new state will be: ${ this.state.name }`);
     next();
     console.log(`The state now is: ${ this.state.name }`);
+  },
+  onGeneratorStep(next, yielded) {
+    // You'll probably never need this hook.
+    // It gets fired when you yield something in a generator
+    // as an action handler.
+    next();
   }
 });
 ```

@@ -1,18 +1,18 @@
 import { Machine } from '../../';
 import { Logger } from '../';
+import { call } from '../../helpers';
 
 describe('Given the Logger middleware', function () {
-  describe('when using Logger', function () {
-    before(() => {
-      sinon.stub(console, 'log');
-    });
-    after(() => {
-      console.log.restore();
-      Machine.flush();
-    });
+  beforeEach(() => {
+    sinon.stub(console, 'log');
+    Machine.addMiddleware(Logger);
+  });
+  afterEach(() => {
+    console.log.restore();
+    Machine.flush();
+  });
+  describe('when using Logger with function and string as a handler', function () {
     it('should log to the console', function () {
-      Machine.addMiddleware(Logger);
-
       const machine = Machine.create(
         { name: 'idle' },
         {
@@ -31,18 +31,55 @@ describe('Given the Logger middleware', function () {
       machine.stop();
 
       expect(console.log.callCount).to.be.equal(4);
-      expect(console.log.getCall(0)).to.be.calledWith(
-        `${ machine.name }: "run" dispatched with payload [object Object],42,hello world`
-      );
-      expect(console.log.getCall(1)).to.be.calledWith(
-        `${ machine.name }: state changed to "running"`
-      );
-      expect(console.log.getCall(2)).to.be.calledWith(
-        `${ machine.name }: "stop" dispatched`
-      );
-      expect(console.log.getCall(3)).to.be.calledWith(
+      [
+        `${ machine.name }: "run" dispatched with payload {},42,hello world`,
+        `${ machine.name }: state changed to "running"`,
+        `${ machine.name }: "stop" dispatched`,
         `${ machine.name }: state changed to "idle"`
-      );
+      ].forEach((logStr, i) => {
+        expect(console.log.getCall(i)).to.be.calledWith(logStr);
+      });
+
     });
   });
+  describe('when using the Logger with a generator function', function () {
+    it('should log every step of the generator', function () {
+      const myFunc = () => ({ name: 'running' });
+      const machine = Machine.create(
+        { name: 'idle' },
+        {
+          idle: {
+            run: function * () {
+              yield 'running';
+              yield { name: 'running' };
+              yield call(myFunc, 42);
+              return 'running'
+            }
+          },
+          running: {
+            stop: 'idle'
+          }
+        }
+      );
+
+      machine.run({ foo: 'bar' }, 42, 'hello world');
+      machine.stop();
+
+      expect(console.log.callCount).to.be.equal(10);
+      [
+        `${ machine.name }: "run" dispatched with payload {"foo":"bar"},42,hello world`,
+        `${ machine.name }: generator step -> running`,
+        `${ machine.name }: state changed to "running"`,
+        `${ machine.name }: generator step -> {"name":"running"}`,
+        `${ machine.name }: state changed to "running"`,
+        `${ machine.name }: generator step -> {"__type":"call","args":[42]}`,
+        `${ machine.name }: generator step -> running`,
+        `${ machine.name }: state changed to "running"`,
+        `${ machine.name }: "stop" dispatched`,
+        `${ machine.name }: state changed to "idle"`
+      ].forEach((logStr, i) => {
+        expect(console.log.getCall(i)).to.be.calledWith(logStr);
+      });
+    });
+  })
 });
