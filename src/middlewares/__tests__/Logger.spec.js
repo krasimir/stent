@@ -32,7 +32,7 @@ describe('Given the Logger middleware', function () {
 
       expect(console.log.callCount).to.be.equal(4);
       [
-        `${ machine.name }: "run" dispatched with payload {},42,hello world`,
+        `${ machine.name }: "run" dispatched with payload [object Object],42,hello world`,
         `${ machine.name }: state changed to "running"`,
         `${ machine.name }: "stop" dispatched`,
         `${ machine.name }: state changed to "idle"`
@@ -67,12 +67,12 @@ describe('Given the Logger middleware', function () {
 
       expect(console.log.callCount).to.be.equal(10);
       [
-        `${ machine.name }: "run" dispatched with payload {"foo":"bar"},42,hello world`,
+        `${ machine.name }: "run" dispatched with payload [object Object],42,hello world`,
         `${ machine.name }: generator step -> running`,
         `${ machine.name }: state changed to "running"`,
-        `${ machine.name }: generator step -> {"name":"running"}`,
+        `${ machine.name }: generator step -> [object Object]`,
         `${ machine.name }: state changed to "running"`,
-        `${ machine.name }: generator step -> {"__type":"call","args":[42]}`,
+        `${ machine.name }: generator step -> [object Object]`,
         `${ machine.name }: generator step -> running`,
         `${ machine.name }: state changed to "running"`,
         `${ machine.name }: "stop" dispatched`,
