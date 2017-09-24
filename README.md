@@ -419,7 +419,7 @@ It prints out some useful stuff in the dev tools console.
 
 ```js
 import { Machine } from 'stent';
-import { Logger } from 'stent/middlewares/Logger';
+import { Logger } from 'stent/lib/middlewares';
 
 Machine.addMiddleware(Logger);
 ```
