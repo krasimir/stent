@@ -1,4 +1,4 @@
-![Stent - brings the power of state machines to the web](./_logo/logo.jpg)
+![Stent - brings the power of state machines to the web](./_logo/logo.gif)
 
 Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept of [state machines](https://en.wikipedia.org/wiki/Automata_theory).
 
