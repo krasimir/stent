@@ -13,7 +13,6 @@ Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept o
 
 ## Documentation
 
----
 * [A few words about state machines](#a-few-words-about-state-machines)
 * [Installation](#installation)
 * [Getting started](##getting-started)
