@@ -6,6 +6,14 @@ Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept o
 [![npm downloads](https://img.shields.io/npm/dm/stent.svg?style=flat-square)](https://www.npmjs.com/package/stent)
 
 ---
+
+## Must-read
+
+[You are managing state? Think twice.](http://krasimirtsonev.com/blog/article/managing-state-in-javascript-with-state-machines-stent) - an article explaining why finite state machines are important in the context of the UI development.
+
+## Documentation
+
+---
 * [A few words about state machines](#a-few-words-about-state-machines)
 * [Installation](#installation)
 * [Getting started](##getting-started)

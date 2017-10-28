@@ -1,3 +1,7 @@
+## 1.1.2
+
+Just a README update.
+
 ## 1.1.1
 
 Stop trying to print object in the Logger middleware.
