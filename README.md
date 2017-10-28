@@ -26,7 +26,6 @@ Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept o
   * [React integration](#react-integration)
 * [Examples](#examples)
 * [Misc](#misc)
----
 
 ## A few words about state machines
 
