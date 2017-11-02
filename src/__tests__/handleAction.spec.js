@@ -321,6 +321,43 @@ describe('Given the handleAction function', function () {
             expect(machine.state).to.deep.equal({ name: 'stent: merry christmas' });
           });
         });
+        describe('and when that other generator is actually another handler', function () {
+          it('should pass the correct context, i.e. the machine', function (done) {
+            const handlerA = function * (state) {
+              yield call(handlerB, state, 'world');
+            }
+            const handlerB = function * (state, params) {
+              yield {
+                name: 'foo',
+                message: `${ state.name }: merry christmas ${ params }`
+              };
+              this.fin();
+            }
+            const machine = {
+              state: { name: 'idle', data: 42 },
+              fin: function () {
+                expect(machine.state.message).to.equal('idle: merry christmas world');
+                done();
+              },
+              transitions: {
+                idle: {
+                  run: handlerA
+                },
+                foo: {
+                  bar: 'zzzz'
+                }
+              }
+            };
+
+            handleAction(machine, 'run');
+            return Promise.resolve().then(() => {
+              expect(machine.state).to.deep.equal({
+                name: 'foo',
+                message: 'idle: merry christmas world'
+              });
+            });
+          });
+        });
       });
     });
 

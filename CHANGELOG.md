@@ -1,3 +1,7 @@
+## 1.1.4
+
+Making sure that the js context is kept while running generators.
+
 ## 1.1.3
 
 Do not create a new error if a promise in a `call` gets rejected.

@@ -173,7 +173,7 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
               func = _result$value.func,
               args = _result$value.args;
 
-          var funcResult = func.apply(undefined, args);
+          var funcResult = func.apply(machine, args);
 
           // promise
           if (typeof funcResult.then !== 'undefined') {

@@ -28,7 +28,7 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
         // yield call
         if (typeof result.value === 'object' && result.value.__type === 'call') {
           const { func, args } = result.value;
-          const funcResult = func(...args);
+          const funcResult = func.apply(machine, args);
           
           // promise
           if (typeof funcResult.then !== 'undefined') {
