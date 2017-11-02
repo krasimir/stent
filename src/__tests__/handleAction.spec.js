@@ -279,7 +279,7 @@ describe('Given the handleAction function', function () {
             try {
               const newState = yield call(api, 'stent');
             } catch(error) {
-              return error.message;
+              return error;
             }
 
             return newState;

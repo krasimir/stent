@@ -1,3 +1,7 @@
+## 1.1.3
+
+Do not create a new error if a promise in a `call` gets rejected.
+
 ## 1.1.2
 
 Just a README update.

@@ -34,7 +34,7 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
           if (typeof funcResult.then !== 'undefined') {
             funcResult.then(
               result => iterate(generator.next(result)),
-              error => iterate(generator.throw(new Error(error)))
+              error => iterate(generator.throw(error))
             );
           // generator
           } else if (typeof funcResult.next === 'function') {
