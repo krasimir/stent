@@ -1,3 +1,7 @@
+## 1.1.5
+
+Updating README + adding npm ignore file.
+
 ## 1.1.4
 
 Making sure that the js context is kept while running generators.

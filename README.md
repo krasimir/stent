@@ -9,7 +9,8 @@ Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept o
 
 ## Must-read
 
-[You are managing state? Think twice.](http://krasimirtsonev.com/blog/article/managing-state-in-javascript-with-state-machines-stent) - an article explaining why finite state machines are important in the context of the UI development.
+* [You are managing state? Think twice.](http://krasimirtsonev.com/blog/article/managing-state-in-javascript-with-state-machines-stent) - an article explaining why finite state machines are important in the context of the UI development.
+* [Getting from Redux to a state machine](http://krasimirtsonev.com/blog/article/getting-from-redux-to-state-machine-with-stent) - a tutorial that transforms a Redux app to an app using Stent
 
 ## Documentation
 
