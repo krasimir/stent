@@ -1,3 +1,8 @@
+## 2.0.0
+
+Killing the `wait` generator helper. It is an anti-pattern. We shouldn't listen for actions like that. If there is such a need we better create a dedicated state for it.
+Also some clean up.
+
 ## 1.1.5
 
 Updating README + adding npm ignore file.

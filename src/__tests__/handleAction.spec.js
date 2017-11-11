@@ -5,7 +5,7 @@ import {
   ERROR_NOT_SUPPORTED_HANDLER_TYPE,
   WAIT_LISTENERS_STORAGE
 } from '../constants';
-import { call, wait } from '../helpers';
+import { call } from '../helpers';
 import { Machine } from '../';
 
 describe('Given the handleAction function', function () {
@@ -357,75 +357,6 @@ describe('Given the handleAction function', function () {
               });
             });
           });
-        });
-      });
-    });
-
-    describe('and we use the wait helper', function () {
-      it('should wait till the other action is dispatched', function (done) {
-        const handler = function * () {
-          const [ a, b ] = yield wait(['push the machine', 'pull the machine']);
-          const answer = yield wait('stop the machine');
-
-          return `the answer is ${ answer }: ${ a } + ${ b }`;
-        }
-        const machine = {
-          state: { name: 'idle' },
-          transitions: {
-            idle: {
-              run: handler,
-              'stop the machine': () => {},
-              'push the machine': () => {},
-              'pull the machine': () => {},
-              'destroy the machine': () => {}
-            },
-            'the answer is 42: 20 + 22': { a: 'b' }
-          }
-        };
-  
-        handleAction(machine, 'run');
-        handleAction(machine, 'destroy the machine');
-        handleAction(machine, 'pull the machine', 22);
-        setTimeout(() => handleAction(machine, 'push the machine', 20), 5);
-        setTimeout(() => handleAction(machine, 'stop the machine', 42), 10);
-        setTimeout(() => {
-          expect(machine[WAIT_LISTENERS_STORAGE]).to.be.undefined;
-          expect(machine.state).to.deep.equal({ name: 'the answer is 42: 20 + 22' });
-          done();
-        }, 100);
-      });
-      describe('and we pass multiple actions but as args of wait', function () {
-        it('should work the same way as we pass an array', function (done) {
-          const handler = function * () {
-            const [ a, b ] = yield wait('push the machine', 'pull the machine');
-            const answer = yield wait('stop the machine');
-  
-            return `the answer is ${ answer }: ${ a } + ${ b }`;
-          }
-          const machine = {
-            state: { name: 'idle' },
-            transitions: {
-              idle: {
-                run: handler,
-                'stop the machine': () => {},
-                'push the machine': () => {},
-                'pull the machine': () => {},
-                'destroy the machine': () => {}
-              },
-              'the answer is 42: 20 + 22': { a: 'b' }
-            }
-          };
-    
-          handleAction(machine, 'run');
-          handleAction(machine, 'destroy the machine');
-          handleAction(machine, 'pull the machine', 22);
-          setTimeout(() => handleAction(machine, 'push the machine', 20), 5);
-          setTimeout(() => handleAction(machine, 'stop the machine', 42), 10);
-          setTimeout(() => {
-            expect(machine[WAIT_LISTENERS_STORAGE]).to.be.undefined;
-            expect(machine.state).to.deep.equal({ name: 'the answer is 42: 20 + 22' });
-            done();
-          }, 100);
         });
       });
     });

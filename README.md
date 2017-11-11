@@ -294,7 +294,7 @@ Machine.create('app', {
 });
 ```
 
-What we can `yield` is state object (or a string that represents a state) or a call to some of the predefined Stent helpers `call` and `wait`.
+What we can `yield` is state object (or a string that represents a state) or a call to some of the predefined Stent helpers like `call`.
 
 #### `yield call(<function>, ...args)`
 
@@ -317,28 +317,6 @@ Machine.create('app', {
 ```
 
 *`requestToBackend` is getting called with `/api/todos/` and `POST` as arguments.*
-
-#### `yield wait(<action name/s>)`
-
-It's blocking the generator and waits for action/s. The function accepts one or many arguments as strings, or array of strings.
-
-```js
-import { wait } from 'stent/lib/helpers';
-
-Machine.create('app', {
-  'idle': {
-    'fetch data': function * () {
-      const initActionPayload = yield wait('init');
-      const [ data, isError ] = yield wait('get the data', 'check for errors');
-      const [ userProfilePayload, dataPayload ] = yield wait([
-        'user profile fetched',
-        'data processed'
-      ]);
-      ...
-    }
-  }
-});
-```
 
 ### `connect` and `disconnect`
 
