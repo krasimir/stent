@@ -1,4 +1,5 @@
 import handleAction from './helpers/handleAction';
+import handleActionLatest from './helpers/handleActionLatest';
 import validateConfig from './helpers/validateConfig';
 import registerMethods from './helpers/registerMethods';
 
@@ -24,6 +25,8 @@ export default function createMachine(name, config) {
   validateConfig(config);
 
   const { state: initialState, transitions } = config;
+  const dispatch = (action, ...payload) => handleAction(machine, action, ...payload);
+  const dispatchLatest = (action, ...payload) => handleActionLatest(machine, action, ...payload);
   
   machine.state = initialState;
   machine.transitions = transitions;
@@ -31,7 +34,8 @@ export default function createMachine(name, config) {
   registerMethods(
     machine,
     transitions,
-    (action, ...payload) => handleAction(machine, action, ...payload)
+    dispatch,
+    dispatchLatest
   );
   
   return machine;
