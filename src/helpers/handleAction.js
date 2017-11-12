@@ -34,13 +34,17 @@ export default function handleAction(machine, action, ...payload) {
 
     // generator
     if (response && typeof response.next === 'function') {
-      handleGenerator(machine, response, response => {
+      const generator = response;
+
+      handleGenerator(machine, generator, response => {
         updateState(machine, response);
       });
+      return generator;
     } else {
       updateState(machine, response);
     }
 
+    
   // wrong type of handler
   } else {
     throw new Error(ERROR_NOT_SUPPORTED_HANDLER_TYPE);
