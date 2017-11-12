@@ -4,12 +4,12 @@ import { call } from '../../helpers';
 
 describe('Given the Logger middleware', function () {
   beforeEach(() => {
+    Machine.flush();
     sinon.stub(console, 'log');
     Machine.addMiddleware(Logger);
   });
   afterEach(() => {
     console.log.restore();
-    Machine.flush();
   });
   describe('when using Logger with function and string as a handler', function () {
     it('should log to the console', function () {

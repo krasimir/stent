@@ -1,4 +1,4 @@
-import handleAction from './handleAction';
+import handleAction from './helpers/handleAction';
 import validateConfig from './helpers/validateConfig';
 import registerMethods from './helpers/registerMethods';
 

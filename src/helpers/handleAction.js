@@ -3,10 +3,10 @@ import {
   ERROR_NOT_SUPPORTED_HANDLER_TYPE,
   TRANSITIONS_STORAGE,
   MIDDLEWARE_PROCESS_ACTION
-} from './constants';
-import updateState from './helpers/updateState';
-import handleMiddleware from './helpers/handleMiddleware';
-import handleGenerator from './helpers/handleGenerator';
+} from '../constants';
+import updateState from './updateState';
+import handleMiddleware from './handleMiddleware';
+import handleGenerator from './handleGenerator';
 
 export default function handleAction(machine, action, ...payload) {
   const { state, transitions } = machine;

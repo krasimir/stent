@@ -4,9 +4,9 @@ import {
   ERROR_UNCOVERED_STATE,
   ERROR_NOT_SUPPORTED_HANDLER_TYPE,
   WAIT_LISTENERS_STORAGE
-} from '../constants';
-import { call } from '../helpers';
-import { Machine } from '../';
+} from '../../constants';
+import { call } from '../';
+import { Machine } from '../../';
 
 describe('Given the handleAction function', function () {
   beforeEach(() => {
