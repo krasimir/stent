@@ -9,3 +9,8 @@ export const ERROR_WRONG_STATE_FORMAT = state => {
 }
 export const ERROR_UNCOVERED_STATE = state => `You just transitioned the machine to a state (${ state }) which is not defined or it has no actions. This means that the machine is stuck.`;
 export const ERROR_NOT_SUPPORTED_HANDLER_TYPE = 'Wrong handler type passed. Please read the docs https://github.com/krasimir/stent';
+
+// middlewares
+export const MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';
+export const MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChanged';
+export const MIDDLEWARE_GENERATOR_STEP = 'onGeneratorStep';
