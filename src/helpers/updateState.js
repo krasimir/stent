@@ -1,7 +1,11 @@
 import validateState from './validateState';
 import isEmptyObject from './isEmptyObject';
 import handleMiddleware from './handleMiddleware';
-import { MIDDLEWARE_PROCESS_STATE_CHANGE, ERROR_UNCOVERED_STATE } from '../constants';
+import {
+  MIDDLEWARE_PROCESS_STATE_CHANGE,
+  MIDDLEWARE_STATE_WILL_CHANGE,
+  ERROR_UNCOVERED_STATE
+} from '../constants';
 
 export default function updateState(machine, state) {  
   var newState;
@@ -20,7 +24,10 @@ export default function updateState(machine, state) {
     throw new Error(ERROR_UNCOVERED_STATE(newState.name));
   }
 
-  handleMiddleware(() => {
-    machine.state = newState;
-  }, MIDDLEWARE_PROCESS_STATE_CHANGE, machine);
+  handleMiddleware(MIDDLEWARE_STATE_WILL_CHANGE, machine);
+
+  machine.state = newState;
+
+  handleMiddleware(MIDDLEWARE_PROCESS_STATE_CHANGE, machine);
+
 }

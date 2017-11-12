@@ -12,5 +12,7 @@ export const ERROR_NOT_SUPPORTED_HANDLER_TYPE = 'Wrong handler type passed. Plea
 
 // middlewares
 export const MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';
+export const MIDDLEWARE_ACTION_PROCESSED = 'onActionProcessed';
+export const MIDDLEWARE_STATE_WILL_CHANGE = 'onStateWillChange';
 export const MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChanged';
 export const MIDDLEWARE_GENERATOR_STEP = 'onGeneratorStep';

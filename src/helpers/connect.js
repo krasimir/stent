@@ -8,8 +8,7 @@ const setup = () => {
   if (mappings !== null) return;
   mappings = {};
   Machine.addMiddleware({
-    onStateChanged(next) {
-      next();
+    onStateChanged() {
       for (var id in mappings) {
         const { done, machines } = mappings[id];
 

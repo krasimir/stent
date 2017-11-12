@@ -4,41 +4,44 @@ import updateState from './updateState';
 
 export default function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   const iterate = function (result) {
-    handleMiddleware(() => {
-      if (!result.done) {
 
-        // yield call
-        if (typeof result.value === 'object' && result.value.__type === 'call') {
-          const { func, args } = result.value;
-          const funcResult = func.apply(machine, args);
-          
-          // promise
-          if (typeof funcResult.then !== 'undefined') {
-            funcResult.then(
-              result => iterate(generator.next(result)),
-              error => iterate(generator.throw(error))
-            );
-          // generator
-          } else if (typeof funcResult.next === 'function') {
-            handleGenerator(machine, funcResult, generatorResult => {
-              iterate(generator.next(generatorResult));
-            });
-          } else {
-            iterate(generator.next(funcResult));
-          }
+    handleMiddleware(MIDDLEWARE_GENERATOR_STEP, machine, result.value);
 
-        // a return statement of the normal function
+    if (!result.done) {
+
+      // yield call
+      if (typeof result.value === 'object' && result.value.__type === 'call') {
+        const { func, args } = result.value;
+        const funcResult = func.apply(machine, args);
+        
+        // promise
+        if (typeof funcResult.then !== 'undefined') {
+          funcResult.then(
+            result => iterate(generator.next(result)),
+            error => iterate(generator.throw(error))
+          );
+        // generator
+        } else if (typeof funcResult.next === 'function') {
+          handleGenerator(machine, funcResult, generatorResult => {
+            iterate(generator.next(generatorResult));
+          });
         } else {
-          updateState(machine, result.value);
-          iterate(generator.next());
+          iterate(generator.next(funcResult));
         }
-      
-      // the end of the generator (return statement)
+
+      // a return statement of the normal function
       } else {
-        done(result.value);
+        updateState(machine, result.value);
+        iterate(generator.next());
       }
-    }, MIDDLEWARE_GENERATOR_STEP, machine, result.value);
+    
+    // the end of the generator (return statement)
+    } else {
+      done(result.value);
+    }
   };
 
   iterate(generator.next(resultOfPreviousOperation));
+
+  return generator;
 }

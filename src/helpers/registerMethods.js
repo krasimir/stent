@@ -12,7 +12,7 @@ export default function registerMethods(machine, transitions, dispatch, dispatch
     for(var action in transitions[state]) {
       (function(action) {
         machine[toCamelCase(action)] = (...payload) => dispatch(action, ...payload);
-        machine[`${ toCamelCase(action) }Latest`] = (...payload) => dispatchLatest(action, ...payload);
+        machine[toCamelCase(action)].latest = (...payload) => dispatchLatest(action, ...payload);
       })(action);
     }
 

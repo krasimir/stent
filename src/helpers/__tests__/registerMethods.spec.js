@@ -17,8 +17,8 @@ describe('Given the registerMethods helper', function () {
       expect(typeof machine.isRunning).to.be.equal('function');
       expect(typeof machine.run).to.be.equal('function');
       expect(typeof machine.stop).to.be.equal('function');
-      expect(typeof machine.runLatest).to.be.equal('function');
-      expect(typeof machine.stopLatest).to.be.equal('function');
+      expect(typeof machine.run.latest).to.be.equal('function');
+      expect(typeof machine.stop.latest).to.be.equal('function');
     });
     it('should dispatch an action with the given payload', function () {
       const dispatch = sinon.spy();
@@ -35,7 +35,7 @@ describe('Given the registerMethods helper', function () {
       );
       
       machine.run(payload1, payload2);
-      machine.runLatest(payload2, payload1);
+      machine.run.latest(payload2, payload1);
 
       expect(dispatch).to.be.calledOnce.and.to.be.calledWith('run', payload1, payload2);
       expect(dispatchLatest).to.be.calledOnce.and.to.be.calledWith('run', payload2, payload1);

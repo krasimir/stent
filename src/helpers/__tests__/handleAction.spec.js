@@ -361,59 +361,22 @@ describe('Given the handleAction function', function () {
       });
     });
 
-    describe('and we fire same action twice within the same state', function () {
-      it.skip('should kill the first generator and its processes leaving only the new one working', function (done) {
-        const timeouts = [20, 10];
-        const results = ['foo', 'bar'];
-        const apiPromise = function() {
-          return new Promise(resolve => {
-            const result = results.shift();
-
-            setTimeout(() => resolve(result), timeouts.shift());
-          });
-        }
-        const api = function * () {
-          return { name: yield call(apiPromise) };
-        }
-        const handler = function * () {
-          return yield call(api, 'stent');
-        }
-        const machine = {
-          state: { name: 'idle' },
-          transitions: {
-            idle: { run: handler },
-            'foo': 'a',
-            'bar': 'a'
-          }
-        };
-  
-        handleAction(machine, 'run');
-        handleAction(machine, 'run');
-
-        setTimeout(() => {
-          expect(machine.state.name).to.equal('bar');
-          done();
-        }, 100);
-      })
-    });
   });
 
   describe('when we have middlewares registered', function () {
-    it('should fire the middleware/s if an action is dispatched', function (done) {
+    it('should fire the middleware/s if an action is dispatched and after that', function (done) {
       Machine.addMiddleware([
         {
-          onActionDispatched(next, actionName, ...args) {
+          onActionDispatched(actionName, ...args) {
             expect(actionName).to.equal('run');
             expect(args).to.deep.equal([ { answer: 42 } ]);
-            next();
-            expect(machine.state).to.deep.equal({ name: 'running' });
+            expect(machine.state).to.deep.equal({ name: 'idle' });
           }
         },
         {
-          onActionDispatched(next, actionName, ...args) {
+          onActionProcessed(actionName, ...args) {
             expect(actionName).to.equal('run');
             expect(args).to.deep.equal([ { answer: 42 } ]);
-            next();
             expect(machine.state).to.deep.equal({ name: 'running' });
             done();
           }
@@ -446,8 +409,7 @@ describe('Given the handleAction function', function () {
         }
       };
       Machine.addMiddleware({
-        onActionDispatched(next, actionName, ...args) {
-          next();
+        onActionProcessed(actionName, ...args) {
           spy(this.state.name);
         }
       });
@@ -462,11 +424,10 @@ describe('Given the handleAction function', function () {
     it('should skip to the next middleware if there is no appropriate hook defined', function (done) {
       Machine.addMiddleware([
         {
-          onStateChanged(next) { next(); }
+          onStateChanged() {}
         },
         {
-          onActionDispatched(next, actionName, ...args) {
-            next();
+          onActionProcessed(actionName, ...args) {
             expect(this.state).to.deep.equal({ name: 'running' });
             done();
           }
@@ -485,14 +446,12 @@ describe('Given the handleAction function', function () {
     it('should fire the middleware/s when the state is changed', function (done) {
       Machine.addMiddleware([
         {
-          onStateChanged(next) {
-            expect(this.state).to.deep.equal({ name: 'idle' });
-            next();
+          onStateChanged() {
             expect(this.state).to.deep.equal({ name: 'running' });
           }
         },
         {
-          onStateChanged(next) {
+          onStateChanged() {
             done();
           }
         }
