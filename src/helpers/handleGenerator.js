@@ -3,11 +3,17 @@ import { MIDDLEWARE_GENERATOR_STEP } from '../constants';
 import updateState from './updateState';
 
 export default function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
+  const generatorNext = (gen, res) => !canceled && gen.next(res);
+  const generatorThrow = (gen, error) => !canceled && gen.throw(error);
+  const cancelGenerator = () => {
+    cancelInsideGenerator && cancelInsideGenerator();
+    canceled = true;
+  }
   var canceled = false;
-  const cancelGenerator = () => (canceled = true);
+  var cancelInsideGenerator;
 
   const iterate = function (result) {
-
+    if (canceled) return;
     handleMiddleware(MIDDLEWARE_GENERATOR_STEP, machine, result.value);
 
     if (!result.done) {
@@ -20,22 +26,22 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
         // promise
         if (typeof funcResult.then !== 'undefined') {
           funcResult.then(
-            result => iterate(generator.next(result)),
-            error => iterate(generator.throw(error))
+            result => iterate(generatorNext(generator, result)),
+            error => iterate(generatorThrow(generator, error))
           );
         // generator
         } else if (typeof funcResult.next === 'function') {
-          handleGenerator(machine, funcResult, generatorResult => {
-            iterate(generator.next(generatorResult));
+          cancelInsideGenerator = handleGenerator(machine, funcResult, generatorResult => {
+            iterate(generatorNext(generator, generatorResult));
           });
         } else {
-          iterate(generator.next(funcResult));
+          iterate(generatorNext(generator, funcResult));
         }
 
       // a return statement of the normal function
       } else {
         updateState(machine, result.value);
-        iterate(generator.next());
+        iterate(generatorNext(generator));
       }
     
     // the end of the generator (return statement)
@@ -44,7 +50,7 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
     }
   };
 
-  iterate(generator.next(resultOfPreviousOperation));
+  iterate(generatorNext(generator, resultOfPreviousOperation));
 
   return cancelGenerator;
 }
