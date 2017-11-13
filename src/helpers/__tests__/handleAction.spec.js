@@ -444,14 +444,21 @@ describe('Given the handleAction function', function () {
       handleAction(machine, 'run', { answer: 42 });
     });
     it('should fire the middleware/s when the state is changed', function (done) {
+      const spy = sinon.spy();
       Machine.addMiddleware([
         {
+          onStateWillChange() {
+            expect(this.state).to.deep.equal({ name: 'idle' });
+            spy();
+          },
           onStateChanged() {
             expect(this.state).to.deep.equal({ name: 'running' });
+            spy();
           }
         },
         {
           onStateChanged() {
+            expect(spy).to.be.calledTwice;
             done();
           }
         }
