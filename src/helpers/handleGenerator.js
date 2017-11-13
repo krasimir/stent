@@ -3,6 +3,9 @@ import { MIDDLEWARE_GENERATOR_STEP } from '../constants';
 import updateState from './updateState';
 
 export default function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
+  var canceled = false;
+  const cancelGenerator = () => (canceled = true);
+
   const iterate = function (result) {
 
     handleMiddleware(MIDDLEWARE_GENERATOR_STEP, machine, result.value);
@@ -43,5 +46,5 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
 
   iterate(generator.next(resultOfPreviousOperation));
 
-  return generator;
+  return cancelGenerator;
 }

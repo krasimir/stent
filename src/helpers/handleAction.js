@@ -36,10 +36,9 @@ export default function handleAction(machine, action, ...payload) {
     if (response && typeof response.next === 'function') {
       const generator = response;
 
-      handleGenerator(machine, generator, response => {
+      return handleGenerator(machine, generator, response => {
         updateState(machine, response);
       });
-      return generator;
     } else {
       updateState(machine, response);
     }
