@@ -62,7 +62,7 @@ const machine = Machine.create('name-of-the-machine', {
 And because after the definition the machine knows what to expect it automatically creates a couple of things for us so. Based on the `transitions` property Stent generates:
 
 * Helper methods for checking if the machine is in a particular state. `idle` state produces `isIdle()` method, for `running` we have `isRunning()`.
-* Helper methods for dispatching actions - `run()` and `stop()`.
+* Helper methods for dispatching actions - `run()` and `stop()`. If these methods are generators you may want to use also `run.latest()` or `stop.latest()` which still accepts the action but cancels the logic of a previous call. For example if we run `run` multiple times really quick and we want to handle only the last one we should use `run.latest()` instead.
 
 *We may use spaces and/or dashes in the state or action names but the rule is that Stent transforms the string to a camel case. For example if we have `fetching data` state the machine will have `isFetchingData()` method, `get fresh todos` action will result in `getFetchTodos()` method.*
 
@@ -294,7 +294,7 @@ Machine.create('app', {
 });
 ```
 
-What we can `yield` is state object (or a string that represents a state) or a call to some of the predefined Stent helpers like `call`.
+What we can `yield` is a state object (or a string that represents a state) or a call to some of the predefined Stent helpers like `call`. This is the place where Stent looks a little bit like [redux-saga](https://redux-saga.js.org/) library. The code above is an equivalent of the `take` side effect helper. There is also a `takeLatest` equivalent. It is just the same action method but with `.latest` at the end. For example if you have `machine.fetchData()` for `take`, `machine.fetchData.latest()` is for `takeLatest`.
 
 #### `yield call(<function>, ...args)`
 
