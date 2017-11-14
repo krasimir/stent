@@ -1,3 +1,9 @@
+## 3.0.0
+
+* Adding `machine.<method>.latest` alias so we cover the `takeLatest` saga method
+* Changing the way of how the middlewares work. They now don't block the Stent's logic. No `next` method anymore. [Middlewares](./docs/middlewares.md)
+* Documentation is restructured
+
 ## 2.0.0
 
 Killing the `wait` generator helper. It is an anti-pattern. We shouldn't listen for actions like that. If there is such a need we better create a dedicated state for it.
