@@ -91,4 +91,23 @@ describe('Given the Stent library', function () {
       });
     });
   });
+  describe('when using the `destroy` method', function () {
+    it('should delete the machine', function () {
+      Machine.create('foo', { state: {}, transitions: {} });
+      const B = Machine.create('bar', { state: {}, transitions: {} });
+
+      expect(typeof Machine.machines.foo).to.equal('object');
+      Machine.destroy('foo');
+      expect(typeof Machine.machines.foo).to.equal('undefined');
+
+      expect(typeof Machine.machines.bar).to.equal('object');
+      Machine.destroy(B);
+      expect(typeof Machine.machines.bar).to.equal('undefined');
+    });
+    describe('and the machine does not exist', function () {
+      it('should throw an error', function () {
+        expect(Machine.destroy.bind(Machine, 'foo')).to.throw('foo');
+      });
+    });
+  });
 });

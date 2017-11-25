@@ -9,6 +9,7 @@ export const ERROR_WRONG_STATE_FORMAT = state => {
 }
 export const ERROR_UNCOVERED_STATE = state => `You just transitioned the machine to a state (${ state }) which is not defined or it has no actions. This means that the machine is stuck.`;
 export const ERROR_NOT_SUPPORTED_HANDLER_TYPE = 'Wrong handler type passed. Please read the docs https://github.com/krasimir/stent';
+export const ERROR_RESERVED_WORD_USED_AS_ACTION = word => `Sorry, you can't use ${ word } as a name for an action. It is reserved.`;
 
 // middlewares
 export const MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';

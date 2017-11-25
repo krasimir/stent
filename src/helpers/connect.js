@@ -26,6 +26,19 @@ export function flush() {
   mappings = null;
 }
 
+export function getMapping() {
+  return mappings;
+}
+
+export function destroy(machineId) {
+  for(var mId in mappings) {
+    mappings[mId].machines = mappings[mId].machines.filter(({ name }) => name !== machineId);
+    if (mappings[mId].machines.length === 0) {
+      delete mappings[mId];
+    }
+  }
+}
+
 export default function connect() {
   setup();
   const withFunc = (...names) => {

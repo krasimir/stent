@@ -53,6 +53,14 @@ describe('Given the registerMethods helper', function () {
       expect(machine.isIdle()).to.be.false;
       expect(machine.isRunning()).to.be.true;
     });
+    describe('when some of the transitions match the word `name`, `transition` or `state`', function () {
+      const register = state => registerMethods({}, state, sinon.spy(), sinon.spy());
+      ['name', 'transitions', 'state', 'destroy'].forEach(word => {
+        it(`should throw an error if ${ word } is used`, function () {
+          expect(register.bind(null, { 'idle': { [word]: 'foo' }})).to.throw('It is reserved.');
+        });
+      });
+    });
   });
 
 });

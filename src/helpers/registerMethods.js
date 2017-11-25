@@ -1,4 +1,7 @@
 import toCamelCase from './toCamelCase';
+import { ERROR_RESERVED_WORD_USED_AS_ACTION } from '../constants';
+
+const reserved = ['name', 'transitions', 'state', 'destroy'];
 
 export default function registerMethods(machine, transitions, dispatch, dispatchLatest) {
   for(var state in transitions) {
@@ -10,9 +13,11 @@ export default function registerMethods(machine, transitions, dispatch, dispatch
     })(state);
 
     for(var action in transitions[state]) {
+      action = toCamelCase(action);
+      if (reserved.indexOf(action) >= 0) throw new Error(ERROR_RESERVED_WORD_USED_AS_ACTION(action));
       (function(action) {
-        machine[toCamelCase(action)] = (...payload) => dispatch(action, ...payload);
-        machine[toCamelCase(action)].latest = (...payload) => dispatchLatest(action, ...payload);
+        machine[action] = (...payload) => dispatch(action, ...payload);
+        machine[action].latest = (...payload) => dispatchLatest(action, ...payload);
       })(action);
     }
 

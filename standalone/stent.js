@@ -20,6 +20,9 @@ var ERROR_UNCOVERED_STATE = exports.ERROR_UNCOVERED_STATE = function ERROR_UNCOV
   return 'You just transitioned the machine to a state (' + state + ') which is not defined or it has no actions. This means that the machine is stuck.';
 };
 var ERROR_NOT_SUPPORTED_HANDLER_TYPE = exports.ERROR_NOT_SUPPORTED_HANDLER_TYPE = 'Wrong handler type passed. Please read the docs https://github.com/krasimir/stent';
+var ERROR_RESERVED_WORD_USED_AS_ACTION = exports.ERROR_RESERVED_WORD_USED_AS_ACTION = function ERROR_RESERVED_WORD_USED_AS_ACTION(word) {
+  return 'Sorry, you can\'t use ' + word + ' as a name for an action. It is reserved.';
+};
 
 // middlewares
 var MIDDLEWARE_PROCESS_ACTION = exports.MIDDLEWARE_PROCESS_ACTION = 'onActionDispatched';
@@ -63,7 +66,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var IDX = 0;
 var getMachineID = function getMachineID() {
-  return '_' + ++IDX;
+  return '_@@@' + ++IDX;
 };
 
 function createMachine(name, config) {
@@ -116,6 +119,8 @@ module.exports = exports['default'];
 
 exports.__esModule = true;
 exports.flush = flush;
+exports.getMapping = getMapping;
+exports.destroy = destroy;
 exports.default = connect;
 
 var _ = require('../');
@@ -157,6 +162,22 @@ var setup = function setup() {
 
 function flush() {
   mappings = null;
+}
+
+function getMapping() {
+  return mappings;
+}
+
+function destroy(machineId) {
+  for (var mId in mappings) {
+    mappings[mId].machines = mappings[mId].machines.filter(function (_ref) {
+      var name = _ref.name;
+      return name !== machineId;
+    });
+    if (mappings[mId].machines.length === 0) {
+      delete mappings[mId];
+    }
+  }
 }
 
 function connect() {
@@ -432,7 +453,11 @@ var _toCamelCase = require('./toCamelCase');
 
 var _toCamelCase2 = _interopRequireDefault(_toCamelCase);
 
+var _constants = require('../constants');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var reserved = ['name', 'transitions', 'state', 'destroy'];
 
 function registerMethods(machine, transitions, dispatch, dispatchLatest) {
   for (var state in transitions) {
@@ -444,15 +469,17 @@ function registerMethods(machine, transitions, dispatch, dispatchLatest) {
     })(state);
 
     for (var action in transitions[state]) {
+      action = (0, _toCamelCase2.default)(action);
+      if (reserved.indexOf(action) >= 0) throw new Error((0, _constants.ERROR_RESERVED_WORD_USED_AS_ACTION)(action));
       (function (action) {
-        machine[(0, _toCamelCase2.default)(action)] = function () {
+        machine[action] = function () {
           for (var _len = arguments.length, payload = Array(_len), _key = 0; _key < _len; _key++) {
             payload[_key] = arguments[_key];
           }
 
           return dispatch.apply(undefined, [action].concat(payload));
         };
-        machine[(0, _toCamelCase2.default)(action)].latest = function () {
+        machine[action].latest = function () {
           for (var _len2 = arguments.length, payload = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
             payload[_key2] = arguments[_key2];
           }
@@ -464,7 +491,7 @@ function registerMethods(machine, transitions, dispatch, dispatchLatest) {
   }
 }
 module.exports = exports['default'];
-},{"./toCamelCase":10}],10:[function(require,module,exports){
+},{"../constants":1,"./toCamelCase":10}],10:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -594,10 +621,15 @@ var MachineFactory = function () {
   }
 
   MachineFactory.prototype.create = function create(name, config) {
+    var _this = this;
+
     var machine = (0, _createMachine2.default)(name, config, this.middlewares);
 
     this.machines[machine.name] = machine;
     (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_CREATED, machine, machine);
+    machine.destroy = function () {
+      return _this.destroy(machine);
+    };
     return machine;
   };
 
@@ -608,7 +640,7 @@ var MachineFactory = function () {
   };
 
   MachineFactory.prototype.flush = function flush() {
-    this.machines = [];
+    this.machines = {};
     this.middlewares = [];
     (0, _connect.flush)();
   };
@@ -619,6 +651,16 @@ var MachineFactory = function () {
     } else {
       this.middlewares.push(middleware);
     }
+  };
+
+  MachineFactory.prototype.destroy = function destroy(machine) {
+    var m = machine;
+    if (typeof machine === 'string') {
+      m = this.machines[machine];
+      if (!m) throw new Error((0, _constants.ERROR_MISSING_MACHINE)(machine));
+    }
+    delete this.machines[m.name];
+    (0, _connect.destroy)(m.name);
   };
 
   return MachineFactory;

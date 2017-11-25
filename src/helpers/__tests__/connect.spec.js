@@ -1,4 +1,5 @@
 import connect from '../connect';
+import { getMapping } from '../connect';
 import { Machine } from '../../';
 
 describe('Given the connect helper', function () {
@@ -189,6 +190,39 @@ describe('Given the connect helper', function () {
           sinon.match({ name: 'A' }),
           sinon.match({ name: 'B' })
         ]));
+      });
+    });
+    describe('and we destroy a machine', function () {
+      it('should remove the machine from any mapping', function () {
+        const A = Machine.create('A', {
+          state: { name: 'idle' },
+          transitions: {
+            idle: { run: 'running' },
+            running: { stop: 'idle' }
+          }
+        });
+        const B = Machine.create('B', {
+          state: { name: 'waiting' },
+          transitions: {
+            waiting: { fetch: 'fetching' },
+            fetching: { done: 'waiting' }
+          }
+        });
+        connect().with('A', 'B').map((A, B) => {});
+        connect().with('B').map(B => {});
+        connect().with('A').map(A => {});
+        
+        const [ m1, m2, m3 ] = Object.keys(getMapping());
+
+        expect(getMapping()[m1].machines.map(m => m.name)).to.deep.equal(['A', 'B']);
+        expect(getMapping()[m2].machines.map(m => m.name)).to.deep.equal(['B']);
+        expect(getMapping()[m3].machines.map(m => m.name)).to.deep.equal(['A']);
+        A.destroy();
+        expect(getMapping()[m1].machines.map(m => m.name)).to.deep.equal(['B']);
+        expect(getMapping()[m2].machines.map(m => m.name)).to.deep.equal(['B']);
+        expect(typeof getMapping()[m3]).to.be.equal('undefined');
+        B.destroy();
+        expect(getMapping()).to.be.deep.equal({});
       });
     });
   });

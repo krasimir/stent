@@ -1,3 +1,7 @@
+## 3.2.0
+
+Adding machine `destroy` method.
+
 ## 3.1.2
 
 Tooling for the devtools.

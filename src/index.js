@@ -7,6 +7,7 @@ import {
 } from './constants';
 import connect from './helpers/connect';
 import { flush as flushConnectSetup } from './helpers/connect';
+import { destroy as cleanupConnections } from './helpers/connect';
 import handleMiddleware from './helpers/handleMiddleware';
 
 class MachineFactory {
@@ -20,6 +21,7 @@ class MachineFactory {
 
     this.machines[machine.name] = machine;
     handleMiddleware(MIDDLEWARE_MACHINE_CREATED, machine, machine);
+    machine.destroy = () => this.destroy(machine);
     return machine;
   }
   get(name) {
@@ -28,7 +30,7 @@ class MachineFactory {
     throw new Error(ERROR_MISSING_MACHINE(name));
   }
   flush() {
-    this.machines = [];
+    this.machines = {};
     this.middlewares = [];
     flushConnectSetup();
   }
@@ -38,6 +40,15 @@ class MachineFactory {
     } else {
       this.middlewares.push(middleware);
     }
+  }
+  destroy(machine) {
+    var m = machine;
+    if (typeof machine === 'string') {
+      m = this.machines[machine];
+      if (!m) throw new Error(ERROR_MISSING_MACHINE(machine));
+    }
+    delete this.machines[m.name];
+    cleanupConnections(m.name);
   }
 }
 
