@@ -1,7 +1,12 @@
 import createMachine from './createMachine';
-import { ERROR_MISSING_MACHINE, DEVTOOLS_KEY } from './constants';
+import {
+  ERROR_MISSING_MACHINE,
+  DEVTOOLS_KEY,
+  MIDDLEWARE_MACHINE_CREATED
+} from './constants';
 import connect from './helpers/connect';
 import { flush as flushConnectSetup } from './helpers/connect';
+import handleMiddleware from './helpers/handleMiddleware';
 
 class MachineFactory {
   constructor() {
@@ -12,7 +17,9 @@ class MachineFactory {
   create(name, config) {
     const machine = createMachine(name, config, this.middlewares);
 
-    return this.machines[machine.name] = machine;
+    this.machines[machine.name] = machine;
+    handleMiddleware(MIDDLEWARE_MACHINE_CREATED, machine, machine);
+    return machine;
   }
   get(name) {
     if (typeof name === 'object') name = name.name;

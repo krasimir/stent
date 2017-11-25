@@ -162,6 +162,35 @@ describe('Given the connect helper', function () {
         expect(spyB).to.not.be.called;
       });
     });
+    describe('and we have a middleware attached', function () {
+      it('should call the proper middleware hook', function () {
+        const onMachineConnected = sinon.spy();
+
+        Machine.addMiddleware({ onMachineConnected });
+        Machine.create('A', {
+          state: { name: 'idle' },
+          transitions: {
+            idle: { run: 'running' },
+            running: { stop: 'idle' }
+          }
+        });
+        Machine.create('B', {
+          state: { name: 'waiting' },
+          transitions: {
+            waiting: { fetch: 'fetching' },
+            fetching: { done: 'waiting' }
+          }
+        });
+        connect()
+          .with('A', 'B')
+          .map(() => {});
+
+        expect(onMachineConnected).to.be.calledOnce.and.to.be.calledWith(sinon.match([
+          sinon.match({ name: 'A' }),
+          sinon.match({ name: 'B' })
+        ]));
+      });
+    });
   });
   describe('when we use the `disconnect` function', function () {
     it('should detach the mapping', function () {
@@ -184,6 +213,35 @@ describe('Given the connect helper', function () {
       expect(mapping).to.be.calledTwice;
       expect(mapping.firstCall).to.be.calledWith(sinon.match('idle'));
       expect(mapping.secondCall).to.be.calledWith(sinon.match('running'));
+    });
+    describe('and we have a middleware attached', function () {
+      it('should call the proper middleware hook', function () {
+        const onMachineDisconnected = sinon.spy();
+
+        Machine.addMiddleware({ onMachineDisconnected });
+        Machine.create('A', {
+          state: { name: 'idle' },
+          transitions: {
+            idle: { run: 'running' },
+            running: { stop: 'idle' }
+          }
+        });
+        Machine.create('B', {
+          state: { name: 'waiting' },
+          transitions: {
+            waiting: { fetch: 'fetching' },
+            fetching: { done: 'waiting' }
+          }
+        });
+        connect()
+          .with('A', 'B')
+          .map(() => {})();
+
+        expect(onMachineDisconnected).to.be.calledOnce.and.to.be.calledWith(sinon.match([
+          sinon.match({ name: 'A' }),
+          sinon.match({ name: 'B' })
+        ]));
+      });
     });
   });
 });

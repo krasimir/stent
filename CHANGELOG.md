@@ -1,3 +1,7 @@
+## 3.1.1
+
+Adding new middleware hooks. (`onMachineCreated`, `onMachineConnected`, `onMachineDisconnected`)
+
 ## 3.0.1
 
 Adding devtools window global key access.

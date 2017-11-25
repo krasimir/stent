@@ -28,6 +28,15 @@ Machine.addMiddleware({
     // You'll probably never need this hook.
     // It gets fired when you yield something in a generator
     // as an action handler.
+  },
+  onMachineCreated(machine) {
+    // ...
+  },
+  onMachineConnected(machines) {
+    // ...
+  },
+  onMachineDisconnected(machines) {
+    // ...
   }
 });
 ```

@@ -27,9 +27,11 @@ var MIDDLEWARE_ACTION_PROCESSED = exports.MIDDLEWARE_ACTION_PROCESSED = 'onActio
 var MIDDLEWARE_STATE_WILL_CHANGE = exports.MIDDLEWARE_STATE_WILL_CHANGE = 'onStateWillChange';
 var MIDDLEWARE_PROCESS_STATE_CHANGE = exports.MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChanged';
 var MIDDLEWARE_GENERATOR_STEP = exports.MIDDLEWARE_GENERATOR_STEP = 'onGeneratorStep';
+var MIDDLEWARE_MACHINE_CREATED = exports.MIDDLEWARE_MACHINE_CREATED = 'onMachineCreated';
+var MIDDLEWARE_MACHINE_CONNECTED = exports.MIDDLEWARE_MACHINE_CONNECTED = 'onMachineConnected';
+var MIDDLEWARE_MACHINE_DISCONNECTED = exports.MIDDLEWARE_MACHINE_DISCONNECTED = 'onMachineDisconnected';
 
 // misc
-
 var DEVTOOLS_KEY = exports.DEVTOOLS_KEY = '__hello__stent__';
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -117,6 +119,14 @@ exports.default = connect;
 
 var _ = require('../');
 
+var _handleMiddleware = require('./handleMiddleware');
+
+var _handleMiddleware2 = _interopRequireDefault(_handleMiddleware);
+
+var _constants = require('../constants');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var idIndex = 0;
 var mappings = null;
 
@@ -165,10 +175,12 @@ function connect() {
       !silent && done && done.apply(undefined, machines);
 
       return function disconnect() {
+        (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_DISCONNECTED, null, machines);
         if (mappings && mappings[id]) delete mappings[id];
       };
     };
 
+    (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_CONNECTED, null, machines);
     return {
       'map': mapFunc,
       'mapOnce': function mapOnce(done) {
@@ -182,7 +194,7 @@ function connect() {
 
   return { 'with': withFunc };
 }
-},{"../":14}],4:[function(require,module,exports){
+},{"../":14,"../constants":1,"./handleMiddleware":7}],4:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -563,6 +575,10 @@ var _connect = require('./helpers/connect');
 
 var _connect2 = _interopRequireDefault(_connect);
 
+var _handleMiddleware = require('./helpers/handleMiddleware');
+
+var _handleMiddleware2 = _interopRequireDefault(_handleMiddleware);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -579,7 +595,9 @@ var MachineFactory = function () {
   MachineFactory.prototype.create = function create(name, config) {
     var machine = (0, _createMachine2.default)(name, config, this.middlewares);
 
-    return this.machines[machine.name] = machine;
+    this.machines[machine.name] = machine;
+    (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_CREATED, machine, machine);
+    return machine;
   };
 
   MachineFactory.prototype.get = function get(name) {
@@ -613,5 +631,5 @@ exports.Machine = factory;
 if (typeof window !== 'undefined') {
   window[_constants.DEVTOOLS_KEY] = factory;
 }
-},{"./constants":1,"./createMachine":2,"./helpers/connect":3}]},{},[14])(14)
+},{"./constants":1,"./createMachine":2,"./helpers/connect":3,"./helpers/handleMiddleware":7}]},{},[14])(14)
 });

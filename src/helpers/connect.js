@@ -1,4 +1,6 @@
 import { Machine } from '../';
+import handleMiddleware from './handleMiddleware';
+import { MIDDLEWARE_MACHINE_CONNECTED, MIDDLEWARE_MACHINE_DISCONNECTED } from '../constants';
 
 var idIndex = 0;
 var mappings = null;
@@ -35,10 +37,12 @@ export default function connect() {
       !silent && done && done(...machines);
 
       return function disconnect() {
+        handleMiddleware(MIDDLEWARE_MACHINE_DISCONNECTED, null, machines);
         if (mappings && mappings[id]) delete mappings[id];
       }
     }
 
+    handleMiddleware(MIDDLEWARE_MACHINE_CONNECTED, null, machines);
     return {
       'map': mapFunc,
       'mapOnce': done => mapFunc(done, true),
