@@ -1,3 +1,7 @@
+## 3.1.2
+
+Tooling for the devtools.
+
 ## 3.1.1
 
 Adding new middleware hooks. (`onMachineCreated`, `onMachineConnected`, `onMachineDisconnected`)

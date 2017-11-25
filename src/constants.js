@@ -22,3 +22,4 @@ export const MIDDLEWARE_MACHINE_DISCONNECTED = 'onMachineDisconnected';
 
 // misc
 export const DEVTOOLS_KEY = '__hello__stent__';
+export const DEVTOOLS_MIDDLEWARE_KEY = '__middleware_stent__';
