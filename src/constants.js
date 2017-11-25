@@ -16,3 +16,7 @@ export const MIDDLEWARE_ACTION_PROCESSED = 'onActionProcessed';
 export const MIDDLEWARE_STATE_WILL_CHANGE = 'onStateWillChange';
 export const MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChanged';
 export const MIDDLEWARE_GENERATOR_STEP = 'onGeneratorStep';
+
+// misc
+
+export const DEVTOOLS_KEY = '__hello__stent__';

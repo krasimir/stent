@@ -1,5 +1,5 @@
 import createMachine from './createMachine';
-import { ERROR_MISSING_MACHINE } from './constants';
+import { ERROR_MISSING_MACHINE, DEVTOOLS_KEY } from './constants';
 import connect from './helpers/connect';
 import { flush as flushConnectSetup } from './helpers/connect';
 
@@ -36,3 +36,7 @@ class MachineFactory {
 const factory = new MachineFactory();
 
 export { factory as Machine };
+
+if (typeof window !== 'undefined') {
+  window[DEVTOOLS_KEY] = factory;
+}

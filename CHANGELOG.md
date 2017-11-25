@@ -1,3 +1,7 @@
+## 3.0.1
+
+Adding devtools window global key access.
+
 ## 3.0.0
 
 * Adding `machine.<method>.latest` alias so we cover the `takeLatest` saga method

@@ -1,60 +1,60 @@
-<testsuite name="Mocha Tests" tests="58" failures="0" errors="0" skipped="0" timestamp="Tue, 14 Nov 2017 08:50:47 GMT" time="1.04">
-<testcase classname="Given the createMachine factory when passing invalid configuration" name="should throw errors if state or transitions are missing" time="0.002"/>
+<testsuite name="Mocha Tests" tests="58" failures="0" errors="0" skipped="0" timestamp="Sat, 25 Nov 2017 05:08:08 GMT" time="1.381">
+<testcase classname="Given the createMachine factory when passing invalid configuration" name="should throw errors if state or transitions are missing" time="0.001"/>
 <testcase classname="Given the createMachine factory when we create a machine without a name" name="it should automatically generate a name and allow the creation" time="0.002"/>
 <testcase classname="Given the createMachine factory when we create a machine without a state" name="it should throw an error" time="0"/>
 <testcase classname="Given the createMachine factory when we create a machine using the shorter syntax" name="it should create a working machine" time="0"/>
-<testcase classname="Given the createMachine factory when we dispatch an action" name="it handle the action" time="0.001"/>
+<testcase classname="Given the createMachine factory when we dispatch an action" name="it handle the action" time="0.002"/>
 <testcase classname="Given the Stent library when creating a new machine" name="should have the machine with its name set up" time="0"/>
 <testcase classname="Given the Stent library when `getting a machine" name="should return the machine if it exists" time="0"/>
 <testcase classname="Given the Stent library when `getting a machine" name="should throw an error if the machine does not exist" time="0"/>
 <testcase classname="Given the Stent library when creating a machine without a name" name="should be possible to fetch it by using the machine itself or the its generated name" time="0"/>
-<testcase classname="Given the Stent library when we fire two actions one after each other and we use the .latest version of the action" name="should cancel the first action and only work with the second one" time="0.027"/>
-<testcase classname="Given the connect helper when using connect" name="should allow mapping to machines" time="0.002"/>
+<testcase classname="Given the Stent library when we fire two actions one after each other and we use the .latest version of the action" name="should cancel the first action and only work with the second one" time="0.028"/>
+<testcase classname="Given the connect helper when using connect" name="should allow mapping to machines" time="0.001"/>
 <testcase classname="Given the connect helper when using connect" name="should add only one middleware" time="0.001"/>
 <testcase classname="Given the connect helper when using connect and when we update the state of the mapped machine/s" name="should fire the mapping function" time="0.002"/>
 <testcase classname="Given the connect helper when using connect and we use `mapOnce`" name="should fire the mapping only once" time="0"/>
-<testcase classname="Given the connect helper when using connect and we use `mapSilent`" name="should fire the mapping only when the machine changes its state" time="0"/>
-<testcase classname="Given the connect helper when using connect and we pass no mapping function" name="should still do the connecting" time="0.001"/>
+<testcase classname="Given the connect helper when using connect and we use `mapSilent`" name="should fire the mapping only when the machine changes its state" time="0.001"/>
+<testcase classname="Given the connect helper when using connect and we pass no mapping function" name="should still do the connecting" time="0"/>
 <testcase classname="Given the connect helper when using connect and we have two mappers" name="should call them only if the machine that they are connected transitions" time="0.001"/>
-<testcase classname="Given the connect helper when we use the `disconnect` function" name="should detach the mapping" time="0.001"/>
+<testcase classname="Given the connect helper when we use the `disconnect` function" name="should detach the mapping" time="0"/>
 <testcase classname="Given the handleAction function when we add a handler which is not expected" name="should throw an error" time="0"/>
 <testcase classname="Given the handleAction function when dispatching an action which is missing in the current state" name="should silently do nothing and NOT throw an error (handleAction returns false)" time="0"/>
 <testcase classname="Given the handleAction function when there is nothing for the current state" name="should return false" time="0"/>
 <testcase classname="Given the handleAction function when we transition to a state which has no actions or it is undefined" name="should throw an error if there is no such a state defined" time="0"/>
-<testcase classname="Given the handleAction function when we transition to a state which has no actions or it is undefined" name="should throw an error if there the state has no actions inside" time="0"/>
+<testcase classname="Given the handleAction function when we transition to a state which has no actions or it is undefined" name="should throw an error if there the state has no actions inside" time="0.001"/>
 <testcase classname="Given the handleAction function when the handler is a string" name="should change the state of the machine to that string" time="0"/>
-<testcase classname="Given the handleAction function when the handler is an object" name="should change the state of the machine to that object" time="0.001"/>
+<testcase classname="Given the handleAction function when the handler is an object" name="should change the state of the machine to that object" time="0"/>
 <testcase classname="Given the handleAction function when the handler is a function" name="should call the handler with the current state and the given payload" time="0"/>
-<testcase classname="Given the handleAction function when the handler is a function" name="should update the state" time="0"/>
+<testcase classname="Given the handleAction function when the handler is a function" name="should update the state" time="0.001"/>
 <testcase classname="Given the handleAction function when the handler is a function" name="should update the state even if a string is returned" time="0"/>
-<testcase classname="Given the handleAction function when the handler is a function" name="should run the handler with the machine as a context" time="0.001"/>
+<testcase classname="Given the handleAction function when the handler is a function" name="should run the handler with the machine as a context" time="0"/>
 <testcase classname="Given the handleAction function when the handler is a generator" name="should change the state if we return a string" time="0"/>
 <testcase classname="Given the handleAction function when the handler is a generator" name="should change the state if we yield a primitive" time="0"/>
-<testcase classname="Given the handleAction function when the handler is a generator" name="should change the state if we yield an object" time="0.001"/>
-<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper" name="should execute the function and return the result" time="0"/>
-<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper and when the function returns a promise" name="should return the value of the resolved promise" time="0.001"/>
-<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper and when the function returns a promise" name="should throw an error if the promise is rejected" time="0.001"/>
+<testcase classname="Given the handleAction function when the handler is a generator" name="should change the state if we yield an object" time="0"/>
+<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper" name="should execute the function and return the result" time="0.001"/>
+<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper and when the function returns a promise" name="should return the value of the resolved promise" time="0"/>
+<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper and when the function returns a promise" name="should throw an error if the promise is rejected" time="0.002"/>
 <testcase classname="Given the handleAction function when the handler is a generator and we use the call helper when the function returns another generator" name="should iterate through that inner generator" time="0"/>
-<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper when the function returns another generator and when that other generator is actually another handler" name="should pass the correct context, i.e. the machine" time="0.001"/>
+<testcase classname="Given the handleAction function when the handler is a generator and we use the call helper when the function returns another generator and when that other generator is actually another handler" name="should pass the correct context, i.e. the machine" time="0"/>
 <testcase classname="Given the handleAction function when we have middlewares registered" name="should fire the middleware/s if an action is dispatched and after that" time="0.001"/>
 <testcase classname="Given the handleAction function when we have middlewares registered" name="should pass the machine as context" time="0"/>
 <testcase classname="Given the handleAction function when we have middlewares registered" name="should skip to the next middleware if there is no appropriate hook defined" time="0"/>
-<testcase classname="Given the handleAction function when we have middlewares registered" name="should fire the middleware/s when the state is changed" time="0.001"/>
-<testcase classname="Given the handleActionLatest helper and we fire same action twice within the same state" name="should kill the first generator and its processes leaving only the new one working" time="0.036"/>
-<testcase classname="Given the handleGenerator helper when we run the same generator again and we want to cancel the first one" name="should cancel the second generator" time="0.033"/>
-<testcase classname="Given the registerMethods helper when registering methods" name="should create methods dynamically (based on states and actions)" time="0.001"/>
-<testcase classname="Given the registerMethods helper when registering methods" name="should dispatch an action with the given payload" time="0.001"/>
-<testcase classname="Given the registerMethods helper when registering methods" name="should check if the machine is in a particular state" time="0"/>
-<testcase classname="Given the toCamelCase helper when using toCamelCase" name="should transform a given string to a camel case" time="0.001"/>
+<testcase classname="Given the handleAction function when we have middlewares registered" name="should fire the middleware/s when the state is changed" time="0"/>
+<testcase classname="Given the handleActionLatest helper and we fire same action twice within the same state" name="should kill the first generator and its processes leaving only the new one working" time="0.033"/>
+<testcase classname="Given the handleGenerator helper when we run the same generator again and we want to cancel the first one" name="should cancel the second generator" time="0.032"/>
+<testcase classname="Given the registerMethods helper when registering methods" name="should create methods dynamically (based on states and actions)" time="0"/>
+<testcase classname="Given the registerMethods helper when registering methods" name="should dispatch an action with the given payload" time="0"/>
+<testcase classname="Given the registerMethods helper when registering methods" name="should check if the machine is in a particular state" time="0.001"/>
+<testcase classname="Given the toCamelCase helper when using toCamelCase" name="should transform a given string to a camel case" time="0"/>
 <testcase classname="Given the validateConfig helper function when validating config" name="should throw errors if state or transitions are missing" time="0"/>
-<testcase classname="Given the validateState helper when using validateState" name="throw an error if the state has no &quot;name&quot; property inside" time="0.001"/>
+<testcase classname="Given the validateState helper when using validateState" name="throw an error if the state has no &quot;name&quot; property inside" time="0"/>
 <testcase classname="Given the Logger middleware when using Logger with function and string as a handler" name="should log to the console" time="0.001"/>
 <testcase classname="Given the Logger middleware when using the Logger with a generator function" name="should log every step of the generator" time="0.002"/>
 <testcase classname="Given the connect React helper when connecting a component" name="should call our mapping function" time="0"/>
-<testcase classname="Given the connect React helper when connecting a component" name="should map machines state and actions properly" time="0.004"/>
+<testcase classname="Given the connect React helper when connecting a component" name="should map machines state and actions properly" time="0.005"/>
 <testcase classname="Given the connect React helper when connecting a component" name="should get re-rendered if a machine's state is changed" time="0.007"/>
 <testcase classname="Given the connect React helper when connecting a component" name="should NOT get re-rendered if mapped with `mapOnce`" time="0.005"/>
 <testcase classname="Given the connect React helper when unmounting the component" name="should detach from the machines" time="0.005"/>
-<testcase classname="Given the connect React helper when we connect without mapping" name="should detach from the machines" time="0.009"/>
+<testcase classname="Given the connect React helper when we connect without mapping" name="should detach from the machines" time="0.007"/>
 <testcase classname="Given the connect React helper when we use mapSilent" name="should only call the mapping function when the machine changes its state" time="0.005"/>
 </testsuite>

@@ -27,6 +27,10 @@ var MIDDLEWARE_ACTION_PROCESSED = exports.MIDDLEWARE_ACTION_PROCESSED = 'onActio
 var MIDDLEWARE_STATE_WILL_CHANGE = exports.MIDDLEWARE_STATE_WILL_CHANGE = 'onStateWillChange';
 var MIDDLEWARE_PROCESS_STATE_CHANGE = exports.MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChanged';
 var MIDDLEWARE_GENERATOR_STEP = exports.MIDDLEWARE_GENERATOR_STEP = 'onGeneratorStep';
+
+// misc
+
+var DEVTOOLS_KEY = exports.DEVTOOLS_KEY = '__hello__stent__';
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -265,28 +269,7 @@ var _handleAction2 = _interopRequireDefault(_handleAction);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var actions = {}; /*
-                  function test (n) {
-                    return {
-                      type: 'TEST',
-                      n
-                    };
-                  }
-                  store.runSaga(function * () {
-                    yield takeLatest('TEST', function * ({ n }) {
-                      console.log(n);
-                      console.log('promise: ' + (yield call(a, n)));
-                    });
-                  });
-                  store.runSaga(function *() {
-                    yield put(test(1));
-                    yield put(test(2));
-                  });
-                  
-                  1 <-- immediately
-                  2 <-- immediately
-                  promise 2 <-- a second later
-                  */
+var actions = {};
 
 function handleActionLatest(machine, action) {
   actions[action] && actions[action]();
@@ -625,5 +608,10 @@ var MachineFactory = function () {
 var factory = new MachineFactory();
 
 exports.Machine = factory;
+
+
+if (typeof window !== 'undefined') {
+  window[_constants.DEVTOOLS_KEY] = factory;
+}
 },{"./constants":1,"./createMachine":2,"./helpers/connect":3}]},{},[14])(14)
 });
