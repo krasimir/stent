@@ -1,7 +1,6 @@
 import { Machine } from '../';
 import { ERROR_MISSING_MACHINE } from '../constants';
 import { call } from '../helpers';
-import { DEVTOOLS_KEY, DEVTOOLS_MIDDLEWARE_KEY } from '../../examples/todo-app/node_modules/stent/lib/constants';
 
 const create = (name = 'app') => Machine.create(name, {
   state: { idle: { run: 'running' } },
