@@ -174,6 +174,7 @@ function destroy(machineId) {
       var name = _ref.name;
       return name !== machineId;
     });
+    (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_DISCONNECTED, null, mappings[mId].machines);
     if (mappings[mId].machines.length === 0) {
       delete mappings[mId];
     }

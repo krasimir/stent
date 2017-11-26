@@ -1,3 +1,7 @@
+## 3.2.2
+
+Adding disconnect middleware call.
+
 ## 3.2.1
 
 Fixing a critical bug introduced by 3.2.0 (do not use it).

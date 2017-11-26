@@ -33,6 +33,7 @@ export function getMapping() {
 export function destroy(machineId) {
   for(var mId in mappings) {
     mappings[mId].machines = mappings[mId].machines.filter(({ name }) => name !== machineId);
+    handleMiddleware(MIDDLEWARE_MACHINE_DISCONNECTED, null, mappings[mId].machines);
     if (mappings[mId].machines.length === 0) {
       delete mappings[mId];
     }

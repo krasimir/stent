@@ -55,17 +55,19 @@ describe('Given the connect React helper', function () {
         fetching: { done: 'waiting' }
       }
     });
-    wrapper = getWrapper();
   });
   describe('when connecting a component', function () {
     it('should call our mapping function', function () {
+      wrapper = getWrapper();
       expect(mapping).to.be.calledOnce;
     });
     it('should map machines state and actions properly', function () {
+      wrapper = getWrapper();
       expect(wrapper.find('p#A').text()).to.equal('machine A is in a idle state');
       expect(wrapper.find('p#B').text()).to.equal('machine B is in a waiting state');
     });
     it('should get re-rendered if a machine\'s state is changed', function () {
+      wrapper = getWrapper();
       const runButton = wrapper.find('button#run');
       const fetchButton = wrapper.find('button#fetch');
 
@@ -89,6 +91,7 @@ describe('Given the connect React helper', function () {
   });
   describe('when unmounting the component', function () {
     it('should detach from the machines', function () {
+      wrapper = getWrapper();
       Machine.get('A').run();
       expect(wrapper.find('p#A').text()).to.equal('machine A is in a running state');
       Machine.get('A').stop();
@@ -153,6 +156,42 @@ describe('Given the connect React helper', function () {
       // 1 - initial render
       // 2 - because of machine's action run
       expect(connectedWrapper.find('p#counter').text()).to.equal('Rendered 2 times');
+    });
+  });
+  describe('and we have a middleware attached', function () {
+    it('should call the proper hooks', function () {
+      const onMachineConnected = sinon.spy();
+      const onMachineDisconnected = sinon.spy();
+
+      Machine.addMiddleware({ onMachineConnected, onMachineDisconnected });
+      
+      const machine = Machine.create('foo', { state: {}, transitions: {} });
+      const Component = () => <p>Hello world</p>;
+      const Connected = connect(Component).with('foo').map(() => ({}));
+      const connectedWrapper = mount(<Connected />);
+
+      expect(onMachineConnected).to.be.calledOnce;
+      expect(onMachineDisconnected).to.not.be.called;
+      connectedWrapper.unmount();
+      expect(onMachineDisconnected).to.be.calledOnce;
+    });
+    describe('and we destroy a machine', function () {
+      it('should call the proper hooks', function () {
+        const onMachineConnected = sinon.spy();
+        const onMachineDisconnected = sinon.spy();
+  
+        Machine.addMiddleware({ onMachineConnected, onMachineDisconnected });
+        
+        const machine = Machine.create('foo', { state: {}, transitions: {} });
+        const Component = () => <p>Hello world</p>;
+        const Connected = connect(Component).with('foo').map(() => ({}));
+        const connectedWrapper = mount(<Connected />);
+  
+        expect(onMachineConnected).to.be.calledOnce;
+        expect(onMachineDisconnected).to.not.be.called;
+        machine.destroy();
+        expect(onMachineDisconnected).to.be.calledOnce;
+      });
     });
   });
 });
