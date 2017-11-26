@@ -1,3 +1,7 @@
+## 3.2.3
+
+Passing the name of the React component to the middleware hook.
+
 ## 3.2.2
 
 Adding disconnect middleware call.

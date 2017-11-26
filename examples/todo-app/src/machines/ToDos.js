@@ -15,9 +15,7 @@ export default {
   transitions: {
     idle: {
       'fetch todos': function * () {
-        console.log('a');
         yield 'fetching';
-        console.log('b');
         try {
           this.todosLoaded(yield call(storage.load));
         } catch (error) {

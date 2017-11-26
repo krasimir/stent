@@ -182,6 +182,9 @@ function destroy(machineId) {
 }
 
 function connect() {
+  var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      meta = _ref2.meta;
+
   setup();
   var withFunc = function withFunc() {
     for (var _len = arguments.length, names = Array(_len), _key = 0; _key < _len; _key++) {
@@ -198,12 +201,12 @@ function connect() {
       !silent && done && done.apply(undefined, machines);
 
       return function disconnect() {
-        (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_DISCONNECTED, null, machines);
+        (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_DISCONNECTED, null, machines, meta);
         if (mappings && mappings[id]) delete mappings[id];
       };
     };
 
-    (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_CONNECTED, null, machines);
+    (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_MACHINE_CONNECTED, null, machines, meta);
     return {
       'map': mapFunc,
       'mapOnce': function mapOnce(done) {

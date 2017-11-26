@@ -40,7 +40,7 @@ export function destroy(machineId) {
   }
 }
 
-export default function connect() {
+export default function connect({ meta } = {}) {
   setup();
   const withFunc = (...names) => {
     const machines = names.map(name => Machine.get(name));
@@ -51,12 +51,12 @@ export default function connect() {
       !silent && done && done(...machines);
 
       return function disconnect() {
-        handleMiddleware(MIDDLEWARE_MACHINE_DISCONNECTED, null, machines);
+        handleMiddleware(MIDDLEWARE_MACHINE_DISCONNECTED, null, machines, meta);
         if (mappings && mappings[id]) delete mappings[id];
       }
     }
 
-    handleMiddleware(MIDDLEWARE_MACHINE_CONNECTED, null, machines);
+    handleMiddleware(MIDDLEWARE_MACHINE_CONNECTED, null, machines, meta);
     return {
       'map': mapFunc,
       'mapOnce': done => mapFunc(done, true),

@@ -11,8 +11,9 @@ export default function(Component) {
           if (once) mapping = 'mapOnce';
           if (silent) mapping = 'mapSilent';
 
-          this._disconnect = connect()
-            .with(...names)[mapping]
+          this._disconnect = connect({
+            meta: { component: Component.name }
+          }).with(...names)[mapping]
             ((...deps) => {
               if (!done) {
                 this.forceUpdate();

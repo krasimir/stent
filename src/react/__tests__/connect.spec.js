@@ -166,14 +166,20 @@ describe('Given the connect React helper', function () {
       Machine.addMiddleware({ onMachineConnected, onMachineDisconnected });
       
       const machine = Machine.create('foo', { state: {}, transitions: {} });
-      const Component = () => <p>Hello world</p>;
-      const Connected = connect(Component).with('foo').map(() => ({}));
+      const Zoo = () => <p>Hello world</p>;
+      const Connected = connect(Zoo).with('foo').map(() => ({}));
       const connectedWrapper = mount(<Connected />);
 
-      expect(onMachineConnected).to.be.calledOnce;
+      expect(onMachineConnected).to.be.calledOnce.and.to.be.calledWith(
+        sinon.match.array,
+        sinon.match({ component: 'Zoo' })
+      );
       expect(onMachineDisconnected).to.not.be.called;
       connectedWrapper.unmount();
-      expect(onMachineDisconnected).to.be.calledOnce;
+      expect(onMachineDisconnected).to.be.calledOnce.and.to.be.calledWith(
+        sinon.match.array,
+        sinon.match({ component: 'Zoo' })
+      );
     });
     describe('and we destroy a machine', function () {
       it('should call the proper hooks', function () {
