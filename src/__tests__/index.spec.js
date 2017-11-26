@@ -1,6 +1,7 @@
 import { Machine } from '../';
 import { ERROR_MISSING_MACHINE } from '../constants';
 import { call } from '../helpers';
+import { DEVTOOLS_KEY, DEVTOOLS_MIDDLEWARE_KEY } from '../../examples/todo-app/node_modules/stent/lib/constants';
 
 const create = (name = 'app') => Machine.create(name, {
   state: { idle: { run: 'running' } },
@@ -31,8 +32,10 @@ describe('Given the Stent library', function () {
   describe('when `getting a machine', function () {
     it('should return the machine if it exists', function () {
       create('bar');
+      const foo = create('foo');
 
       expect(Machine.get('bar').name).to.equal('bar');
+      expect(Machine.get(foo).name).to.equal('foo');
     });
     it('should throw an error if the machine does not exist', function () {
       create('bar');
@@ -111,3 +114,4 @@ describe('Given the Stent library', function () {
     });
   });
 });
+
