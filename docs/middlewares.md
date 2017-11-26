@@ -45,7 +45,7 @@ Have in mind that these methods are fired with the machine as a context. Which m
 
 *If you have more then one middleware to add pass an array of objects instead of multiple calls of `addMiddleware`.*
 
-There are is one build-in middleware which is part of the Stent package - `Logger`.
+There are two build-in middlewares which are part of the Stent package - `Logger` and `DevTools`.
 
 **`Logger`**
 
@@ -58,6 +58,17 @@ import { Machine } from 'stent';
 import { Logger } from 'stent/lib/middlewares';
 
 Machine.addMiddleware(Logger);
+```
+
+**`DevTools`**
+
+It passes information to the Chrome DevTools panel.
+
+```js
+import { Machine } from 'stent';
+import { DevTools } from 'stent/lib/middlewares';
+
+Machine.addMiddleware(DevTools);
 ```
 
 ---

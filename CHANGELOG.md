@@ -1,3 +1,7 @@
+## 3.3.0
+
+Adding DevTools middleware.
+
 ## 3.2.3
 
 Passing the name of the React component to the middleware hook.
