@@ -13,12 +13,12 @@ export default function registerMethods(machine, transitions, dispatch, dispatch
     })(state);
 
     for(var action in transitions[state]) {
-      action = toCamelCase(action);
-      if (reserved.indexOf(action) >= 0) throw new Error(ERROR_RESERVED_WORD_USED_AS_ACTION(action));
-      (function(action) {
-        machine[action] = (...payload) => dispatch(action, ...payload);
-        machine[action].latest = (...payload) => dispatchLatest(action, ...payload);
-      })(action);
+      const normalized = toCamelCase(action);
+      if (reserved.indexOf(normalized) >= 0) throw new Error(ERROR_RESERVED_WORD_USED_AS_ACTION(normalized));
+      (function(n, a) {
+        machine[n] = (...payload) => dispatch(a, ...payload);
+        machine[n].latest = (...payload) => dispatchLatest(a, ...payload);
+      })(normalized, action);
     }
 
   }

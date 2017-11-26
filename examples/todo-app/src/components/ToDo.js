@@ -32,6 +32,9 @@ class Todo extends React.Component {
 
     connectWithMachineOnly().with(this._machine).mapSilent(() => this.forceUpdate());
   }
+  componentWillUnmount() {
+    this._machine.destroy();
+  }
   _onEditFieldKeyUp(event) {
     if (event.keyCode === ENTER) {
       this._machine.save(event.target.value);

@@ -1,7 +1,11 @@
 import handleActionLatest from '../handleActionLatest';
 import { call } from '../';
+import { Machine } from '../../';
 
 describe('Given the handleActionLatest helper', function () {
+  beforeEach(() => {
+    Machine.flush();
+  });
   describe('and we fire same action twice within the same state', function () {
     it('should kill the first generator and its processes leaving only the new one working', function (done) {
       const handlerSpyA = sinon.spy();

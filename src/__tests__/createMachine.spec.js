@@ -55,7 +55,7 @@ describe('Given the createMachine factory', function () {
         state: { name: 'idle' },
         transitions: {
           'idle': {
-            run: function (state, a, b) {
+            'run baby run': function (state, a, b) {
               return { name: 'running', data: [a, b] };
             }
           },
@@ -63,7 +63,7 @@ describe('Given the createMachine factory', function () {
         }
       });
 
-      machine.run('a', 'b');
+      machine.runBabyRun('a', 'b');
       expect(machine.state.name).to.equal('running');
       expect(machine.state.data).to.deep.equal(['a', 'b']);
     });

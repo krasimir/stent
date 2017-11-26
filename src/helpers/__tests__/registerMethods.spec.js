@@ -8,16 +8,16 @@ describe('Given the registerMethods helper', function () {
 
       registerMethods(
         machine,
-        { 'idle': { run: 'running' }, 'running': { stop: 'idle' } },
+        { 'idle': { 'run baby run': 'running' }, 'running': { stop: 'idle' } },
         sinon.spy(),
         sinon.spy()
       );
       
       expect(typeof machine.isIdle).to.be.equal('function');
       expect(typeof machine.isRunning).to.be.equal('function');
-      expect(typeof machine.run).to.be.equal('function');
+      expect(typeof machine.runBabyRun).to.be.equal('function');
       expect(typeof machine.stop).to.be.equal('function');
-      expect(typeof machine.run.latest).to.be.equal('function');
+      expect(typeof machine.runBabyRun.latest).to.be.equal('function');
       expect(typeof machine.stop.latest).to.be.equal('function');
     });
     it('should dispatch an action with the given payload', function () {
