@@ -1,6 +1,8 @@
+import { Machine } from '../';
+
 const message = data => {
-  if (window && window.postMessage) {
-    window.postMessage({ source: 'stent', ...data }, '*');
+  if (window && window.top && window.top.postMessage) {
+    window.top.postMessage({ source: 'stent', ...data }, '*');
   } else {
     console.error('There is no window.postMessage available');
   }
@@ -36,17 +38,13 @@ const sanitize = something => {
   return result;
 }
 const getMetaInfo = meta => {
-  if (!window[DEVTOOLS_KEY]) {
-    return {};
-  }
-  const machines = window[DEVTOOLS_KEY].machines || {};
   return Object.assign({}, meta, {
-    machines: Object.keys(machines).length,
-    middlewares: window[DEVTOOLS_KEY].middlewares.length
+    machines: Object.keys(Machine.machines).length,
+    middlewares: Machine.middlewares.length
   });
 };
   
-export const DevTools = {
+const DevTools = {
   onActionDispatched(actionName, ...args) {
     message({
       type: 'onActionDispatched',
@@ -108,3 +106,5 @@ export const DevTools = {
     });
   }
 };
+
+export default DevTools;

@@ -2,7 +2,6 @@ import createMachine from './createMachine';
 import {
   ERROR_MISSING_MACHINE,
   DEVTOOLS_KEY,
-  DEVTOOLS_MIDDLEWARE_KEY,
   MIDDLEWARE_MACHINE_CREATED
 } from './constants';
 import connect from './helpers/connect';
@@ -58,7 +57,4 @@ export { factory as Machine };
 
 if (typeof window !== 'undefined') {
   window[DEVTOOLS_KEY] = factory;
-  if (window[DEVTOOLS_MIDDLEWARE_KEY]) {
-    factory.addMiddleware(window[DEVTOOLS_MIDDLEWARE_KEY]);
-  }
 }

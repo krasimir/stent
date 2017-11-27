@@ -36,7 +36,6 @@ var MIDDLEWARE_MACHINE_DISCONNECTED = exports.MIDDLEWARE_MACHINE_DISCONNECTED = 
 
 // misc
 var DEVTOOLS_KEY = exports.DEVTOOLS_KEY = '__hello__stent__';
-var DEVTOOLS_MIDDLEWARE_KEY = exports.DEVTOOLS_MIDDLEWARE_KEY = '__middleware_stent__';
 },{}],2:[function(require,module,exports){
 'use strict';
 
@@ -677,9 +676,6 @@ exports.Machine = factory;
 
 if (typeof window !== 'undefined') {
   window[_constants.DEVTOOLS_KEY] = factory;
-  if (window[_constants.DEVTOOLS_MIDDLEWARE_KEY]) {
-    factory.addMiddleware(window[_constants.DEVTOOLS_MIDDLEWARE_KEY]);
-  }
 }
 },{"./constants":1,"./createMachine":2,"./helpers/connect":3,"./helpers/handleMiddleware":7}]},{},[14])(14)
 });

@@ -1,3 +1,7 @@
+## 3.3.1
+
+Exporting DevTools middleware.
+
 ## 3.3.0
 
 Adding DevTools middleware.
