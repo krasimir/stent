@@ -6,7 +6,7 @@ import ToDos from './machines/ToDos.js';
 import App from './components/App';
 import './index.css';
 
-Machine.create('ToDos', ToDos);
 Machine.addMiddleware(DevTools);
+Machine.create('ToDos', ToDos);
 
 render(<App />, document.getElementById('root'));

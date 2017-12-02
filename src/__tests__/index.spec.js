@@ -26,6 +26,18 @@ describe('Given the Stent library', function () {
 
         expect(spy).to.be.calledOnce.and.to.be.calledWith(sinon.match({ name: 'xxxa'}));
       });
+      it('should call the onMiddlewareRegister hook if available', function () {
+        const spy = sinon.spy();
+        
+        Machine.addMiddleware({
+          onMiddlewareRegister: spy
+        });
+        Machine.addMiddleware({
+          onMiddlewareRegister: spy
+        });
+
+        expect(spy).to.be.calledTwice;
+      });
     });
   });
   describe('when `getting a machine', function () {

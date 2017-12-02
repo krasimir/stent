@@ -20,6 +20,7 @@ export const MIDDLEWARE_GENERATOR_STEP = 'onGeneratorStep';
 export const MIDDLEWARE_MACHINE_CREATED = 'onMachineCreated';
 export const MIDDLEWARE_MACHINE_CONNECTED = 'onMachineConnected';
 export const MIDDLEWARE_MACHINE_DISCONNECTED = 'onMachineDisconnected';
+export const MIDDLEWARE_REGISTERED = 'onMiddlewareRegister';
 
 // misc
 export const DEVTOOLS_KEY = '__hello__stent__';

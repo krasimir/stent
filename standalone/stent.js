@@ -33,6 +33,7 @@ var MIDDLEWARE_GENERATOR_STEP = exports.MIDDLEWARE_GENERATOR_STEP = 'onGenerator
 var MIDDLEWARE_MACHINE_CREATED = exports.MIDDLEWARE_MACHINE_CREATED = 'onMachineCreated';
 var MIDDLEWARE_MACHINE_CONNECTED = exports.MIDDLEWARE_MACHINE_CONNECTED = 'onMachineConnected';
 var MIDDLEWARE_MACHINE_DISCONNECTED = exports.MIDDLEWARE_MACHINE_DISCONNECTED = 'onMachineDisconnected';
+var MIDDLEWARE_REGISTERED = exports.MIDDLEWARE_REGISTERED = 'onMiddlewareRegister';
 
 // misc
 var DEVTOOLS_KEY = exports.DEVTOOLS_KEY = '__hello__stent__';
@@ -654,6 +655,7 @@ var MachineFactory = function () {
     } else {
       this.middlewares.push(middleware);
     }
+    if (middleware[_constants.MIDDLEWARE_REGISTERED]) middleware[_constants.MIDDLEWARE_REGISTERED]();
   };
 
   MachineFactory.prototype.destroy = function destroy(machine) {

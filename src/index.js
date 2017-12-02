@@ -2,7 +2,8 @@ import createMachine from './createMachine';
 import {
   ERROR_MISSING_MACHINE,
   DEVTOOLS_KEY,
-  MIDDLEWARE_MACHINE_CREATED
+  MIDDLEWARE_MACHINE_CREATED,
+  MIDDLEWARE_REGISTERED
 } from './constants';
 import connect from './helpers/connect';
 import { flush as flushConnectSetup } from './helpers/connect';
@@ -39,6 +40,7 @@ class MachineFactory {
     } else {
       this.middlewares.push(middleware);
     }
+    if (middleware[MIDDLEWARE_REGISTERED]) middleware[MIDDLEWARE_REGISTERED]();
   }
   destroy(machine) {
     var m = machine;

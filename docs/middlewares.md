@@ -37,6 +37,9 @@ Machine.addMiddleware({
   },
   onMachineDisconnected(machines) {
     // ...
+  },
+  onMiddlewareRegister() {
+    // Fired when this middleware is added
   }
 });
 ```

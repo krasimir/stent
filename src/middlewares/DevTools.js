@@ -104,6 +104,9 @@ const DevTools = {
       machines: sanitize(machines),
       meta: getMetaInfo(meta)
     });
+  },
+  onMiddlewareRegister() {
+    message({ pageRefresh: true });
   }
 };
 

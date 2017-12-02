@@ -1,3 +1,7 @@
+## 3.4.0
+
+Adding `onMiddlewareRegister` middleware hook.
+
 ## 3.3.1
 
 Exporting DevTools middleware.
