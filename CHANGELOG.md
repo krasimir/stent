@@ -1,3 +1,7 @@
+## 3.5.0
+
+Improving DevTools middleware + test coverage
+
 ## 3.4.0
 
 Adding `onMiddlewareRegister` middleware hook.

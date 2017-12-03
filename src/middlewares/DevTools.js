@@ -1,8 +1,13 @@
 import { Machine } from '../';
+import CircularJSON from 'circular-json';
 
 const message = data => {
   if (window && window.top && window.top.postMessage) {
-    window.top.postMessage({ source: 'stent', ...data }, '*');
+    window.top.postMessage({
+      source: 'stent',
+      time: (new Date()).getTime(),
+      ...data
+    }, '*');
   } else {
     console.error('There is no window.postMessage available');
   }
@@ -26,7 +31,7 @@ const formatYielded = yielded => {
 const sanitize = something => {
   var result;
   try {
-    result = JSON.parse(JSON.stringify(something, function (key, value) {
+    result = JSON.parse(CircularJSON.stringify(something, function (key, value) {
       if (typeof value === 'function') {
         return { __func: value.name === '' ? '<anonymous>' : value.name };
       }
@@ -45,6 +50,13 @@ const getMetaInfo = meta => {
 };
   
 const DevTools = {
+  onMachineCreated(machine) {
+    message({
+      type: 'onMachineCreated',
+      machine: sanitize(machine),
+      meta: getMetaInfo()
+    });
+  },
   onActionDispatched(actionName, ...args) {
     message({
       type: 'onActionDispatched',
@@ -81,13 +93,6 @@ const DevTools = {
     message({
       type: 'onGeneratorStep',
       yielded: formatYielded(yielded),
-      meta: getMetaInfo()
-    });
-  },
-  onMachineCreated(machine) {
-    message({
-      type: 'onMachineCreated',
-      machine: sanitize(machine),
       meta: getMetaInfo()
     });
   },
