@@ -1,11 +1,15 @@
 import { Machine } from '../';
 import CircularJSON from 'circular-json';
 
+const getMachines = function () {
+  return Object.keys(Machine.machines).map(name => ({ name, state: sanitize(Machine.machines[name].state) }));
+}
 const message = data => {
   if (window && window.top && window.top.postMessage) {
     window.top.postMessage({
       source: 'stent',
       time: (new Date()).getTime(),
+      machines: getMachines(),
       ...data
     }, '*');
   } else {

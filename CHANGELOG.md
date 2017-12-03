@@ -1,3 +1,7 @@
+## 3.5.1
+
+Send the current machines' state in every DevTools message.
+
 ## 3.5.0
 
 Improving DevTools middleware + test coverage

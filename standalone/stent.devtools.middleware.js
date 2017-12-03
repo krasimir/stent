@@ -694,11 +694,17 @@ var _circularJson2 = _interopRequireDefault(_circularJson);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var getMachines = function getMachines() {
+  return Object.keys(_.Machine.machines).map(function (name) {
+    return { name: name, state: sanitize(_.Machine.machines[name].state) };
+  });
+};
 var message = function message(data) {
   if (window && window.top && window.top.postMessage) {
     window.top.postMessage(_extends({
       source: 'stent',
-      time: new Date().getTime()
+      time: new Date().getTime(),
+      machines: getMachines()
     }, data), '*');
   } else {
     console.error('There is no window.postMessage available');

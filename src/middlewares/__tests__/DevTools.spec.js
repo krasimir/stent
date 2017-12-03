@@ -35,7 +35,8 @@ describe('Given the DevTools middleware', function () {
         .and.to.be.calledWith({
           source: 'stent',
           pageRefresh: true,
-          time: sinon.match.number
+          time: sinon.match.number,
+          machines: []
         });
     });
     describe('and when we create a machine', function () {
@@ -56,6 +57,7 @@ describe('Given the DevTools middleware', function () {
           source: 'stent',
           type: 'onMachineCreated',
           meta: { machines: 1, middlewares: 1 },
+          machines: [{ name: 'Foo', state: { answer: 42, name: 'idle' } }],
           machine: {
             func: { __func: '<anonymous>' },
             gen: { __func: '<anonymous>' },
@@ -66,10 +68,10 @@ describe('Given the DevTools middleware', function () {
             state: { name: 'idle', answer: 42 },
             transitions: {
               idle: {
-                func: { __func: "func" },
-                gen: { __func: "gen" },
-                obj: { data: [{ answer: 42 }], name: "bar" },
-                run: "running"
+                func: { __func: 'func' },
+                gen: { __func: 'gen' },
+                obj: { data: [{ answer: 42 }], name: 'bar' },
+                run: 'running'
               }
             }
           }
