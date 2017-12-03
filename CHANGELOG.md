@@ -1,3 +1,7 @@
+## 3.5.2
+
+Updating DevTools middleware onMachineConnect action.
+
 ## 3.5.1
 
 Send the current machines' state in every DevTools message.

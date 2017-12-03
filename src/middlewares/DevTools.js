@@ -48,7 +48,6 @@ const sanitize = something => {
 }
 const getMetaInfo = meta => {
   return Object.assign({}, meta, {
-    machines: Object.keys(Machine.machines).length,
     middlewares: Machine.middlewares.length
   });
 };
@@ -103,15 +102,13 @@ const DevTools = {
   onMachineConnected(machines, meta) {
     message({
       type: 'onMachineConnected',
-      machines: sanitize(machines),
-      meta: getMetaInfo(meta)
+      meta: getMetaInfo({ ...meta, ...{ machines: sanitize(machines) }})
     });
   },
   onMachineDisconnected(machines, meta) {
     message({
       type: 'onMachineDisconnected',
-      machines: sanitize(machines),
-      meta: getMetaInfo(meta)
+      meta: getMetaInfo({ ...meta, ...{ machines: sanitize(machines) }})
     });
   },
   onMiddlewareRegister() {

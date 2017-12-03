@@ -56,7 +56,7 @@ describe('Given the DevTools middleware', function () {
           time: sinon.match.number,
           source: 'stent',
           type: 'onMachineCreated',
-          meta: { machines: 1, middlewares: 1 },
+          meta: { middlewares: 1 },
           machines: [{ name: 'Foo', state: { answer: 42, name: 'idle' } }],
           machine: {
             func: { __func: '<anonymous>' },
@@ -185,25 +185,27 @@ describe('Given the DevTools middleware', function () {
     describe('and when we connect to the machine', function () {
       it('should dispatch `onMachineConnected` action', function () {
         const machine = createMachine();
+        const machine2 = createMachine({ ...defaults, name: 'Bar' });
 
         connect().with('Foo').map(Foo => {});
 
         expect(window.top.postMessage).to.be.calledWith(sinon.match({
           type: 'onMachineConnected',
-          machines: [ sinon.match({ name: 'Foo' }) ],
-          meta: { machines: 1, middlewares: 2 }
+          machines: [ sinon.match({ name: 'Foo' }), sinon.match({ name: 'Bar' }) ],
+          meta: { machines: [ sinon.match({ name: 'Foo' })], middlewares: 2 }
         }));
       });
       it('should dispatch `onMachineDisconnected` action', function () {
         const machine = createMachine();
         const disconnect = connect().with('Foo').map(Foo => {});
+        const machine2 = createMachine({ ...defaults, name: 'Bar' });
 
         disconnect();
 
         expect(window.top.postMessage).to.be.calledWith(sinon.match({
           type: 'onMachineDisconnected',
-          machines: [ sinon.match({ name: 'Foo' }) ],
-          meta: { machines: 1, middlewares: 2 }
+          machines: [ sinon.match({ name: 'Foo' }), sinon.match({ name: 'Bar' }) ],
+          meta: { machines: [ sinon.match({ name: 'Foo' })], middlewares: 2 }
         }));
       });
     });
@@ -230,7 +232,7 @@ describe('Given the DevTools middleware', function () {
         expect(window.top.postMessage).to.be.calledWith(sinon.match({
           type: 'onMachineConnected',
           machines: [ sinon.match({ name: 'Foo' }) ],
-          meta: { machines: 1, middlewares: 2, component: 'XXX' }
+          meta: { middlewares: 2, component: 'XXX' }
         }));
 
         wrapper.unmount();
@@ -238,7 +240,7 @@ describe('Given the DevTools middleware', function () {
         expect(window.top.postMessage).to.be.calledWith(sinon.match({
           type: 'onMachineDisconnected',
           machines: [ sinon.match({ name: 'Foo' }) ],
-          meta: { machines: 1, middlewares: 2, component: 'XXX' }
+          meta: { middlewares: 2, component: 'XXX' }
         }));
       });
     });
