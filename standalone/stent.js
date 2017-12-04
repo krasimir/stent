@@ -655,6 +655,7 @@ var MachineFactory = function () {
     } else {
       this.middlewares.push(middleware);
     }
+    middleware.Machine = this;
     if (middleware[_constants.MIDDLEWARE_REGISTERED]) middleware[_constants.MIDDLEWARE_REGISTERED]();
   };
 
