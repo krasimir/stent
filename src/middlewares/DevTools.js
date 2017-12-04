@@ -2,7 +2,18 @@ import { Machine } from '../';
 import CircularJSON from 'circular-json';
 
 const getMachines = function () {
-  return Object.keys(Machine.machines).map(name => ({ name, state: sanitize(Machine.machines[name].state) }));
+  var machines = [];
+
+  try {
+    if (typeof window !== 'undefined' && window.stent) {
+      machines = machines.stent.Machine.machines;
+    } else {
+      machines = Machine.machines;
+    }
+  } catch(error) {
+    console.log('Can not get the machines.', error);
+  }
+  return Object.keys(machines).map(name => ({ name, state: sanitize(Machine.machines[name].state) }));
 }
 const message = data => {
   if (window && window.top && window.top.postMessage) {

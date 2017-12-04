@@ -1,3 +1,7 @@
+## 3.5.3
+
+Make the DevTools middleware read from `window.stent.Machine.machines` first.
+
 ## 3.5.2
 
 Updating DevTools middleware onMachineConnect action.
