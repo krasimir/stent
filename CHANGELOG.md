@@ -1,6 +1,6 @@
-## 3.5.3, 3.5.4
+## 3.5.3, 3.5.4, 3.5.5
 
-Make the DevTools middleware read from `window.stent.Machine.machines` first.
+Changes in DevTools extension.
 
 ## 3.5.2
 

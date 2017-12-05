@@ -1,15 +1,16 @@
 import CircularJSON from 'circular-json';
 
-const getMachines = function () {
-  return Object.keys(DevTools.Machine.machines)
-    .map(name => ({ name, state: sanitize(DevTools.Machine.machines[name].state) }));
-}
-const message = data => {
+var Machine;
+
+const message = (data) => {
   if (window && window.top && window.top.postMessage) {
+    const machines = Object.keys(Machine.machines)
+      .map(name => ({ name, state: sanitize(Machine.machines[name].state) }));
+
     window.top.postMessage({
       source: 'stent',
       time: (new Date()).getTime(),
-      machines: getMachines(),
+      machines,
       ...data
     }, '*');
   } else {
@@ -48,11 +49,14 @@ const sanitize = something => {
 }
 const getMetaInfo = meta => {
   return Object.assign({}, meta, {
-    middlewares: DevTools.Machine.middlewares.length
+    middlewares: Machine.middlewares.length
   });
 };
   
 const DevTools = {
+  __api(m) {
+    Machine = m;
+  },
   onMachineCreated(machine) {
     message({
       type: 'onMachineCreated',

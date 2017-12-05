@@ -40,7 +40,7 @@ class MachineFactory {
     } else {
       this.middlewares.push(middleware);
     }
-    middleware.Machine = this;
+    if (middleware.__api) middleware.__api(this);
     if (middleware[MIDDLEWARE_REGISTERED]) middleware[MIDDLEWARE_REGISTERED]();
   }
   destroy(machine) {

@@ -11,17 +11,18 @@ var _circularJson2 = _interopRequireDefault(_circularJson);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var getMachines = function getMachines() {
-  return Object.keys(DevTools.Machine.machines).map(function (name) {
-    return { name: name, state: sanitize(DevTools.Machine.machines[name].state) };
-  });
-};
+var Machine;
+
 var message = function message(data) {
   if (window && window.top && window.top.postMessage) {
+    var machines = Object.keys(Machine.machines).map(function (name) {
+      return { name: name, state: sanitize(Machine.machines[name].state) };
+    });
+
     window.top.postMessage(_extends({
       source: 'stent',
       time: new Date().getTime(),
-      machines: getMachines()
+      machines: machines
     }, data), '*');
   } else {
     console.error('There is no window.postMessage available');
@@ -61,11 +62,14 @@ var sanitize = function sanitize(something) {
 };
 var getMetaInfo = function getMetaInfo(meta) {
   return Object.assign({}, meta, {
-    middlewares: DevTools.Machine.middlewares.length
+    middlewares: Machine.middlewares.length
   });
 };
 
 var DevTools = {
+  __api: function __api(m) {
+    Machine = m;
+  },
   onMachineCreated: function onMachineCreated(machine) {
     message({
       type: 'onMachineCreated',
