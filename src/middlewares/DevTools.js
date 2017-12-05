@@ -7,8 +7,6 @@ const message = (data) => {
     const machines = Object.keys(Machine.machines)
       .map(name => ({ name, state: sanitize(Machine.machines[name].state) }));
 
-    console.log(machines);
-
     window.top.postMessage({
       source: 'stent',
       time: (new Date()).getTime(),
