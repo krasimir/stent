@@ -4,6 +4,7 @@ var Machine;
 
 const message = (data) => {
   if (window && window.top && window.top.postMessage) {
+    console.log(Machine);
     const machines = Object.keys(Machine.machines)
       .map(name => ({ name, state: sanitize(Machine.machines[name].state) }));
 
