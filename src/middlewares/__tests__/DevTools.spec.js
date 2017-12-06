@@ -34,9 +34,9 @@ describe('Given the DevTools middleware', function () {
         .to.be.calledOnce
         .and.to.be.calledWith({
           source: 'stent',
-          uid: 1,
-          pageRefresh: true,
           time: sinon.match.number,
+          uid: sinon.match.number,
+          pageRefresh: true,
           machines: []
         });
     });
