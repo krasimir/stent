@@ -41,38 +41,60 @@ describe('Given the DevTools middleware', function () {
     });
     describe('and when we create a machine', function () {
       it('should dispatch a `onMachineCreated` message and serialize the machine', function () {
+        const Component = () => <p>Hello world</p>;
+
         Machine.create('Foo', {
-          state: { name: 'idle', answer: 42 },
+          state: { name: 'idle' },
           transitions: {
             idle: {
-              run: 'running',
-              obj: { name: 'bar', data: [{ answer: 42 }] },
-              func: function() {},
-              gen: function * () {} 
+              save: function*() {
+                yield { name: 'fetching' };
+                this.success(yield call(api));
+              }
+            },
+            fetching: {
+              success(state, answer) {
+                return { name: 'idle', answer };
+              }
             }
           }
         });
+        connectReactComponent(Component).with('Foo').map(machine => ({}));
+
         expect(window.top.postMessage).to.be.calledWith({
           time: sinon.match.number,
           source: 'stent',
           type: 'onMachineCreated',
           meta: { middlewares: 1 },
-          machines: [{ name: 'Foo', state: { answer: 42, name: 'idle' } }],
+          machines: [{ name: "Foo", state: { name: "idle" } }],
           machine: {
-            func: { __func: '<anonymous>' },
-            gen: { __func: '<anonymous>' },
-            obj: { __func: '<anonymous>' },
-            run: { __func: '<anonymous>' },
-            isIdle: { __func: '<anonymous>' },
-            name: 'Foo',
-            state: { name: 'idle', answer: 42 },
-            transitions: {
-              idle: {
-                func: { __func: 'func' },
-                gen: { __func: 'gen' },
-                obj: { data: [{ answer: 42 }], name: 'bar' },
-                run: 'running'
+            "name": "Foo",
+            "state": {
+              "name": "idle"
+            },
+            "transitions": {
+              "idle": {
+                "save": {
+                  "__func": "save"
+                }
+              },
+              "fetching": {
+                "success": {
+                  "__func": "success"
+                }
               }
+            },
+            "isIdle": {
+              "__func": "<anonymous>"
+            },
+            "save": {
+              "__func": "<anonymous>"
+            },
+            "isFetching": {
+              "__func": "<anonymous>"
+            },
+            "success": {
+              "__func": "<anonymous>"
             }
           }
         });

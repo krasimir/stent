@@ -33,8 +33,9 @@ const formatYielded = yielded => {
 
   return y;
 }
-const sanitize = something => {
+const sanitize = (something, showErrorInConsole = false) => {
   var result;
+
   try {
     result = JSON.parse(CircularJSON.stringify(something, function (key, value) {
       if (typeof value === 'function') {
@@ -43,6 +44,9 @@ const sanitize = something => {
       return value;
     }));
   } catch(error) {
+    if (showErrorInConsole) {
+      console.log(error);
+    }
     result = null;
   }
   return result;
@@ -54,6 +58,9 @@ const getMetaInfo = meta => {
 };
   
 const DevTools = {
+  __sanitize: sanitize,
+  __formatYielded: formatYielded,
+  __message: message,
   __api(m) {
     Machine = m;
   },

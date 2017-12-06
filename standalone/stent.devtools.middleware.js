@@ -47,7 +47,10 @@ var formatYielded = function formatYielded(yielded) {
   return y;
 };
 var sanitize = function sanitize(something) {
+  var showErrorInConsole = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
   var result;
+
   try {
     result = JSON.parse(_circularJson2.default.stringify(something, function (key, value) {
       if (typeof value === 'function') {
@@ -56,6 +59,9 @@ var sanitize = function sanitize(something) {
       return value;
     }));
   } catch (error) {
+    if (showErrorInConsole) {
+      console.log(error);
+    }
     result = null;
   }
   return result;
@@ -67,6 +73,9 @@ var getMetaInfo = function getMetaInfo(meta) {
 };
 
 var DevTools = {
+  __sanitize: sanitize,
+  __formatYielded: formatYielded,
+  __message: message,
   __api: function __api(m) {
     Machine = m;
   },
