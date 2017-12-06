@@ -34,6 +34,7 @@ describe('Given the DevTools middleware', function () {
         .to.be.calledOnce
         .and.to.be.calledWith({
           source: 'stent',
+          uid: 1,
           pageRefresh: true,
           time: sinon.match.number,
           machines: []
@@ -62,6 +63,7 @@ describe('Given the DevTools middleware', function () {
         connectReactComponent(Component).with('Foo').map(machine => ({}));
 
         expect(window.top.postMessage).to.be.calledWith({
+          uid: sinon.match.number,
           time: sinon.match.number,
           source: 'stent',
           type: 'onMachineCreated',
@@ -169,6 +171,9 @@ describe('Given the DevTools middleware', function () {
         const exp = yielded => {
           expect(window.top.postMessage).to.be.calledWith(sinon.match({ type: 'onGeneratorStep', yielded }));
         }
+        const expResumed = value => {
+          expect(window.top.postMessage).to.be.calledWith(sinon.match({ type: 'onGeneratorResumed', value }));
+        }
 
         const machine = Machine.create({ name: 'idle' }, {
           idle: {
@@ -189,7 +194,13 @@ describe('Given the DevTools middleware', function () {
               exp({ __type: 'call', args: ['jumping'], func: 'mar' }) // 5
               exp({ __type: 'call', args: [{ a: 'jumping' }], func: 'bar' }); // 6
               exp('jumping'); // 7
+              expResumed(null);
+              expResumed([ 1, 2, 3, 4 ]);
+              expResumed('jumping');
               expect(this.state.name).to.be.equal('jumping');
+              expect(window.top.postMessage).to.be.calledWith(
+                sinon.match({ type: 'onGeneratorEnd', value: 'jumping' })
+              );
               
               done();
             }

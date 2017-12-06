@@ -30,6 +30,8 @@ var MIDDLEWARE_ACTION_PROCESSED = exports.MIDDLEWARE_ACTION_PROCESSED = 'onActio
 var MIDDLEWARE_STATE_WILL_CHANGE = exports.MIDDLEWARE_STATE_WILL_CHANGE = 'onStateWillChange';
 var MIDDLEWARE_PROCESS_STATE_CHANGE = exports.MIDDLEWARE_PROCESS_STATE_CHANGE = 'onStateChanged';
 var MIDDLEWARE_GENERATOR_STEP = exports.MIDDLEWARE_GENERATOR_STEP = 'onGeneratorStep';
+var MIDDLEWARE_GENERATOR_END = exports.MIDDLEWARE_GENERATOR_END = 'onGeneratorEnd';
+var MIDDLEWARE_GENERATOR_RESUMED = exports.MIDDLEWARE_GENERATOR_RESUMED = 'onGeneratorResumed';
 var MIDDLEWARE_MACHINE_CREATED = exports.MIDDLEWARE_MACHINE_CREATED = 'onMachineCreated';
 var MIDDLEWARE_MACHINE_CONNECTED = exports.MIDDLEWARE_MACHINE_CONNECTED = 'onMachineConnected';
 var MIDDLEWARE_MACHINE_DISCONNECTED = exports.MIDDLEWARE_MACHINE_DISCONNECTED = 'onMachineDisconnected';
@@ -342,7 +344,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   var generatorNext = function generatorNext(gen, res) {
-    return !canceled && gen.next(res);
+    if (canceled) return;
+    (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_GENERATOR_RESUMED, machine, res);
+    return gen.next(res);
   };
   var generatorThrow = function generatorThrow(gen, error) {
     return !canceled && gen.throw(error);
@@ -356,9 +360,9 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
 
   var iterate = function iterate(result) {
     if (canceled) return;
-    (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_GENERATOR_STEP, machine, result.value);
 
     if (!result.done) {
+      (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_GENERATOR_STEP, machine, result.value);
 
       // yield call
       if (_typeof(result.value) === 'object' && result.value.__type === 'call') {
@@ -392,6 +396,7 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
 
       // the end of the generator (return statement)
     } else {
+      (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_GENERATOR_END, machine, result.value);
       done(result.value);
     }
   };

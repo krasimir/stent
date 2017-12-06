@@ -1,9 +1,13 @@
 import handleMiddleware from './handleMiddleware';
-import { MIDDLEWARE_GENERATOR_STEP } from '../constants';
+import { MIDDLEWARE_GENERATOR_STEP, MIDDLEWARE_GENERATOR_END, MIDDLEWARE_GENERATOR_RESUMED } from '../constants';
 import updateState from './updateState';
 
 export default function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
-  const generatorNext = (gen, res) => !canceled && gen.next(res);
+  const generatorNext = (gen, res) => {
+    if (canceled) return;
+    handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, res);
+    return gen.next(res);
+  };
   const generatorThrow = (gen, error) => !canceled && gen.throw(error);
   const cancelGenerator = () => {
     cancelInsideGenerator && cancelInsideGenerator();
@@ -14,9 +18,9 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
 
   const iterate = function (result) {
     if (canceled) return;
-    handleMiddleware(MIDDLEWARE_GENERATOR_STEP, machine, result.value);
-
+    
     if (!result.done) {
+      handleMiddleware(MIDDLEWARE_GENERATOR_STEP, machine, result.value);
 
       // yield call
       if (typeof result.value === 'object' && result.value.__type === 'call') {
@@ -46,6 +50,7 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
     
     // the end of the generator (return statement)
     } else {
+      handleMiddleware(MIDDLEWARE_GENERATOR_END, machine, result.value);
       done(result.value);
     }
   };

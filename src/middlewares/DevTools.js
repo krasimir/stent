@@ -1,6 +1,8 @@
 import { stringify } from '../helpers/vendors/CircularJSON';
 
-var Machine;
+var Machine, idx = 0;
+
+const getUID = () => (++idx);
 
 const message = (data) => {
   if (window && window.top && window.top.postMessage) {
@@ -9,6 +11,7 @@ const message = (data) => {
 
     window.top.postMessage({
       source: 'stent',
+      uid: getUID(),
       time: (new Date()).getTime(),
       machines,
       ...data
@@ -24,7 +27,7 @@ const formatYielded = yielded => {
     var funcName = yielded.func.name;
     if (funcName === '') { funcName = '<anonymous>' };
     try {
-      y = JSON.parse(JSON.stringify(yielded));
+      y = sanitize(yielded);
     } catch(error) {
       y = { __type: 'call' };
     }
@@ -107,6 +110,20 @@ const DevTools = {
     message({
       type: 'onGeneratorStep',
       yielded: formatYielded(yielded),
+      meta: getMetaInfo()
+    });
+  },
+  onGeneratorEnd(value) {
+    message({
+      type: 'onGeneratorEnd',
+      value: sanitize(value),
+      meta: getMetaInfo()
+    });
+  },
+  onGeneratorResumed(value) {
+    message({
+      type: 'onGeneratorResumed',
+      value: sanitize(value),
       meta: getMetaInfo()
     });
   },

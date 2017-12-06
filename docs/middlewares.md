@@ -29,6 +29,14 @@ Machine.addMiddleware({
     // It gets fired when you yield something in a generator
     // as an action handler.
   },
+  onGeneratorEnd(value) {
+    // You'll probably never need this hook.
+    // It gets fired when the generator is completed
+  },
+  onGeneratorResumed(value) {
+    // You'll probably never need this hook.
+    // It gets fired when the generator is resumed
+  },
   onMachineCreated(machine) {
     // ...
   },

@@ -184,7 +184,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _CircularJSON = require('../helpers/vendors/CircularJSON');
 
-var Machine;
+var Machine,
+    idx = 0;
+
+var getUID = function getUID() {
+  return ++idx;
+};
 
 var message = function message(data) {
   if (window && window.top && window.top.postMessage) {
@@ -194,6 +199,7 @@ var message = function message(data) {
 
     window.top.postMessage(_extends({
       source: 'stent',
+      uid: getUID(),
       time: new Date().getTime(),
       machines: machines
     }, data), '*');
@@ -210,7 +216,7 @@ var formatYielded = function formatYielded(yielded) {
       funcName = '<anonymous>';
     };
     try {
-      y = JSON.parse(JSON.stringify(yielded));
+      y = sanitize(yielded);
     } catch (error) {
       y = { __type: 'call' };
     }
@@ -303,6 +309,20 @@ var DevTools = {
     message({
       type: 'onGeneratorStep',
       yielded: formatYielded(yielded),
+      meta: getMetaInfo()
+    });
+  },
+  onGeneratorEnd: function onGeneratorEnd(value) {
+    message({
+      type: 'onGeneratorEnd',
+      value: sanitize(value),
+      meta: getMetaInfo()
+    });
+  },
+  onGeneratorResumed: function onGeneratorResumed(value) {
+    message({
+      type: 'onGeneratorResumed',
+      value: sanitize(value),
       meta: getMetaInfo()
     });
   },

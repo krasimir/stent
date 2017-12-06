@@ -1,3 +1,7 @@
+## 3.6.0
+
+Adding `onGeneratorEnd` and `onGeneratorResumed` action types to the middleware.
+
 ## 3.5.3 - 3.5.8
 
 Changes in DevTools extension.
