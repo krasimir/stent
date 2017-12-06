@@ -1,4 +1,4 @@
-import CircularJSON from 'circular-json';
+import { stringify } from '../helpers/vendors/CircularJSON';
 
 var Machine;
 
@@ -37,7 +37,7 @@ const sanitize = (something, showErrorInConsole = false) => {
   var result;
 
   try {
-    result = JSON.parse(CircularJSON.stringify(something, function (key, value) {
+    result = JSON.parse(stringify(something, function (key, value) {
       if (typeof value === 'function') {
         return { __func: value.name === '' ? '<anonymous>' : value.name };
       }

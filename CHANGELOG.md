@@ -1,4 +1,4 @@
-## 3.5.3, 3.5.4, 3.5.5, 3.5.6, 3.5.7
+## 3.5.3 - 3.5.8
 
 Changes in DevTools extension.
 
