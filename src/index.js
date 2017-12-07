@@ -6,6 +6,7 @@ import {
   MIDDLEWARE_REGISTERED
 } from './constants';
 import connect from './helpers/connect';
+import call from './helpers/generators/call';
 import { flush as flushConnectSetup } from './helpers/connect';
 import { destroy as cleanupConnections } from './helpers/connect';
 import handleMiddleware from './helpers/handleMiddleware';
@@ -16,6 +17,7 @@ class MachineFactory {
     this.machines = {};
     this.middlewares = [];
     this.connect = connect;
+    this.call = call;
   }
   create(name, config) {
     const machine = createMachine(name, config, this.middlewares);

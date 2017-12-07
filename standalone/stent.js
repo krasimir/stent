@@ -116,7 +116,7 @@ function createMachine(name, config) {
   return machine;
 }
 module.exports = exports['default'];
-},{"./helpers/handleAction":4,"./helpers/handleActionLatest":5,"./helpers/registerMethods":9,"./helpers/validateConfig":13}],3:[function(require,module,exports){
+},{"./helpers/handleAction":5,"./helpers/handleActionLatest":6,"./helpers/registerMethods":10,"./helpers/validateConfig":14}],3:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -222,7 +222,20 @@ function connect() {
 
   return { 'with': withFunc };
 }
-},{"../":15,"../constants":1,"./handleMiddleware":7}],4:[function(require,module,exports){
+},{"../":16,"../constants":1,"./handleMiddleware":8}],4:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports.default = call;
+function call(func) {
+  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+
+  return { __type: 'call', func: func, args: args };
+};
+module.exports = exports['default'];
+},{}],5:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -298,7 +311,7 @@ function handleAction(machine, action) {
   _handleMiddleware2.default.apply(undefined, [_constants.MIDDLEWARE_ACTION_PROCESSED, machine, action].concat(payload));
 };
 module.exports = exports['default'];
-},{"../constants":1,"./handleGenerator":6,"./handleMiddleware":7,"./updateState":12}],5:[function(require,module,exports){
+},{"../constants":1,"./handleGenerator":7,"./handleMiddleware":8,"./updateState":13}],6:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -322,7 +335,7 @@ function handleActionLatest(machine, action) {
   actions[action] = _handleAction2.default.apply(undefined, [machine, action].concat(payload));
 };
 module.exports = exports['default'];
-},{"./handleAction":4}],6:[function(require,module,exports){
+},{"./handleAction":5}],7:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -410,7 +423,7 @@ function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   return cancelGenerator;
 }
 module.exports = exports['default'];
-},{"../constants":1,"./handleMiddleware":7,"./updateState":12}],7:[function(require,module,exports){
+},{"../constants":1,"./handleMiddleware":8,"./updateState":13}],8:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -443,7 +456,7 @@ function handleMiddleware(hook, machine) {
   })(0);
 }
 module.exports = exports['default'];
-},{"../":15}],8:[function(require,module,exports){
+},{"../":16}],9:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -456,7 +469,7 @@ function isEmptyObject(obj) {
   return true;
 }
 module.exports = exports['default'];
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -504,7 +517,7 @@ function registerMethods(machine, transitions, dispatch, dispatchLatest) {
   }
 }
 module.exports = exports['default'];
-},{"../constants":1,"./toCamelCase":10}],10:[function(require,module,exports){
+},{"../constants":1,"./toCamelCase":11}],11:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -516,7 +529,7 @@ exports.default = function (text) {
 };
 
 module.exports = exports['default'];
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -529,7 +542,7 @@ function uid() {
   });
 }
 module.exports = exports['default'];
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -572,7 +585,7 @@ function updateState(machine, state) {
   (0, _handleMiddleware2.default)(_constants.MIDDLEWARE_PROCESS_STATE_CHANGE, machine);
 }
 module.exports = exports['default'];
-},{"../constants":1,"./handleMiddleware":7,"./isEmptyObject":8,"./validateState":14}],13:[function(require,module,exports){
+},{"../constants":1,"./handleMiddleware":8,"./isEmptyObject":9,"./validateState":15}],14:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -595,7 +608,7 @@ function validateConfig(config) {
   return true;
 }
 module.exports = exports['default'];
-},{"../constants":1}],14:[function(require,module,exports){
+},{"../constants":1}],15:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -611,7 +624,7 @@ function validateState(state) {
   throw new Error((0, _constants.ERROR_WRONG_STATE_FORMAT)(state));
 }
 module.exports = exports['default'];
-},{"../constants":1}],15:[function(require,module,exports){
+},{"../constants":1}],16:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -628,6 +641,10 @@ var _constants = require('./constants');
 var _connect = require('./helpers/connect');
 
 var _connect2 = _interopRequireDefault(_connect);
+
+var _call = require('./helpers/generators/call');
+
+var _call2 = _interopRequireDefault(_call);
 
 var _handleMiddleware = require('./helpers/handleMiddleware');
 
@@ -648,6 +665,7 @@ var MachineFactory = function () {
     this.machines = {};
     this.middlewares = [];
     this.connect = _connect2.default;
+    this.call = _call2.default;
   }
 
   MachineFactory.prototype.create = function create(name, config) {
@@ -706,5 +724,5 @@ exports.Machine = factory;
 if (typeof window !== 'undefined') {
   window[_constants.DEVTOOLS_KEY] = factory;
 }
-},{"./constants":1,"./createMachine":2,"./helpers/connect":3,"./helpers/handleMiddleware":7,"./helpers/uid":11}]},{},[15])(15)
+},{"./constants":1,"./createMachine":2,"./helpers/connect":3,"./helpers/generators/call":4,"./helpers/handleMiddleware":8,"./helpers/uid":12}]},{},[16])(16)
 });

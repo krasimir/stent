@@ -1,3 +1,7 @@
+## 3.6.4
+
+Exposing the `call` helper.
+
 ## 3.6.3
 
 Fire generator resume middleware hook in the proper moment. Also covering the case where the generator is resumed with an error.
