@@ -14,7 +14,7 @@ const message = (data) => {
       source: 'stent',
       time: (new Date()).getTime(),
       uid,
-      machines,
+      state: machines,
       ...data
     }, '*');
   } else {

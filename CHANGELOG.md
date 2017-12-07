@@ -1,3 +1,7 @@
+## 3.6.6
+
+Updates in the DevTools middleware.
+
 ## 3.6.5
 
 Proper serialization of an error.
