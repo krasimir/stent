@@ -1,4 +1,5 @@
 import { stringify } from '../helpers/vendors/CircularJSON';
+import SerializeError from '../helpers/vendors/SerializeError';
 
 var Machine, idx = 0, uid;
 
@@ -43,6 +44,9 @@ const sanitize = (something, showErrorInConsole = false) => {
     result = JSON.parse(stringify(something, function (key, value) {
       if (typeof value === 'function') {
         return { __func: value.name === '' ? '<anonymous>' : value.name };
+      }
+      if (value instanceof Error) {
+        return SerializeError(value);
       }
       return value;
     }));

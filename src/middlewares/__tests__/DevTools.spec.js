@@ -214,6 +214,33 @@ describe('Given the DevTools middleware', function () {
         });
         machine.run();
       });
+      describe('and the generator throws an error', function () {
+        it('should serialize the error in a proper way', function (done) {
+          const brokenAPI = () => Promise.reject(new Error('Ops'));
+          const machine = Machine.create({ name: 'idle' }, {
+            idle: {
+              run: function * () {
+                try {
+                  yield call(brokenAPI);
+                } catch (error) {
+                  expect(window.top.postMessage).to.be.calledWith(
+                    sinon.match({
+                      type: 'onGeneratorResumed',
+                      value: sinon.match({
+                        message: 'Ops',
+                        name: 'Error'
+                      })
+                    })
+                  );
+                  done();
+                }
+              }
+            }
+          });
+
+          machine.run();
+        });
+      });
     });
     describe('and when we connect to the machine', function () {
       it('should dispatch `onMachineConnected` action', function () {

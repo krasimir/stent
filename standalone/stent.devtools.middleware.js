@@ -176,6 +176,81 @@ exports.default = {
 };
 module.exports = exports['default'];
 },{}],2:[function(require,module,exports){
+// Credits: https://github.com/sindresorhus/serialize-error
+
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+module.exports = function (value) {
+	if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+		return destroyCircular(value, []);
+	}
+
+	// People sometimes throw things besides Error objects, so…
+
+	if (typeof value === 'function') {
+		// JSON.stringify discards functions. We do too, unless a function is thrown directly.
+		return '[Function: ' + (value.name || 'anonymous') + ']';
+	}
+
+	return value;
+};
+
+// https://www.npmjs.com/package/destroy-circular
+function destroyCircular(from, seen) {
+	var to = Array.isArray(from) ? [] : {};
+
+	seen.push(from);
+
+	for (var _iterator = Object.keys(from), _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
+		var _ref;
+
+		if (_isArray) {
+			if (_i >= _iterator.length) break;
+			_ref = _iterator[_i++];
+		} else {
+			_i = _iterator.next();
+			if (_i.done) break;
+			_ref = _i.value;
+		}
+
+		var key = _ref;
+
+		var value = from[key];
+
+		if (typeof value === 'function') {
+			continue;
+		}
+
+		if (!value || (typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object') {
+			to[key] = value;
+			continue;
+		}
+
+		if (seen.indexOf(from[key]) === -1) {
+			to[key] = destroyCircular(from[key], seen.slice(0));
+			continue;
+		}
+
+		to[key] = '[Circular]';
+	}
+
+	if (typeof from.name === 'string') {
+		to.name = from.name;
+	}
+
+	if (typeof from.message === 'string') {
+		to.message = from.message;
+	}
+
+	if (typeof from.stack === 'string') {
+		to.stack = from.stack;
+	}
+
+	return to;
+}
+},{}],3:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -183,6 +258,12 @@ exports.__esModule = true;
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _CircularJSON = require('../helpers/vendors/CircularJSON');
+
+var _SerializeError = require('../helpers/vendors/SerializeError');
+
+var _SerializeError2 = _interopRequireDefault(_SerializeError);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Machine,
     idx = 0,
@@ -235,6 +316,9 @@ var sanitize = function sanitize(something) {
     result = JSON.parse((0, _CircularJSON.stringify)(something, function (key, value) {
       if (typeof value === 'function') {
         return { __func: value.name === '' ? '<anonymous>' : value.name };
+      }
+      if (value instanceof Error) {
+        return (0, _SerializeError2.default)(value);
       }
       return value;
     }));
@@ -349,5 +433,5 @@ var DevTools = {
 
 exports.default = DevTools;
 module.exports = exports['default'];
-},{"../helpers/vendors/CircularJSON":1}]},{},[2])(2)
+},{"../helpers/vendors/CircularJSON":1,"../helpers/vendors/SerializeError":2}]},{},[3])(3)
 });

@@ -1,3 +1,7 @@
+## 3.6.5
+
+Proper serialization of an error.
+
 ## 3.6.4
 
 Exposing the `call` helper.
