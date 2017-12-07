@@ -1,3 +1,7 @@
+## 3.6.3
+
+Fire generator resume middleware hook in the proper moment. Also covering the case where the generator is resumed with an error.
+
 ## 3.6.2
 
 Calling onActionProcessed when the generator finishes.

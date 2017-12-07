@@ -3,11 +3,7 @@ import { MIDDLEWARE_GENERATOR_STEP, MIDDLEWARE_GENERATOR_END, MIDDLEWARE_GENERAT
 import updateState from './updateState';
 
 export default function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
-  const generatorNext = (gen, res) => {
-    if (canceled) return;
-    handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, res);
-    return gen.next(res);
-  };
+  const generatorNext = (gen, res) => !canceled && gen.next(res);
   const generatorThrow = (gen, error) => !canceled && gen.throw(error);
   const cancelGenerator = () => {
     cancelInsideGenerator && cancelInsideGenerator();
@@ -30,21 +26,30 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
         // promise
         if (typeof funcResult.then !== 'undefined') {
           funcResult.then(
-            result => iterate(generatorNext(generator, result)),
-            error => iterate(generatorThrow(generator, error))
+            result => {
+              handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, result);
+              return iterate(generatorNext(generator, result));
+            },
+            error => {
+              handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, error);
+              return iterate(generatorThrow(generator, error));
+            }
           );
         // generator
         } else if (typeof funcResult.next === 'function') {
           cancelInsideGenerator = handleGenerator(machine, funcResult, generatorResult => {
+            handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, generatorResult);
             iterate(generatorNext(generator, generatorResult));
           });
         } else {
+          handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, funcResult);
           iterate(generatorNext(generator, funcResult));
         }
 
       // a return statement of the normal function
       } else {
         updateState(machine, result.value);
+        handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine);
         iterate(generatorNext(generator));
       }
     
