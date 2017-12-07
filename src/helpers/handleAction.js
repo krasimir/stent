@@ -38,6 +38,7 @@ export default function handleAction(machine, action, ...payload) {
 
       return handleGenerator(machine, generator, response => {
         updateState(machine, response);
+        handleMiddleware(MIDDLEWARE_ACTION_PROCESSED, machine, action, ...payload);
       });
     } else {
       updateState(machine, response);

@@ -1,3 +1,7 @@
+## 3.6.2
+
+Calling onActionProcessed when the generator finishes.
+
 ## 3.6.1
 
 Sending unique ID to the DevTools instance.
