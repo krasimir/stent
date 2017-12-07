@@ -1,3 +1,7 @@
+## 3.6.1
+
+Sending unique ID to the DevTools instance.
+
 ## 3.6.0
 
 Adding `onGeneratorEnd` and `onGeneratorResumed` action types to the middleware.

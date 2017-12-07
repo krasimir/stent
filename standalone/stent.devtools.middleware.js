@@ -185,7 +185,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 var _CircularJSON = require('../helpers/vendors/CircularJSON');
 
 var Machine,
-    idx = 0;
+    idx = 0,
+    uid;
 
 var getUID = function getUID() {
   return ++idx;
@@ -199,8 +200,8 @@ var message = function message(data) {
 
     window.top.postMessage(_extends({
       source: 'stent',
-      uid: getUID(),
       time: new Date().getTime(),
+      uid: uid,
       machines: machines
     }, data), '*');
   } else {
@@ -255,8 +256,9 @@ var DevTools = {
   __sanitize: sanitize,
   __formatYielded: formatYielded,
   __message: message,
-  __api: function __api(m) {
+  __initialize: function __initialize(m, uniqueId) {
     Machine = m;
+    uid = uniqueId;
   },
   onMachineCreated: function onMachineCreated(machine) {
     message({
@@ -339,7 +341,9 @@ var DevTools = {
     });
   },
   onMiddlewareRegister: function onMiddlewareRegister() {
-    message({ pageRefresh: true });
+    message({
+      pageRefresh: true
+    });
   }
 };
 

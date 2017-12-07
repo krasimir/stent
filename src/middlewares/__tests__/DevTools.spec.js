@@ -35,7 +35,7 @@ describe('Given the DevTools middleware', function () {
         .and.to.be.calledWith({
           source: 'stent',
           time: sinon.match.number,
-          uid: sinon.match.number,
+          uid: sinon.match.string,
           pageRefresh: true,
           machines: []
         });
@@ -63,7 +63,7 @@ describe('Given the DevTools middleware', function () {
         connectReactComponent(Component).with('Foo').map(machine => ({}));
 
         expect(window.top.postMessage).to.be.calledWith({
-          uid: sinon.match.number,
+          uid: sinon.match.string,
           time: sinon.match.number,
           source: 'stent',
           type: 'onMachineCreated',

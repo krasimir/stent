@@ -1,6 +1,6 @@
 import { stringify } from '../helpers/vendors/CircularJSON';
 
-var Machine, idx = 0;
+var Machine, idx = 0, uid;
 
 const getUID = () => (++idx);
 
@@ -11,8 +11,8 @@ const message = (data) => {
 
     window.top.postMessage({
       source: 'stent',
-      uid: getUID(),
       time: (new Date()).getTime(),
+      uid,
       machines,
       ...data
     }, '*');
@@ -64,8 +64,9 @@ const DevTools = {
   __sanitize: sanitize,
   __formatYielded: formatYielded,
   __message: message,
-  __api(m) {
+  __initialize(m, uniqueId) {
     Machine = m;
+    uid = uniqueId;
   },
   onMachineCreated(machine) {
     message({
@@ -140,7 +141,9 @@ const DevTools = {
     });
   },
   onMiddlewareRegister() {
-    message({ pageRefresh: true });
+    message({
+      pageRefresh: true
+    });
   }
 };
 

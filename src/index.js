@@ -9,6 +9,7 @@ import connect from './helpers/connect';
 import { flush as flushConnectSetup } from './helpers/connect';
 import { destroy as cleanupConnections } from './helpers/connect';
 import handleMiddleware from './helpers/handleMiddleware';
+import uid from './helpers/uid';
 
 class MachineFactory {
   constructor() {
@@ -40,7 +41,7 @@ class MachineFactory {
     } else {
       this.middlewares.push(middleware);
     }
-    if (middleware.__api) middleware.__api(this);
+    if (middleware.__initialize) middleware.__initialize(this, uid());
     if (middleware[MIDDLEWARE_REGISTERED]) middleware[MIDDLEWARE_REGISTERED]();
   }
   destroy(machine) {
