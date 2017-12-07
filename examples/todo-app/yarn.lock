@@ -1330,10 +1330,6 @@ circular-json@^0.3.1:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.3.3.tgz#815c99ea84f6809529d2f45791bdf82711352d66"
 
-circular-json@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.4.0.tgz#c448ea998b7fe31ecf472ec29c6b608e2e2a62fd"
-
 clap@^1.0.9:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/clap/-/clap-1.2.0.tgz#59c90fe3e137104746ff19469a27a634ff68c857"
@@ -5713,11 +5709,9 @@ sshpk@^1.7.0:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.3.1.tgz#faf51b9eb74aaef3b3acf4ad5f61abf24cb7b93e"
 
-stent@3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/stent/-/stent-3.6.0.tgz#30ef48210745c01e85032ab3fa24086af5341d52"
-  dependencies:
-    circular-json "^0.4.0"
+stent@3.6.1:
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/stent/-/stent-3.6.1.tgz#33a12706e68042ccaab3997ddb442e45a6075c4b"
 
 stream-browserify@^2.0.1:
   version "2.0.1"
