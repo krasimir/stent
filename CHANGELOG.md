@@ -1,3 +1,7 @@
+## 4.0.0
+
+DevTools middleware moved to [Stent DevTools emitters](https://github.com/krasimir/stent-dev-tools-emitters) project.
+
 ## 3.6.6
 
 Updates in the DevTools middleware.
