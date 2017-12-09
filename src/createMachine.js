@@ -24,12 +24,18 @@ export default function createMachine(name, config) {
 
   validateConfig(config);
 
-  const { state: initialState, transitions } = config;
+  const { state: initialState, transitions, ...customMethods } = config;
   const dispatch = (action, ...payload) => handleAction(machine, action, ...payload);
   const dispatchLatest = (action, ...payload) => handleActionLatest(machine, action, ...payload);
-  
+
   machine.state = initialState;
   machine.transitions = transitions;
+  
+  if (customMethods) {
+    for(let key in customMethods) {
+      machine[key] = customMethods[key];
+    }
+  }
 
   registerMethods(
     machine,

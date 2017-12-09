@@ -1,3 +1,7 @@
+## 4.1.0
+
+Support of custom methods added to the machine.
+
 ## 4.0.0
 
 DevTools middleware moved to [Stent DevTools emitters](https://github.com/krasimir/stent-dev-tools-emitters) project.
