@@ -6,20 +6,20 @@ import { mount } from 'enzyme';
 var wrapper;
 const mapping = sinon.spy();
 
-function getWrapper(once, m) {
-  class Component extends React.Component {
-    render() {
-      return (
-        <div>
-          <p id='A'>{ this.props.message('machine A', this.props.stateA)}</p>
-          <p id='B'>{ this.props.message('machine B', this.props.stateB)}</p>
-          <button id='run' onClick={ () => this.props.run() }>run</button>
-          <button id='fetch' onClick={ () => this.props.fetch() }>fetch</button>
-        </div>
-      );
-    }
+class Component extends React.Component {
+  render() {
+    return (
+      <div>
+        <p id='A'>{ this.props.message('machine A', this.props.stateA)}</p>
+        <p id='B'>{ this.props.message('machine B', this.props.stateB)}</p>
+        <button id='run' onClick={ () => this.props.run() }>run</button>
+        <button id='fetch' onClick={ () => this.props.fetch() }>fetch</button>
+      </div>
+    );
   }
+}
 
+function getWrapper(once, m) {
   const mappingFunc = (A, B) => {
     mapping(A, B);
     return {
@@ -87,6 +87,43 @@ describe('Given the connect React helper', function () {
       wrapper.find('button#fetch').simulate('click');
       expect(wrapper.find('p#A').text()).to.equal('machine A is in a idle state');
       expect(wrapper.find('p#B').text()).to.equal('machine B is in a waiting state');
+    });
+
+    describe('when we update the state of the machine many times in a single frame', function () {
+      it('should trigger the mapping function many times', function () {
+        const render = sinon.spy();
+        const Comp = function () {
+          render();
+          return <p>Hello</p>;
+        }
+        const machine = Machine.create('C', {
+          state: { name: 'idle', counter: 0 },
+          transitions: {
+            idle: {
+              run: function ({ counter }) {
+                return { name: 'idle', counter: counter + 1 };
+              }
+            }
+          }
+        });
+        const mappingFunction = sinon.stub().returns({});
+        const ConnectedComponent = connect(Comp).with('C').map(mappingFunction);
+
+        mount(<ConnectedComponent message={ 'Hello' } />)
+
+        machine.run();
+        machine.run();
+        machine.run();
+        machine.run();
+        machine.run();
+        machine.run();
+
+        expect(mappingFunction)
+          .to.be.calledWith(sinon.match({
+            state: { counter: 6, name: 'idle' }
+          }))
+        expect(render.callCount).to.be.equal(7);
+      });
     });
   });
   describe('when unmounting the component', function () {
