@@ -1,3 +1,7 @@
+## 4.2.0
+
+Stent is no longer sending uid to a middleware when initializing.
+
 ## 4.1.0
 
 Support of custom methods added to the machine.

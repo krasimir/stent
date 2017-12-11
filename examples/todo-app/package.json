@@ -7,7 +7,7 @@
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.13",
     "stent": "4.0.0",
-    "stent-dev-tools-emitters": "2.0.0"
+    "stent-dev-tools-emitters": "3.0.0"
   },
   "scripts": {
     "start": "BROWSER=none react-scripts start",
