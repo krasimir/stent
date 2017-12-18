@@ -3774,9 +3774,9 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
-kuker-emitters:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/kuker-emitters/-/kuker-emitters-3.1.0.tgz#c8db1bae15b07bc98c4b2b30ddf225d404eef80c"
+kuker-emitters@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/kuker-emitters/-/kuker-emitters-5.0.0.tgz#16a5835f9c9b8daa7d8aa1fe8ce540f8eddefbef"
 
 latest-version@^2.0.0:
   version "2.0.0"
