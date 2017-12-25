@@ -3890,9 +3890,9 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
-kuker-emitters@6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/kuker-emitters/-/kuker-emitters-6.0.0.tgz#af1526e536db3e96050e69d583a12efcb0f48044"
+kuker-emitters@6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/kuker-emitters/-/kuker-emitters-6.2.0.tgz#fc4ddd2b0118ed6f4574586ad00d6353622791a3"
   dependencies:
     socket.io "^2.0.4"
 
