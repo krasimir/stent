@@ -29,6 +29,12 @@ The library is available as a [npm module](https://www.npmjs.com/package/stent) 
   * [React integration](./docs/react-integration.md)
 * [examples](./docs/examples.md)
 
+## Debugging apps made with Stent
+
+Stent is supported by [Kuker](https://github.com/krasimir/kuker) chrome extension. Just add the [Stent emitter](https://github.com/krasimir/kuker-emitters#integration-with-stent) to your app and open the Kuker tab in Chrome's DevTools.
+
+![Kuker](https://github.com/krasimir/kuker-emitters/raw/master/img/screenshot_stent.jpg)
+
 ## Must-read articles/resources
 
 * [You are managing state? Think twice.](http://krasimirtsonev.com/blog/article/managing-state-in-javascript-with-state-machines-stent) - an article explaining why finite state machines are important in the context of the UI development.
