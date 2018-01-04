@@ -31,7 +31,7 @@ The library is available as a [npm module](https://www.npmjs.com/package/stent) 
 
 ## Debugging apps made with Stent
 
-Stent is supported by [Kuker](https://github.com/krasimir/kuker) chrome extension. Just add the [Stent emitter](https://github.com/krasimir/kuker-emitters#integration-with-stent) to your app and open the Kuker tab in Chrome's DevTools.
+Stent is supported by [Kuker](https://github.com/krasimir/kuker) Chrome extension. Just add the [Stent emitter](https://github.com/krasimir/kuker-emitters#integration-with-stent) to your app and open the [Kuker](https://github.com/krasimir/kuker) tab in Chrome's DevTools.
 
 ![Kuker](https://github.com/krasimir/kuker-emitters/raw/master/img/screenshot_stent.jpg)
 
