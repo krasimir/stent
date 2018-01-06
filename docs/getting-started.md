@@ -43,7 +43,7 @@ if (machine.isRunning()) {
 console.log(machine.isIdle()); // true
 ```
 
-The created machine may accept more then a string as a handler of the action. We may pass a function which accepts two arguments. The first one is the current state and the second one is some meta data traveling with the action (if any). For example:
+The created machine may accept more than a string as a handler of the action. We may pass a function which accepts two arguments. The first one is the current state and the second one is some meta data traveling with the action (if any). For example:
 
 ```js
 const machine = Machine.create('todo-app', {
