@@ -10,7 +10,7 @@
 
 ### React ToDo applciation using [create-react-app](https://github.com/facebookincubator/create-react-app)
 
-[Here.](./examples/todo-app)
+[Here.](../examples/todo-app)
 
 ### Small ToDo app
 
