@@ -4,7 +4,7 @@
 
 ---
 
-*By adding a middleware you are hooking to some internal lifecycle processes of Stent. Changing state or firing methods are this point may lead to bugs so avoid doing it.*
+*By adding a middleware you are hooking to some internal lifecycle processes of Stent. Changing state or firing methods at this point may lead to bugs so avoid doing it.*
 
 If you want to extend the library with some additional functionalities you may add a middleware. In fact Stent uses middleware internally for implementing the `connect` helper. We have to call `addMiddleware` with a single parameter which is an object with a set of functions that hook to the lifecycle methods of Stent.
 
