@@ -108,7 +108,7 @@ Machine.create('app', {
 
 *`requestToBackend` is getting called with `/api/todos/` and `POST` as arguments.*
 
-Have in mind that if you are using the `latest` version of your method you are able to cancel the previously fired generator only if you use the `call` helper. That's because in this case you are giving the control to Stent and the library is able to stop/cancel stuff. Otherwise you have to handle such cases on your own. To get a better context for the problem check out this [issue](https://github.com/krasimir/stent/issues/3).
+Keep in mind that if you are using the `latest` version of your method you are able to cancel the previously fired generator only if you use the `call` helper. That's because in this case you are giving the control to Stent and the library is able to stop/cancel stuff. Otherwise you have to handle such cases on your own. To get a better context for the problem check out this [issue](https://github.com/krasimir/stent/issues/3).
 
 ---
 
