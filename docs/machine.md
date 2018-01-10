@@ -56,7 +56,7 @@ const appMachine = Machine.create(
 );
 ```
 
-The created machine the following methods:
+The created machine has the following methods:
 
 * `machine.destroy` - cleans the machine up
 * For every state there is a `is<state name>` method so we can check if the machine is in that state. For example, to check if the machine is in a `fetching remote data` state we may call `machine.isFetchingRemoteData()` method. The alternative is `machine.state.name === 'fetching remote data'`.
