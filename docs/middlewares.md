@@ -56,7 +56,7 @@ Have in mind that these methods are fired with the machine as a context. Which m
 
 *If you have more then one middleware to add pass an array of objects instead of multiple calls of `addMiddleware`.*
 
-There is one build-in middleware which is part of the Stent package - `Logger`.
+There is one built-in middleware which is part of the Stent package - `Logger`.
 
 **`Logger`**
 
