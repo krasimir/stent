@@ -267,25 +267,25 @@ describe('Given the handleAction function', function () {
         handleAction(machine, 'run');
         expect(machine.state).to.deep.equal({ name: 'hello stent' });
       });
-      it('should execute the function and return the result', function () {
-        const api = function(name) {
-          return `hello ${ name }`;
+      it('should execute the function with proper parameters', function () {
+        const api = function(name, answer) {
+          return Promise.resolve(`${ name }.${ answer }`);
         }
         const handler = function * () {
-          const newState = yield call(api, 'stent');
-
-          return newState;
+          return yield call(api, 'stent', 42);
         }
         const machine = {
           state: { name: 'idle', data: 42 },
           transitions: {
             idle: { run: handler },
-            'hello stent': 'a'
+            'stent.42': 'a'
           }
         };
   
         handleAction(machine, 'run');
-        expect(machine.state).to.deep.equal({ name: 'hello stent' });
+        return Promise.resolve().then(() => {
+          expect(machine.state).to.deep.equal({ name: 'stent.42' });
+        });
       });
       describe('and when the function returns a promise', function () {
         it('should return the value of the resolved promise', function () {
