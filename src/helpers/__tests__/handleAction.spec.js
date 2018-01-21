@@ -321,41 +321,31 @@ describe('Given the handleAction function', function () {
             expect(machine.state).to.deep.equal({ name: 'stent: merry christmas' });
           });
         });
-        describe('and when that other generator is actually another handler', function () {
-          it('should pass the correct context, i.e. the machine as a last argument', function (done) {
-            const handlerA = function * (state) {
-              yield call(handlerB, state, 'world');
+        it('should handle errors properly through the generator chain', function () {
+          const fetchFake = () => {
+            throw new Error('opa');
+          }
+          const api = function * (name) {
+            return yield call(fetchFake);
+          }
+          const handler = function * () {
+            try {
+              yield call(api, 'stent');
+            } catch (error) {
+              return error.message;
             }
-            const handlerB = function * (state, params, machine) {
-              yield {
-                name: 'foo',
-                message: `${ state.name }: merry christmas ${ params }`
-              };
-              machine.fin();
+          }
+          const machine = {
+            state: { name: 'idle', data: 42 },
+            transitions: {
+              idle: { run: handler },
+              opa: { foo: 'bar' }
             }
-            const machine = {
-              state: { name: 'idle', data: 42 },
-              fin: function () {
-                expect(machine.state.message).to.equal('idle: merry christmas world');
-                done();
-              },
-              transitions: {
-                idle: {
-                  run: handlerA
-                },
-                foo: {
-                  bar: 'zzzz'
-                }
-              }
-            };
-
-            handleAction(machine, 'run');
-            return Promise.resolve().then(() => {
-              expect(machine.state).to.deep.equal({
-                name: 'foo',
-                message: 'idle: merry christmas world'
-              });
-            });
+          };
+    
+          handleAction(machine, 'run');
+          return Promise.resolve().then(() => {
+            expect(machine.state).to.deep.equal({ name: 'opa' });
           });
         });
       });

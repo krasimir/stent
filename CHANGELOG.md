@@ -1,6 +1,6 @@
-## 5.0.0
+## 5.0.1
 
-The machine is no longer sent as a context of a function used in call helper. It gets sent as a last function argument.
+The machine is no longer sent as a context of a function used in call helper. With this version also we are fixing the error handling of chained generators.
 
 ## 4.2.0
 

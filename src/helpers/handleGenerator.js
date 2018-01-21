@@ -21,7 +21,7 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
       // yield call
       if (typeof result.value === 'object' && result.value.__type === 'call') {
         const { func, args } = result.value;
-        const funcResult = func(...[...args, machine]);
+        const funcResult = func(...args);
         
         // promise
         if (typeof funcResult.then !== 'undefined') {
@@ -37,10 +37,14 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
           );
         // generator
         } else if (typeof funcResult.next === 'function') {
-          cancelInsideGenerator = handleGenerator(machine, funcResult, generatorResult => {
-            handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, generatorResult);
-            iterate(generatorNext(generator, generatorResult));
-          });
+          try {
+            cancelInsideGenerator = handleGenerator(machine, funcResult, generatorResult => {
+              handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, generatorResult);
+              iterate(generatorNext(generator, generatorResult));
+            });
+          } catch (error) {
+            return iterate(generatorThrow(generator, error));
+          }
         } else {
           handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, funcResult);
           iterate(generatorNext(generator, funcResult));
