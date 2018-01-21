@@ -322,16 +322,16 @@ describe('Given the handleAction function', function () {
           });
         });
         describe('and when that other generator is actually another handler', function () {
-          it('should pass the correct context, i.e. the machine', function (done) {
+          it('should pass the correct context, i.e. the machine as a last argument', function (done) {
             const handlerA = function * (state) {
               yield call(handlerB, state, 'world');
             }
-            const handlerB = function * (state, params) {
+            const handlerB = function * (state, params, machine) {
               yield {
                 name: 'foo',
                 message: `${ state.name }: merry christmas ${ params }`
               };
-              this.fin();
+              machine.fin();
             }
             const machine = {
               state: { name: 'idle', data: 42 },

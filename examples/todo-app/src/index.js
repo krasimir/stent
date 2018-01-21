@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Machine } from 'stent';
-import { StentEmitter, ReactEmitter } from 'kuker-emitters';
+import { StentEmitter, ReactEmitter, HTMLEmitter } from 'kuker-emitters';
 import ToDos from './machines/ToDos.js';
 import App from './components/App';
 import './index.css';
@@ -15,6 +15,5 @@ Machine.create('ToDos', ToDos);
 
 render(<App />, document.getElementById('root'));
 
-// ---------------------------------------------- ReactEmitter
-
 ReactEmitter();
+HTMLEmitter();

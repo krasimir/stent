@@ -1,3 +1,7 @@
+## 5.0.0
+
+The machine is no longer sent as a context of a function used in call helper. It gets sent as a last function argument.
+
 ## 4.2.0
 
 Stent is no longer sending uid to a middleware when initializing.

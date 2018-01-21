@@ -21,7 +21,7 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
       // yield call
       if (typeof result.value === 'object' && result.value.__type === 'call') {
         const { func, args } = result.value;
-        const funcResult = func.apply(machine, args);
+        const funcResult = func(...[...args, machine]);
         
         // promise
         if (typeof funcResult.then !== 'undefined') {
