@@ -1,3 +1,7 @@
+## 5.0.2
+
+Fixing the case where the `call` function has no return statement.
+
 ## 5.0.1
 
 The machine is no longer sent as a context of a function used in call helper. With this version also we are fixing the error handling of chained generators.

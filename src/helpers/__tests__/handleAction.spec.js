@@ -228,6 +228,45 @@ describe('Given the handleAction function', function () {
     });
     
     describe('and we use the call helper', function () {
+      it('should execute the function', function () {
+        var foo = null;
+        const api = function(name) { foo = 'bar'; }
+        const handler = function * () {
+          yield call(api);
+          return '...';
+        }
+        const machine = {
+          state: { name: 'idle', data: 42 },
+          transitions: {
+            idle: { run: handler },
+            '...': { a: 'b' }
+          }
+        };
+  
+        handleAction(machine, 'run');
+        expect(foo).to.deep.equal('bar');
+        expect(machine.state).to.deep.equal({ name: '...' });
+      });
+      it('should execute the function and return the result if any', function () {
+        const api = function(name) {
+          return `hello ${ name }`;
+        }
+        const handler = function * () {
+          const newState = yield call(api, 'stent');
+
+          return newState;
+        }
+        const machine = {
+          state: { name: 'idle', data: 42 },
+          transitions: {
+            idle: { run: handler },
+            'hello stent': 'a'
+          }
+        };
+  
+        handleAction(machine, 'run');
+        expect(machine.state).to.deep.equal({ name: 'hello stent' });
+      });
       it('should execute the function and return the result', function () {
         const api = function(name) {
           return `hello ${ name }`;

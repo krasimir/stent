@@ -22,6 +22,12 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
       if (typeof result.value === 'object' && result.value.__type === 'call') {
         const { func, args } = result.value;
         const funcResult = func(...args);
+
+        if (!funcResult) {
+          handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine);
+          iterate(generatorNext(generator));
+          return;
+        }
         
         // promise
         if (typeof funcResult.then !== 'undefined') {
