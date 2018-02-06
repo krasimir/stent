@@ -537,14 +537,20 @@ function registerMethods(machine, transitions, dispatch, dispatchLatest) {
 }
 module.exports = exports['default'];
 },{"../constants":1,"./toCamelCase":11}],11:[function(require,module,exports){
-"use strict";
+'use strict';
 
 exports.__esModule = true;
 
 exports.default = function (text) {
-  return text.toLowerCase().replace(/\W+(.)/g, function (match, chr) {
-    return chr.toUpperCase();
-  });
+  return text.split(/\W+/g).reduce(function (result, word, idx) {
+    if (idx === 0) {
+      word = word.charAt(0).toLowerCase() + word.substr(1);
+    } else {
+      word = word.charAt(0).toUpperCase() + word.substr(1);
+    }
+    result += word;
+    return result;
+  }, '');
 };
 
 module.exports = exports['default'];

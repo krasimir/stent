@@ -237,4 +237,31 @@ describe('Given the connect React helper', function () {
       });
     });
   });
+
+  describe('and the problem described in issue #13', function () {
+    it('should map the transition handler properly', function () {
+      const spy = sinon.spy();
+      class Issue13 extends React.Component {
+        componentDidMount() {
+          this.props.startProcess();
+        }
+        render() {
+          return <p>Hello world</p>;
+        }
+      }
+
+      const ConnectedIssue13 = connect(Issue13).with('issue13')
+        .map(({ startProcess }) => ({ startProcess }));
+
+      Machine.create('issue13', {
+        state: { name: 'init' },
+        transitions: {
+          init: { startProcess: spy, 'ab': () => {} }
+        }
+      });
+
+      mount(<ConnectedIssue13 />);
+
+    });
+  });
 });
