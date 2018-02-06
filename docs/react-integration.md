@@ -21,10 +21,10 @@ class TodoList extends React.Component {
 // using `Machine.create` function
 export default connect(TodoList)
   .with('MachineA', 'MachineB')
-  .map((MachineA, MachineB) => {
+  .map((MachineA, MachineB) => ({
     isIdle: MachineA.isIdle,
     todos: MachineB.state.todos
-  });
+  }));
 ```
 
 The result of the mapping function goes as props to our component. Similarly to [Redux's connect `mapStateToProps`](https://github.com/reactjs/react-redux/blob/master/docs/api.md#connectmapstatetoprops-mapdispatchtoprops-mergeprops-options) function. And of course the mapping function is `disconnect`ed when the component is unmounted.
