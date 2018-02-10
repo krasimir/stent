@@ -8,7 +8,14 @@ describe('Given the registerMethods helper', function () {
 
       registerMethods(
         machine,
-        { 'idle': { 'run baby run': 'running' }, 'running': { stop: 'idle' } },
+        {
+          'idle': {
+            'run baby run': 'running'
+          },
+          'running': {
+            'stop': 'idle'
+          }
+        },
         sinon.spy(),
         sinon.spy()
       );
@@ -19,6 +26,8 @@ describe('Given the registerMethods helper', function () {
       expect(typeof machine.stop).to.be.equal('function');
       expect(typeof machine.runBabyRun.latest).to.be.equal('function');
       expect(typeof machine.stop.latest).to.be.equal('function');
+      expect(typeof machine.isRunBabyRunAllowed).to.be.equal('function');
+      expect(typeof machine.isStopAllowed).to.be.equal('function');
     });
     it('should dispatch an action with the given payload', function () {
       const dispatch = sinon.spy();
@@ -52,6 +61,31 @@ describe('Given the registerMethods helper', function () {
 
       expect(machine.isIdle()).to.be.false;
       expect(machine.isRunning()).to.be.true;
+    });
+    it('should check if particular transition is allowed', function () {
+      const machine = { state: { name: 'running' }};
+  
+      registerMethods(
+        machine,
+        {
+          'idle': {
+            run: 'running'
+          },
+          'running': {
+            stop: 'idle'
+          }
+        },
+        sinon.spy(),
+        sinon.spy()
+      );
+
+      expect(machine.isStopAllowed()).to.be.true;
+      expect(machine.isRunAllowed()).to.be.false;
+
+      machine.state.name = 'idle';
+
+      expect(machine.isStopAllowed()).to.be.false;
+      expect(machine.isRunAllowed()).to.be.true;
     });
     describe('when some of the transitions match the word `name`, `transition` or `state`', function () {
       const register = state => registerMethods({}, state, sinon.spy(), sinon.spy());

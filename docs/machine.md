@@ -61,6 +61,7 @@ The created machine has the following methods:
 * `machine.destroy` - cleans the machine up
 * For every state there is a `is<state name>` method so we can check if the machine is in that state. For example, to check if the machine is in a `fetching remote data` state we may call `machine.isFetchingRemoteData()` method. The alternative is `machine.state.name === 'fetching remote data'`.
 * For every action there is a method to fire it. Whatever we pass goes to the handler. For example, `add new todo` is available as `machine.addNewTodo(<todo data here>)`.
+* For every action there is a method to check whether this action is allowed/exist. For example, for `add new todo` we have `machine.isAddNewTodoAllowed()` (returns either `true` or `false`).
 
 ---
 

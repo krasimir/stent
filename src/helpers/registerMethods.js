@@ -14,11 +14,15 @@ export default function registerMethods(machine, transitions, dispatch, dispatch
 
     for(var action in transitions[state]) {
       const normalized = toCamelCase(action);
-      if (reserved.indexOf(normalized) >= 0) throw new Error(ERROR_RESERVED_WORD_USED_AS_ACTION(normalized));
-      (function(n, a) {
+      const normalizedAllowed = toCamelCase(`is ${ action } allowed`);
+      if (reserved.indexOf(normalized) >= 0) {
+        throw new Error(ERROR_RESERVED_WORD_USED_AS_ACTION(normalized));
+      }
+      (function(n, na, a) {
         machine[n] = (...payload) => dispatch(a, ...payload);
         machine[n].latest = (...payload) => dispatchLatest(a, ...payload);
-      })(normalized, action);
+        machine[na] = () => !transitions[machine.state.name] || typeof transitions[machine.state.name][a] !== 'undefined';
+      })(normalized, normalizedAllowed, action);
     }
 
   }

@@ -1,3 +1,22 @@
+## 5.1.0
+
+Every action now has a dedicated helper to see if it is available in the current machine transition set. For example:
+
+```
+{
+  'idle': {
+    run: 'running'
+  },
+  'running': {
+    stop: 'idle'
+  }
+}
+
+// we have
+machine.isRunAllowed();
+machine.isStopAllowed();
+```
+
 ## 5.0.2
 
 Fixing the case where the `call` function has no return statement.
