@@ -5,6 +5,8 @@ Stent is combining the ideas of [Redux](http://redux.js.org/) with the concept o
 ![Travis](https://travis-ci.org/krasimir/stent.svg?branch=master)
 [![npm downloads](https://img.shields.io/npm/dm/stent.svg?style=flat-square)](https://www.npmjs.com/package/stent)
 
+Slack: https://stentjs.slack.com
+
 ---
 
 ## A few words about state machines
