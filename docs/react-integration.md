@@ -4,7 +4,7 @@
 
 ---
 
-Stent provides a `connect` helper that creates a [HoC](https://github.com/krasimir/react-in-patterns/tree/master/patterns/higher-order-components). It gets re-rendered every time when the machine updates its state:
+Stent provides a `connect` helper that creates a [HoC](https://github.com/krasimir/react-in-patterns/tree/master/book/chapter-4/README.md#higher-order-component). It gets re-rendered every time when the machine updates its state:
 
 ```js
 import React from 'react';
