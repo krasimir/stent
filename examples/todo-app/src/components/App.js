@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'stent/lib/react';
 import AddNewTodo from './AddNewTodo';
 import ToDos from './ToDos';
+import PropTypes from 'prop-types';
 
 class App extends React.Component {
   componentDidMount() {
@@ -31,6 +32,10 @@ class App extends React.Component {
       </div>
     );
   }
+}
+
+App.propTypes = {
+  fetchTodos: PropTypes.func
 }
 
 export default connect(App)

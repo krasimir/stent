@@ -4,3 +4,4 @@ coverage
 reports
 test
 examples
+.babelrc

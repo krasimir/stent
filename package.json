@@ -1,6 +1,6 @@
 {
   "name": "stent",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "Stent is combining the ideas of redux with the concept of state machines",
   "main": "lib",
   "scripts": {
@@ -9,7 +9,7 @@
     "test:watch": "./node_modules/.bin/mocha --require babel-register --require babel-polyfill --require test/setup.js --require jsdom-global/register --reporter spec --slow 100 --watch --watch-extensions jx,jsx,json './src/**/**.spec.{js,jsx}'",
     "t": "mocha ./test/setup.js ./test/specs/**/*.spec.js",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require babel-register --require babel-polyfill --require test/setup.js --require jsdom-global/register --reporter xunit --reporter-options output=reports/test-results.xml './src/**/**.spec.{js,jsx}'",
-    "release": "npm run build && npm publish"
+    "release": "npm run build"
   },
   "repository": {
     "type": "git",
