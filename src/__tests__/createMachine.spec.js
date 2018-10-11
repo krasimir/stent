@@ -68,27 +68,4 @@ describe('Given the createMachine factory', function () {
       expect(machine.state.data).to.deep.equal(['a', 'b']);
     });
   });
-
-  describe('when we create the machine with custom methods', function () {
-    it('they should be available and should be called with the machine as a context', function () {
-      const machine = createMachine({
-        state: { name: 'idle', bar: 'zar' },
-        transitions: {
-          'idle': {
-            'run baby run': function (state, a, b) {
-              return this.foo(a, b);
-            }
-          },
-          'running_abzar': { stop: 'idle' }
-        },
-        foo(a, b) {
-          return 'running_' + a + b + this.state.bar;
-        }
-      });
-
-      machine.runBabyRun('a', 'b');
-      expect(machine.state.name).to.equal('running_abzar');
-    });
-  });
-
 });
