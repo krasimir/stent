@@ -55,9 +55,27 @@ describe('Given the createMachine factory', function () {
         state: { name: 'idle' },
         transitions: {
           'idle': {
-            'run baby run': function (state, a, b) {
+            'run baby run': function (machine, a, b) {
               return { name: 'running', data: [a, b] };
             }
+          },
+          'running': { stop: 'idle' }
+        }
+      });
+
+      machine.runBabyRun('a', 'b');
+      expect(machine.state.name).to.equal('running');
+      expect(machine.state.data).to.deep.equal(['a', 'b']);
+    });
+    it('it should handle the action implemented as arrow function', function () {
+      const machine = createMachine({
+        state: { name: 'idle' },
+        transitions: {
+          'idle': {
+            'run baby run': (machine, a, b) => ({
+               name: 'running',
+               data: [a, b]
+            })
           },
           'running': { stop: 'idle' }
         }

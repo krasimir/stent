@@ -19,18 +19,18 @@ export default function handleAction(machine, action, ...payload) {
   if (typeof handler === 'undefined') return false;
 
   handleMiddleware(MIDDLEWARE_PROCESS_ACTION, machine, action, ...payload);
-  
+
   // string as a handler
   if (typeof handler === 'string') {
     updateState(machine, { ...state, name: transitions[state.name][action] });
-    
+
   // object as a handler
   } else if (typeof handler === 'object') {
     updateState(machine, handler);
 
   // function as a handler
   } else if (typeof handler === 'function') {
-    var response = transitions[state.name][action].apply(machine, [ machine.state, ...payload ]);
+    const response = transitions[state.name][action](machine, ...payload);
 
     // generator
     if (response && typeof response.next === 'function') {
@@ -44,7 +44,7 @@ export default function handleAction(machine, action, ...payload) {
       updateState(machine, response);
     }
 
-    
+
   // wrong type of handler
   } else {
     throw new Error(ERROR_NOT_SUPPORTED_HANDLER_TYPE);
