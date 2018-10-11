@@ -43,7 +43,7 @@ if (machine.isRunning()) {
 console.log(machine.isIdle()); // true
 ```
 
-The created machine may accept more than a string as a handler of the action. We may pass a function which accepts two arguments. The first one is the current state and the second one is some meta data traveling with the action (if any). For example:
+The created machine may accept more than a string as a handler of the action. We may pass a function which accepts two arguments. The first one is the state machine and the second one is some meta data traveling with the action (if any). For example:
 
 ```js
 const machine = Machine.create('todo-app', {
@@ -65,7 +65,7 @@ machine.addTodo({ title: 'Fix that damn bug' })
 
 The *state* in the context of Stent is a vanilla JavaScript object literal. The only one reserved property is `name` which represents the state's name. Everything else depends on our business logic. In the example above that's the `todos` array.
 
-The handler function accepts the previous state and should return a new state in a immutable fashion. Same as the [Redux's reducer](http://redux.js.org/docs/basics/Reducers.html), whatever we return becomes the new state.
+The handler function accepts the machine with the previous state and should return a new state in a immutable fashion. Same as the [Redux's reducer](http://redux.js.org/docs/basics/Reducers.html), whatever we return becomes the new state.
 
 The actual todo item is passed to the `addTodo` method and it comes as a second argument of the handler.
 

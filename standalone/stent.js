@@ -66,8 +66,6 @@ var _registerMethods2 = _interopRequireDefault(_registerMethods);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
 var IDX = 0;
 var getMachineID = function getMachineID() {
   return '_@@@' + ++IDX;
@@ -93,8 +91,7 @@ function createMachine(name, config) {
 
   var _config = config,
       initialState = _config.state,
-      transitions = _config.transitions,
-      customMethods = _objectWithoutProperties(_config, ['state', 'transitions']);
+      transitions = _config.transitions;
 
   var dispatch = function dispatch(action) {
     for (var _len = arguments.length, payload = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -113,12 +110,6 @@ function createMachine(name, config) {
 
   machine.state = initialState;
   machine.transitions = transitions;
-
-  if (customMethods) {
-    for (var key in customMethods) {
-      machine[key] = customMethods[key];
-    }
-  }
 
   (0, _registerMethods2.default)(machine, transitions, dispatch, dispatchLatest);
 
@@ -298,7 +289,9 @@ function handleAction(machine, action) {
 
     // function as a handler
   } else if (typeof handler === 'function') {
-    var response = transitions[state.name][action].apply(machine, [machine.state].concat(payload));
+    var _transitions$state$na;
+
+    var response = (_transitions$state$na = transitions[state.name])[action].apply(_transitions$state$na, [machine].concat(payload));
 
     // generator
     if (response && typeof response.next === 'function') {

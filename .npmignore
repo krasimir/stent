@@ -1,3 +1,4 @@
+node_modules
 _images
 _logo
 coverage
@@ -5,3 +6,4 @@ reports
 test
 examples
 .babelrc
+.vscode

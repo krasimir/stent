@@ -21,11 +21,11 @@ const machine = Machine.create('app', {
   state: { name: 'idle', todos: [] },
   transitions: {
     'idle': {
-      'add new todo': function ({ todos }, todo) {
-        return { name: 'idle', todos: [...todos, todo] };
+      'add new todo': function ({ state }, todo) {
+        return { name: 'idle', todos: [...state.todos, todo] };
       },
-      'delete todo': function ({ todos }, index) {
-        return { name: 'idle', todos: todos.splice(index, 1) };
+      'delete todo': function ({ state }, index) {
+        return { name: 'idle', todos: state.todos.splice(index, 1) };
       },
       'fetch todos': function * () {
         yield 'fetching';
