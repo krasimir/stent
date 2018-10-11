@@ -1,3 +1,41 @@
+## 6.0.0
+
+Action handlers are pure functions now, i.e. they receive the machine as first argument and do not rely on `this` context.
+
+Custom machine functions are no longer supported.
+
+Example for a handler before 6.x:
+
+```
+'add todo': function (state, todo) {
+  return {
+    name: 'idle',
+    todos: [...state.todos, todo]
+  };
+}
+```
+
+Example for a handler function in 6.x:
+
+```
+'add todo': function ({state}, todo) {
+  return {
+    name: 'idle',
+    todos: [...state.todos, todo]
+  };
+}
+```
+
+Example for an arrow function as handler in 6.x:
+
+```
+'add todo': ({state}, todo) => ({
+    name: 'idle',
+    todos: [...state.todos, todo]
+})
+```
+
+
 ## 5.1.0
 
 Every action now has a dedicated helper to see if it is available in the current machine transition set. For example:
@@ -159,7 +197,7 @@ Adding `onGeneratorStep` to the middleware's hook.
 ## 1.0.0
 
 * Adding `Logger` middleware
-* When adding a middleware the hook `onStateChange` is now called `onStateChanged` 
+* When adding a middleware the hook `onStateChange` is now called `onStateChanged`
 
 ## 0.7.3
 
