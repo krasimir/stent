@@ -50,10 +50,10 @@ const machine = Machine.create('todo-app', {
   state: { name: 'idle', todos: [] },
   transitions: {
     'idle': {
-      'add todo': function (state, todo) {
+      'add todo': function (machine, todo) {
         return {
           name: 'idle',
-          todos: [...state.todos, todo]
+          todos: [...machine.state.todos, todo]
         };
       }
     }

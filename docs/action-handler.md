@@ -1,4 +1,4 @@
-# Action handler 
+# Action handler
 
 [Full documentation](./README.md)
 
@@ -29,39 +29,22 @@ Another variant is to use a function that returns a string. Which again results 
 ```js
 Machine.create('app', {
   'idle': {
-    'fetch data': function (state, payload) {
+    'fetch data': function (machine, payload) {
       return 'fetching';
     }
   }
 });
 ```
 
-Notice that the function receives the current state and some payload passed when the action is fired.
+Notice that the function receives the whole state machine and some payload passed when the action is fired.
 
-And of course we may return the actual state object. That's actually a common case because very often we want to keep some data alongside: 
+And of course we may return the actual state object. That's actually a common case because very often we want to keep some data alongside:
 
 ```js
 Machine.create('app', {
   'idle': {
-    'fetch data': function (state, payload) {
+    'fetch data': function (machine, payload) {
       return { name: 'fetching', answer: 42 };
-    }
-  }
-});
-```
-
-The context of the action handler function (or generator) is the machine itself. This means that `this` inside the function points to the created machine and we may call its methods. For example:
-
-```js
-Machine.create('app', {
-  'idle': {
-    'fetch data': function (state, payload) {
-      if (this.isIdle()) {
-        this.request('/api/todos');
-      }
-    },
-    'request': function (state, endpoint) {
-      console.log(endpoint); // endpoint = /api/todos
     }
   }
 });
@@ -74,7 +57,7 @@ We may also use a generator if we have more complex operations or/and async task
 ```js
 Machine.create('app', {
   'idle': {
-    'fetch data': function * (state, payload) {
+    'fetch data': function * (machine, payload) {
       yield 'fetching'; // transition to a `fetching` state
       yield { name: 'fetching' } // the same but using a state object
     }
