@@ -115,7 +115,7 @@ describe('Given the handleAction function', function () {
   });
 
   describe('when the handler is a function', function () {
-    it('should call the handler with the current state and the given payload', function () {
+    it('should call the handler with the machine and the given payload', function () {
       const handler = sinon.spy();
       const payload = ['foo', 'bar', 'baz'];
       const machine = {
@@ -128,7 +128,7 @@ describe('Given the handleAction function', function () {
 
       handleAction(machine, 'run', ...payload);
       expect(handler).to.be.calledOnce.and.to.be.calledWith(
-        { name: 'idle'}, 'foo', 'bar', 'baz'
+        machine, 'foo', 'bar', 'baz'
       );
     });
     it('should update the state', function () {
@@ -156,21 +156,6 @@ describe('Given the handleAction function', function () {
 
       handleAction(machine, 'run');
       expect(machine.state).to.deep.equal({ name: 'bar' });
-    });
-    it('should run the handler with the machine as a context', function () {
-      const handler = function () {
-        expect(this.state).to.deep.equal({ name: 'idle', data: 42 });
-        return 'foo';
-      }
-      const machine = {
-        state: { name: 'idle', data: 42 },
-        transitions: {
-          idle: { run: handler },
-          foo: { a: 'b' }
-        }
-      };
-
-      handleAction(machine, 'run');
     });
   });
 

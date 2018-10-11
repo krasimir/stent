@@ -7,7 +7,7 @@ function * saveTodos (todos) {
     return { name: 'idle', todos: [ ...todos ] };
   } catch(error) {
     throw new Error(error);
-  } 
+  }
 }
 
 export default {
@@ -39,8 +39,8 @@ export default {
       }
     },
     fetching: {
-      'todos loaded': (state, todos) => ({ name: 'idle', todos }),
-      'error': (state, error) => ({ name: 'error', error })
+      'todos loaded': (machine, todos) => ({ name: 'idle', todos }),
+      'error': (machine, error) => ({ name: 'error', error })
     },
     error: {
       'fetch todos': function * () {

@@ -55,7 +55,7 @@ describe('Given the createMachine factory', function () {
         state: { name: 'idle' },
         transitions: {
           'idle': {
-            'run baby run': function (state, a, b) {
+            'run baby run': function (machine, a, b) {
               return { name: 'running', data: [a, b] };
             }
           },
@@ -67,28 +67,23 @@ describe('Given the createMachine factory', function () {
       expect(machine.state.name).to.equal('running');
       expect(machine.state.data).to.deep.equal(['a', 'b']);
     });
-  });
-
-  describe('when we create the machine with custom methods', function () {
-    it('they should be available and should be called with the machine as a context', function () {
+    it('it should handle the action implemented as arrow function', function () {
       const machine = createMachine({
-        state: { name: 'idle', bar: 'zar' },
+        state: { name: 'idle' },
         transitions: {
           'idle': {
-            'run baby run': function (state, a, b) {
-              return this.foo(a, b);
-            }
+            'run baby run': (machine, a, b) => ({
+               name: 'running',
+               data: [a, b]
+            })
           },
-          'running_abzar': { stop: 'idle' }
-        },
-        foo(a, b) {
-          return 'running_' + a + b + this.state.bar;
+          'running': { stop: 'idle' }
         }
       });
 
       machine.runBabyRun('a', 'b');
-      expect(machine.state.name).to.equal('running_abzar');
+      expect(machine.state.name).to.equal('running');
+      expect(machine.state.data).to.deep.equal(['a', 'b']);
     });
   });
-
 });

@@ -100,8 +100,8 @@ describe('Given the connect React helper', function () {
           state: { name: 'idle', counter: 0 },
           transitions: {
             idle: {
-              run: function ({ counter }) {
-                return { name: 'idle', counter: counter + 1 };
+              run: function ({ state }) {
+                return { name: 'idle', counter: state.counter + 1 };
               }
             }
           }
