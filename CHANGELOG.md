@@ -1,3 +1,7 @@
+## 6.0.1
+
+Making sure that we check gets send to the `call` generator helper.
+
 ## 6.0.0
 
 Action handlers are pure functions now, i.e. they receive the machine as first argument and do not rely on `this` context.
