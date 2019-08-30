@@ -1,34 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import connect from '../helpers/connect';
 
 export default function(Component) {
   const withFunc = (...names) => {
     const mapFunc = (done, once, silent) => {
-      return class StentConnect extends React.Component {
-        componentWillMount() {
-          var mapping = 'map';
+      let mapping = 'map';
+      let dependencies = {};
+      let listener = () => {};
 
-          if (once) mapping = 'mapOnce';
-          if (silent) mapping = 'mapSilent';
+      if (once) mapping = 'mapOnce';
+      if (silent) mapping = 'mapSilent';
 
-          this._disconnect = connect({
-            meta: { component: Component.name }
-          }).with(...names)[mapping]
-            ((...deps) => {
-              if (!done) {
-                this.forceUpdate();
-              } else {
-                this.setState(done(...deps));
-              }
-            })
-        }
-        componentWillUnmount() {
-          this._disconnect();
-        }
-        render() {
-          return <Component {...this.state} {...this.props} />;
-        }
-      };;
+      let disconnect = connect({
+        meta: { component: Component.name }
+      }).with(...names)[mapping]
+        ((...deps) => {
+          if (done) {
+            listener(dependencies = done(...deps));
+          } else {
+            listener({});
+          }
+        })
+      return function StentConnect(props) {
+        const [ state, setState ] = useState(dependencies);
+
+        useEffect(() => {
+          listener = setState;
+          return () => {
+            disconnect();
+          }
+        }, []);
+
+        return <Component {...state} {...props} />;
+      }
     }
 
     return {

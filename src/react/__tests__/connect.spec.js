@@ -106,7 +106,9 @@ describe('Given the connect React helper', function () {
             }
           }
         });
-        const mappingFunction = sinon.stub().returns({});
+        const mappingFunction = sinon.stub().returns(() => {
+          return { counter: machine.state.counter };
+        });
         const ConnectedComponent = connect(Comp).with('C').map(mappingFunction);
 
         mount(<ConnectedComponent message={ 'Hello' } />)
@@ -139,7 +141,7 @@ describe('Given the connect React helper', function () {
     });
   });
   describe('when we connect without mapping', function () {
-    it('should detach from the machines', function () {
+    it('should render correctly', function () {
       class Component extends React.Component {
         constructor(props) {
           super(props);
@@ -156,10 +158,9 @@ describe('Given the connect React helper', function () {
       Machine.get('A').run();
       Machine.get('A').stop();
       // 1 - initial render
-      // 2 - default mapping call
-      // 3 - because of machine's action run
-      // 4 - because of machine's action stop 
-      expect(connectedWrapper.find('p').text()).to.equal('Rendered 4 times');
+      // 2 - because of machine's action run
+      // 3 - because of machine's action stop 
+      expect(connectedWrapper.find('p').text()).to.equal('Rendered 3 times');
     });
   });
   describe('when we use mapSilent', function () {
@@ -250,15 +251,15 @@ describe('Given the connect React helper', function () {
         }
       }
 
-      const ConnectedIssue13 = connect(Issue13).with('issue13')
-        .map(({ startProcess }) => ({ startProcess }));
-
       Machine.create('issue13', {
         state: { name: 'init' },
         transitions: {
           init: { startProcess: spy, 'ab': () => {} }
         }
       });
+
+      const ConnectedIssue13 = connect(Issue13).with('issue13')
+        .map(({ startProcess }) => ({ startProcess }));
 
       mount(<ConnectedIssue13 />);
 
