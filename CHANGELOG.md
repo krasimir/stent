@@ -1,3 +1,7 @@
+## 8.0.0
+
+Changing the way of how Stent names stuff. Issue: #32 , PR: #33
+
 ## 6.0.1
 
 Making sure that we check gets send to the `call` generator helper.
