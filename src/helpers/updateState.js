@@ -9,6 +9,7 @@ import {
 
 export default function updateState(machine, state) {  
   var newState;
+  var oldState;
   
   if (typeof state === 'undefined') return;
   if (typeof state === 'string' || typeof state === 'number') {
@@ -24,9 +25,22 @@ export default function updateState(machine, state) {
     throw new Error(ERROR_UNCOVERED_STATE(newState.name));
   }
 
+  var handler = machine.transitions[machine.state.name]['_exit'];
+  if (typeof handler === 'function')
+  {
+    handler.apply(machine,[machine, newState.name]);
+  }
+
   handleMiddleware(MIDDLEWARE_STATE_WILL_CHANGE, machine);
 
+  oldState = machine.state;
   machine.state = newState;
+
+  var handler = machine.transitions[newState.name]['_entry'];
+  if (typeof handler === 'function')
+  {
+    handler.apply(machine,[machine, oldState.name]);
+  }
 
   handleMiddleware(MIDDLEWARE_PROCESS_STATE_CHANGE, machine);
 
