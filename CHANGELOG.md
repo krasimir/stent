@@ -1,3 +1,7 @@
+## 8.0.1
+
+Reconnecting to the machine when the component is re-mounted. Issue #38, PR: #39. 
+
 ## 8.0.0
 
 Changing the way of how Stent names stuff. Issue: #32 , PR: #33
