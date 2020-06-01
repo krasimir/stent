@@ -4,32 +4,34 @@ import connect from '../helpers/connect';
 export default function(Component) {
   const withFunc = (...names) => {
     const mapFunc = (done, once, silent) => {
-      let mapping = 'map';
-      let dependencies = {};
-      let listener = () => {};
+      const mapping = once ? "mapOnce" : silent ? "mapSilent" : "map";
+      const initialState = mapping === "mapSilent" ? {} : null;
 
-      if (once) mapping = 'mapOnce';
-      if (silent) mapping = 'mapSilent';
-
-      let disconnect = connect({
-        meta: { component: Component.name }
-      }).with(...names)[mapping]
-        ((...deps) => {
-          if (done) {
-            listener(dependencies = done(...deps));
-          } else {
-            listener({});
-          }
-        })
       return function StentConnect(props) {
-        const [ state, setState ] = useState(dependencies);
+        const [ state, setState ] = useState(initialState);
 
         useEffect(() => {
-          listener = setState;
+          const disconnect = connect({
+            meta: { component: Component.name }
+          })
+            .with(...names)
+            [mapping]((...deps) => {
+              if (done) {
+                setState(done(...deps));
+              } else {
+                setState({});
+              }
+            });
+
           return () => {
             disconnect();
           }
         }, []);
+
+        // Avoid rendering component until connected
+        if (state == null) {
+          return null;
+        }
 
         return <Component {...state} {...props} />;
       }

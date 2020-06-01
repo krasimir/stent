@@ -140,6 +140,50 @@ describe('Given the connect React helper', function () {
       expect(mapping.callCount).to.be.equal(3);
     });
   });
+  describe("when remounting the component", function() {
+    it("should display up-to-date machine state", function() {
+      const Wired = connect(Component)
+        .with("A", "B")
+        .map(function(A, B) {
+          return {
+            stateA: A.state.name,
+            stateB: B.state.name
+          };
+        });
+
+      const msg = (machineName, state) =>
+        `${machineName} is in a ${state} state`;
+
+      const mounted = mount(<Wired message={msg} />);
+
+      Machine.get("A").run();
+      Machine.get("B").fetch();
+
+      expect(mounted.find("p#A").text()).to.equal(
+        "machine A is in a running state"
+      );
+      expect(mounted.find("p#B").text()).to.equal(
+        "machine B is in a fetching state"
+      );
+
+      mounted.unmount();
+
+      // Change machine states while the component is unmounted
+      Machine.get("A").stop();
+      Machine.get("B").done();
+
+      const remounted = mount(<Wired message={msg} />);
+
+      expect(remounted.find("p#A").text()).to.equal(
+        "machine A is in a idle state"
+      );
+
+      expect(remounted.find("p#B").text()).to.equal(
+        "machine B is in a waiting state"
+      );
+    });
+  });
+
   describe('when we connect without mapping', function () {
     it('should render correctly', function () {
       class Component extends React.Component {
