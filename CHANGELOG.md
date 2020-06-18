@@ -1,6 +1,10 @@
+## 8.0.2
+
+Just a new unit test.
+
 ## 8.0.1
 
-Reconnecting to the machine when the component is re-mounted. Issue #38, PR: #39. 
+Reconnecting to the machine when the component is re-mounted. Issue #38, PR: #39.
 
 ## 8.0.0
 
@@ -46,7 +50,6 @@ Example for an arrow function as handler in 6.x:
     todos: [...state.todos, todo]
 })
 ```
-
 
 ## 5.1.0
 
@@ -173,9 +176,9 @@ Adding devtools window global key access.
 
 ## 3.0.0
 
-* Adding `machine.<method>.latest` alias so we cover the `takeLatest` saga method
-* Changing the way of how the middlewares work. They now don't block the Stent's logic. No `next` method anymore. [Middlewares](./docs/middlewares.md)
-* Documentation is restructured
+- Adding `machine.<method>.latest` alias so we cover the `takeLatest` saga method
+- Changing the way of how the middlewares work. They now don't block the Stent's logic. No `next` method anymore. [Middlewares](./docs/middlewares.md)
+- Documentation is restructured
 
 ## 2.0.0
 
@@ -208,8 +211,8 @@ Adding `onGeneratorStep` to the middleware's hook.
 
 ## 1.0.0
 
-* Adding `Logger` middleware
-* When adding a middleware the hook `onStateChange` is now called `onStateChanged`
+- Adding `Logger` middleware
+- When adding a middleware the hook `onStateChange` is now called `onStateChanged`
 
 ## 0.7.3
 
