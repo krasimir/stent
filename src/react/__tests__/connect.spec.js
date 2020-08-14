@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { Machine } from '../../';
 import connect from '../connect';
 import { mount } from 'enzyme';
@@ -207,6 +208,33 @@ describe('Given the connect React helper', function () {
       expect(connectedWrapper.find('p').text()).to.equal('Rendered 3 times');
     });
   });
+
+  describe('when we connect a server-rendered component', function () {
+    it('should use the machine states in the first render', function () {
+      function Component(props) {
+        return (
+          <section>
+            <h1>{props.a}</h1>
+            <h2>{props.b}</h2>
+          </section>
+        );
+      }
+
+      const Connected = connect(Component)
+        .with('A', 'B')
+        .map(function (mA, mB) {
+          return {
+            a: mA.state.name,
+            b: mB.state.name
+          };
+        });
+
+      expect(ReactDOMServer.renderToStaticMarkup(<Connected />)).to.equal(
+        '<section><h1>idle</h1><h2>waiting</h2></section>'
+      );
+    });
+  });
+
   describe('when we use mapSilent', function () {
     it('should only call the mapping function when the machine changes its state', function () {
       class Component extends React.Component {
