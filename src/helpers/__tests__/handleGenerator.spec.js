@@ -40,7 +40,7 @@ describe('Given the handleGenerator helper', function () {
       try {
         yield call(mistake);
       } catch (err) {
-        return yield call(() => err.message);
+        return err.message;
       }
     };
 
@@ -62,7 +62,7 @@ describe('Given the handleGenerator helper', function () {
       try {
         yield call(nestedGenerator);
       } catch (err) {
-        return yield call(() => err.message);
+        return err.message;
       }
     };
 
