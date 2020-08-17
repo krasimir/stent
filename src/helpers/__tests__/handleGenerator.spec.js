@@ -31,9 +31,9 @@ describe('Given the handleGenerator helper', function () {
     });
   });
   
-  it("should catch errors in the function result of the call helper", function () {
+  it('should catch errors in the function result of the call helper', function () {
     const mistake = () => {
-      throw new Error("oops");
+      throw new Error('oops');
     };
 
     const generator = function* () {
@@ -45,7 +45,29 @@ describe('Given the handleGenerator helper', function () {
     };
 
     handleGenerator({}, generator(), (result) =>
-      expect(result).to.be.equal("oops")
+      expect(result).to.be.equal('oops')
+    );
+  });
+
+  it('should catch errors thrown by synchronous functions in nested generators', function () {
+    const mistake = () => {
+      throw new Error('oops');
+    };
+
+    const nestedGenerator = function* () {
+      yield call(mistake);
+    };
+
+    const generator = function* () {
+      try {
+        yield call(nestedGenerator);
+      } catch (err) {
+        return yield call(() => err.message);
+      }
+    };
+
+    handleGenerator({}, generator(), (result) =>
+      expect(result).to.be.equal('oops')
     );
   });
 });
