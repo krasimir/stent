@@ -58,16 +58,55 @@ describe('Given the handleGenerator helper', function () {
       yield call(mistake);
     };
 
+    const afterThrow=sinon.spy()
+
     const generator = function* () {
       try {
         yield call(nestedGenerator);
+        yield call(afterThrow);
       } catch (err) {
         return err.message;
       }
     };
 
-    handleGenerator({}, generator(), (result) =>
-      expect(result).to.be.equal('oops')
-    );
-  });
+    expect(afterThrow.notCalled).to.be.equal(true);
+
+    const onGeneratorEnds = sinon.spy();
+
+    handleGenerator({}, generator(), onGeneratorEnds);
+    
+    expect(onGeneratorEnds).to.be.calledOnce.and.to.be.calledWith('oops');
+  }); 
+
+  it('should catch errors thrown by asynchronous functions in nested generators', function (done) {
+    const mistake =  () => {
+      throw new Error('oops');
+    };
+
+    const nestedGenerator = function* () {
+      yield call(mistake)
+    };
+
+    const afterThrow=sinon.spy()
+
+    const generator = function* () {
+      try {
+        yield call(nestedGenerator);
+        yield call(afterThrow);
+      } catch (err) {
+        return err.message;
+      }
+    };
+
+    expect(afterThrow.notCalled).to.be.equal(true);
+
+    const onGeneratorEnds = sinon.spy();
+
+    handleGenerator({}, generator(), onGeneratorEnds);
+
+    setTimeout(function () {
+      expect(onGeneratorEnds).to.be.calledOnce.and.to.be.calledWith('oops');
+      done();
+    }, 30);
+  }); 
 });
