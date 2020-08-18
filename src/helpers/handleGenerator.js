@@ -13,7 +13,7 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
   var cancelInsideGenerator;
 
   const iterate = function (result) {
-    if (canceled) return;
+    if (canceled || !result) return;
     
     if (!result.done) {
       handleMiddleware(MIDDLEWARE_GENERATOR_STEP, machine, result.value);
