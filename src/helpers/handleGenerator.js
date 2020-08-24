@@ -1,6 +1,7 @@
 import handleMiddleware from './handleMiddleware';
 import { MIDDLEWARE_GENERATOR_STEP, MIDDLEWARE_GENERATOR_END, MIDDLEWARE_GENERATOR_RESUMED, ERROR_GENERATOR_FUNC_CALL_FAILED } from '../constants';
 import updateState from './updateState';
+import { call } from '.';
 
 export default function handleGenerator(machine, generator, done, resultOfPreviousOperation) {
   const generatorNext = (gen, res) => !canceled && gen.next(res);
@@ -14,7 +15,7 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
 
   const iterate = function (result) {
     if (canceled || !result) return;
-    
+
     if (!result.done) {
       handleMiddleware(MIDDLEWARE_GENERATOR_STEP, machine, result.value);
 
@@ -51,14 +52,19 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
             );
           // generator
           } else if (typeof funcResult.next === 'function') {
-            try {
-              cancelInsideGenerator = handleGenerator(machine, funcResult, generatorResult => {
+              const generatorDone = (generatorResult) => {
                 handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, generatorResult);
                 iterate(generatorNext(generator, generatorResult));
-              });
-            } catch (error) {
-              return iterate(generatorThrow(generator, error));
-            }
+              }; 
+              const nestedGenerator = function* nestedGenerator() {
+                try {
+                  const result = yield* funcResult;
+                  yield call(generatorDone, result);
+                } catch (error) {
+                  iterate(generatorThrow(generator, error));
+                }
+              };
+              cancelInsideGenerator = handleGenerator(machine, nestedGenerator());
           } else {
             handleMiddleware(MIDDLEWARE_GENERATOR_RESUMED, machine, funcResult);
             iterate(generatorNext(generator, funcResult));
@@ -77,7 +83,7 @@ export default function handleGenerator(machine, generator, done, resultOfPrevio
     // the end of the generator (return statement)
     } else {
       handleMiddleware(MIDDLEWARE_GENERATOR_END, machine, result.value);
-      done(result.value);
+      if (typeof done === "function") done(result.value);
     }
   };
 
